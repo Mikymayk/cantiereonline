@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, ChevronRight } from 'lucide-react';
+// CORREZIONE QUI SOTTO: Ho aggiunto "Tablet" e "Info" che mancavano
+import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, ChevronRight, Tablet, Info } from 'lucide-react';
 import Link from 'next/link';
 
 // --- CONFIGURAZIONE FEATURES ---
@@ -167,8 +168,16 @@ export default function Home() {
                     <th className="p-4 w-[280px] bg-slate-100/50">Software & Prezzo</th>
                     
                     {mainFeatures.map(feat => (
-                      <th key={feat.id} className="p-4 text-center w-[130px]">
-                        {feat.label}
+                      <th key={feat.id} className="p-4 text-center w-[130px] relative">
+                        {/* HEADER CON TOOLTIP */}
+                        <div className="group flex flex-col items-center justify-center gap-1 cursor-help z-10">
+                          <span className="text-center">{feat.label}</span>
+                          <Info size={14} className="text-gray-400" />
+                          <div className="absolute top-full mt-2 hidden group-hover:block w-40 bg-slate-800 text-white text-[10px] normal-case p-2 rounded z-50 text-center shadow-lg mx-auto left-0 right-0">
+                            {feat.tooltip}
+                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-800"></div>
+                          </div>
+                        </div>
                       </th>
                     ))}
                   </tr>
