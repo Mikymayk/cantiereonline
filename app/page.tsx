@@ -208,44 +208,46 @@ export default function Home() {
                   {products.map((product, index) => (
                     <tr key={product.id} className={`hover:bg-blue-50/20 transition-colors divide-x divide-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
                       
-                      {/* CHECKBOX SELEZIONE */}
-                      <td className="p-4 text-center bg-slate-50/30">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedIds.includes(product.id)}
-                          onChange={() => toggleSelection(product.id)}
-                          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                        />
-                      </td>
+{/* COLONNA 1: NOME + PREZZO + CTA */}
+<td className="p-4 align-top bg-white">
+  <div className="flex flex-col h-full justify-between gap-4">
+    
+    {/* HEADER: NOME A SINISTRA, PREZZO A DESTRA */}
+    <div className="flex justify-between items-start gap-2">
+      
+      {/* Sinistra: Nome e Voto */}
+      <div>
+        <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
+          {product.name}
+        </Link>
+        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5">
+            <Star size={12} className="fill-yellow-400 text-yellow-400" />
+            <span className="font-medium text-slate-700">{product.rating}</span> 
+            <span className="text-gray-300">|</span> 
+            <span className="truncate">{product.reviews}</span>
+        </div>
+      </div>
 
-                      {/* COLONNA 1: NOME + CTA */}
-                      <td className="p-5 align-top bg-white">
-                        <div className="flex flex-col h-full justify-between gap-3">
-                          <div>
-                            <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block">
-                              {product.name}
-                            </Link>
-                            <div className="flex items-center gap-1 text-sm text-gray-500 mt-1">
-                               <Star size={12} className="fill-yellow-400 text-yellow-400" />
-                               <span className="font-medium">{product.rating}</span> 
-                               <span className="text-xs text-gray-300">| {product.reviews}</span>
-                            </div>
-                            <div className="text-sm font-bold text-slate-700 mt-1">
-                              {product.price} <span className="text-xs font-normal text-gray-400">{product.period}</span>
-                            </div>
-                          </div>
+      {/* Destra: Prezzo (Allineato a destra) */}
+      <div className="text-right shrink-0">
+        <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
+        <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">{product.period}</div>
+      </div>
 
-                          {/* BOTTONE BLU RICHIESTO */}
-                          <a 
-                            href={product.link} 
-                            target="_blank" 
-                            rel="nofollow sponsored"
-                            className="w-full text-center py-2 px-3 rounded text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm transition-all flex items-center justify-center gap-1"
-                          >
-                            Vedi Sito <ExternalLink size={12} />
-                          </a>
-                        </div>
-                      </td>
+    </div>
+
+    {/* BOTTONE BLU */}
+    <a 
+      href={product.link} 
+      target="_blank" 
+      rel="nofollow sponsored"
+      className="w-full text-center py-2.5 px-3 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5"
+    >
+      Vedi Sito <ExternalLink size={13} />
+    </a>
+
+  </div>
+</td>
 
                       {/* COLONNE FEATURES */}
                       {mainFeatures.map(feat => (
