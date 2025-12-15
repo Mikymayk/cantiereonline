@@ -75,6 +75,30 @@ const products = [
     }
   },
   {
+    id: 'teamsystem_cpm',
+    name: 'TeamSystem CPM',
+    price: 'Su Richiesta', // Prezzo Enterprise, non pubblico
+    period: '(Preventivo)',
+    rating: 4.4,
+    reviews: 'Standard Italia',
+    link: 'https://www.teamsystem.com/construction?utm_source=cantiereonline', // Link tracciato ma non pagato
+    features: { 
+      giornale: true, 
+      pos_psc: true, 
+      computo: true, 
+      free_trial: false // Di solito offrono demo guidate, non free trial self-service
+    },
+    deepFeatures: {
+      ita_law: true,
+      offline: false, // Spesso richiede connessione o moduli desktop pesanti
+      bim: true, // Hanno ottimi viewer BIM
+      chat: false,
+      export: true,
+      storage: 'Cloud/Locale',
+      support: true
+    }
+  },
+  {
     id: 'melaworks',
     name: 'Mela Works',
     price: '€15',
