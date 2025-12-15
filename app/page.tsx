@@ -187,7 +187,7 @@ export default function Home() {
                 <thead>
                   <tr className="bg-slate-50 border-b border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider divide-x divide-gray-200">
                     <th className="p-4 text-center w-12 bg-slate-100">CF</th>
-                    <th className="p-4 w-[250px] bg-slate-100/50">Software & Prezzo</th>
+                    <th className="p-4 w-[280px] bg-slate-100/50">Software & Prezzo</th>
                     
                     {mainFeatures.map(feat => (
                       <th key={feat.id} className="p-4 text-center w-[130px] relative">
@@ -208,46 +208,56 @@ export default function Home() {
                   {products.map((product, index) => (
                     <tr key={product.id} className={`hover:bg-blue-50/20 transition-colors divide-x divide-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
                       
-{/* COLONNA 1: NOME + PREZZO + CTA */}
-<td className="p-4 align-top bg-white">
-  <div className="flex flex-col h-full justify-between gap-4">
-    
-    {/* HEADER: NOME A SINISTRA, PREZZO A DESTRA */}
-    <div className="flex justify-between items-start gap-2">
-      
-      {/* Sinistra: Nome e Voto */}
-      <div>
-        <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
-          {product.name}
-        </Link>
-        <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5">
-            <Star size={12} className="fill-yellow-400 text-yellow-400" />
-            <span className="font-medium text-slate-700">{product.rating}</span> 
-            <span className="text-gray-300">|</span> 
-            <span className="truncate">{product.reviews}</span>
-        </div>
-      </div>
+                      {/* CHECKBOX SELEZIONE */}
+                      <td className="p-4 text-center bg-slate-50/30">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedIds.includes(product.id)}
+                          onChange={() => toggleSelection(product.id)}
+                          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        />
+                      </td>
 
-      {/* Destra: Prezzo (Allineato a destra) */}
-      <div className="text-right shrink-0">
-        <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
-        <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">{product.period}</div>
-      </div>
+                      {/* COLONNA 1: NOME + PREZZO + CTA */}
+                      <td className="p-4 align-top bg-white">
+                        <div className="flex flex-col h-full justify-between gap-4">
+                          
+                          {/* HEADER: NOME A SINISTRA, PREZZO A DESTRA */}
+                          <div className="flex justify-between items-start gap-2">
+                            
+                            {/* Sinistra: Nome e Voto */}
+                            <div>
+                              <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
+                                {product.name}
+                              </Link>
+                              <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5">
+                                  <Star size={12} className="fill-yellow-400 text-yellow-400" />
+                                  <span className="font-medium text-slate-700">{product.rating}</span> 
+                                  <span className="text-gray-300">|</span> 
+                                  <span className="truncate">{product.reviews}</span>
+                              </div>
+                            </div>
 
-    </div>
+                            {/* Destra: Prezzo (Allineato a destra) */}
+                            <div className="text-right shrink-0">
+                              <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
+                              <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">{product.period}</div>
+                            </div>
 
-    {/* BOTTONE BLU */}
-    <a 
-      href={product.link} 
-      target="_blank" 
-      rel="nofollow sponsored"
-      className="w-full text-center py-2.5 px-3 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5"
-    >
-      Vedi Sito <ExternalLink size={13} />
-    </a>
+                          </div>
 
-  </div>
-</td>
+                          {/* BOTTONE BLU */}
+                          <a 
+                            href={product.link} 
+                            target="_blank" 
+                            rel="nofollow sponsored"
+                            className="w-full text-center py-2.5 px-3 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5"
+                          >
+                            Vedi Sito <ExternalLink size={13} />
+                          </a>
+
+                        </div>
+                      </td>
 
                       {/* COLONNE FEATURES */}
                       {mainFeatures.map(feat => (
