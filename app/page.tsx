@@ -398,7 +398,7 @@ export default function Home() {
           
           <div className="border-t border-slate-800 pt-8 text-xs text-center text-slate-600">
             <p className="mb-2">
-              Disclaimer: Le informazioni e i prezzi riportati in tabella sono frutto di ricerche web e analisi indipendenti. 
+              *Le informazioni e i prezzi riportati in tabella sono frutto di ricerche web e analisi indipendenti. 
               I dati potrebbero non essere aggiornati in tempo reale rispetto ai listini ufficiali delle software house, che fanno unicamente fede.
             </p>
             <p>&copy; {new Date().getFullYear()} ClusterClups SRL. Tutti i diritti riservati.</p>
