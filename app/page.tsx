@@ -126,7 +126,7 @@ export default function Home() {
   const selectedProducts = products.filter(p => selectedIds.includes(p.id));
 
   return (
-    // FIX SCROLL: max-w-[100vw] e overflow-hidden sul main container impediscono lo spostamento della pagina
+    // FIX SCROLL: max-w-[100vw] e overflow-hidden impediscono alla pagina di ballare
     <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gray-50 font-sans text-slate-900">
       
       {/* HEADER */}
@@ -156,7 +156,7 @@ export default function Home() {
           /* --- VISTA TABELLA CLASSICA --- */
           <div className="bg-white md:rounded-xl shadow-sm border-y md:border border-gray-200 overflow-hidden relative">
             
-            {/* CONTAINER TABELLA CON SCROLL BLOCCATO ORIZZONTALMENTE ALLA LARGHEZZA DELLO SCHERMO */}
+            {/* CONTAINER TABELLA */}
             <div className="w-full overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[1000px] divide-x divide-gray-100">
                 
@@ -178,9 +178,9 @@ export default function Home() {
                   
                   {/* --- RIGA GUIDA PER SCROLL (Visibile solo Mobile) --- */}
                   <tr className="md:hidden bg-blue-50/80 border-b border-blue-100">
-                    {/* Cella vuota Sticky per mantenere l'allineamento */}
+                    {/* Cella vuota Sticky */}
                     <td className="sticky left-0 bg-blue-50/80 z-20 border-r border-blue-200"></td>
-                    {/* Cella con il testo che spanna tutto il resto */}
+                    {/* Cella con testo */}
                     <td colSpan={5} className="p-2 text-xs text-blue-700 font-bold text-left animate-pulse pl-4">
                        👉 Scorri la tabella verso destra
                     </td>
@@ -366,7 +366,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* FOOTER - PULITO */}
+      {/* FOOTER */}
       <footer className="bg-slate-900 text-slate-400 text-sm py-12 border-t border-slate-800 mt-auto relative z-10">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
@@ -386,7 +386,6 @@ export default function Home() {
             <div className="md:text-right">
               <h4 className="font-bold text-white mb-4">Note Legali</h4>
               <ul className="space-y-2">
-                {/* UNICO LINK ALLA PRIVACY */}
                 <li>
                   <Link href="/privacy" className="hover:text-white transition-colors underline decoration-slate-700 underline-offset-4">
                     Privacy Policy
@@ -398,7 +397,7 @@ export default function Home() {
           
           <div className="border-t border-slate-800 pt-8 text-xs text-center text-slate-600">
             <p className="mb-2">
-              *Le informazioni e i prezzi riportati in tabella sono frutto di ricerche web e analisi indipendenti. 
+              Disclaimer: Le informazioni e i prezzi riportati in tabella sono frutto di ricerche web e analisi indipendenti. 
               I dati potrebbero non essere aggiornati in tempo reale rispetto ai listini ufficiali delle software house, che fanno unicamente fede.
             </p>
             <p>&copy; {new Date().getFullYear()} ClusterClups SRL. Tutti i diritti riservati.</p>

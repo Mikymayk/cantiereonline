@@ -1,148 +1,131 @@
 import React from 'react';
-import { ArrowLeft, Check, Star, ExternalLink, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
+import { ArrowLeft, Check, X, Star, ExternalLink, HardHat } from 'lucide-react';
+import { notFound } from 'next/navigation';
 
-// SIMULAZIONE DATABASE
-const productsDB = {
+// --- DATABASE PRODOTTI (Speculare alla Home) ---
+const productsDB: Record<string, any> = {
   planradar: {
-    name: 'PlanRadar',
-    fullDescription: `PlanRadar è la piattaforma leader in Europa per la documentazione digitale e la gestione dei difetti in cantiere. 
-    Nata in Austria, si è distinta per la facilità d'uso su tablet e smartphone, permettendo a geometri e architetti di annotare problemi direttamente sulle planimetrie digitali.`,
-    pros: ['Interfaccia intuitiva anche per non esperti', 'Funziona offline in cantieri senza rete', 'Report PDF generati in un click'],
-    cons: ['Il costo può essere alto per piccolissimi team', 'Manca un modulo avanzato di contabilità fiscale'],
+    name: "PlanRadar",
+    fullDescription: "La soluzione leader in Europa per la documentazione digitale e la gestione dei difetti in cantiere. Perfetta per chi vuole usare tablet e smartphone per segnalare problemi direttamente sulle planimetrie.",
+    pros: ["Interfaccia intuitiva su Tablet", "Report PDF istantanei", "Funziona offline perfettamente"],
+    cons: ["Costoso per piccoli team", "Manca la contabilità avanzata"],
     rating: 4.8,
-    price: '€26/mese',
-    link: 'https://www.planradar.com/it/?ref=cantiereonline'
+    price: "€26/mese",
+    link: "https://www.planradar.com/it/?ref=cantiereonline"
   },
   fieldwire: {
-    name: 'Fieldwire',
-    fullDescription: `Acquisita dal colosso Hilti, Fieldwire è la soluzione "da cantiere" per eccellenza. 
-    Il suo focus non è solo la documentazione, ma il coordinamento delle squadre operative. È come un sistema nervoso centrale per capire chi sta facendo cosa in tempo reale.`,
-    pros: ['Versione gratuita molto generosa', 'Visualizzatore BIM integrato eccellente', 'Task management superiore ai concorrenti'],
-    cons: ['Assistenza prioritaria solo in inglese nel piano base', 'Curva di apprendimento leggermente più ripida'],
+    name: "Fieldwire",
+    fullDescription: "Il gestionale cantiere 'made in USA' più famoso. Offre un piano gratuito molto generoso per piccoli team. Ottimo per la gestione dei task e la visualizzazione delle tavole.",
+    pros: ["Versione gratuita a vita (piccoli team)", "Visualizzatore tavole velocissimo", "Gestione task eccellente"],
+    cons: ["Meno focalizzato sulla normativa italiana", "Supporto in inglese prevalente"],
     rating: 4.6,
-    price: 'Gratis (Base)',
-    link: 'https://www.fieldwire.com/?ref=cantiereonline'
+    price: "Gratis (Base)",
+    link: "https://www.fieldwire.com/?ref=cantiereonline"
   },
   melaworks: {
-    name: 'Mela Works',
-    fullDescription: `L'orgoglio italiano del ConTech. Mela Works ha rivoluzionato il settore con un'idea semplice: "Se sai usare WhatsApp, sai usare Mela". 
-    Tutto si basa su una chat dove le foto e i messaggi diventano automaticamente un verbale di cantiere con valore legale.`,
-    pros: ['Semplicità disarmante', 'Gestione contabilità di cantiere integrata', 'Perfetto per le PMI italiane'],
-    cons: ['Meno adatto per progetti infrastrutturali giganti', 'Funzionalità BIM limitate rispetto a Autodesk'],
+    name: "Mela Works",
+    fullDescription: "L'app italiana che sembra WhatsApp ma è un gestionale. Creata per chi odia la burocrazia: scatti foto, mandi vocali e l'app crea il giornale dei lavori in automatico.",
+    pros: ["Facile come usare WhatsApp", "Giornale Lavori Automatico", "Supporto italiano eccezionale"],
+    cons: ["Meno adatto per grandi appalti complessi", "Funzioni BIM limitate"],
     rating: 4.5,
-    price: '€15/mese',
-    link: 'https://www.mela.work/?ref=cantiereonline'
+    price: "€15/mese",
+    link: "https://www.mela.work/?ref=cantiereonline"
+  },
+  acca_primus: {
+    name: "Primus Online",
+    fullDescription: "La versione cloud dello standard italiano per il computo metrico. Se devi fare computi pubblici o interagire con la PA, è quasi una scelta obbligata.",
+    pros: ["Standard assoluto in Italia", "Banche dati prezziari integrate", "Computo metrico perfetto"],
+    cons: ["Interfaccia un po' datata", "Curva di apprendimento ripida"],
+    rating: 4.7,
+    price: "€39/mese",
+    link: "https://www.acca.it/?ref=cantiereonline"
+  },
+  teamsystem_cpm: {
+    name: "TeamSystem CPM",
+    fullDescription: "Il colosso italiano per la gestione completa delle imprese di costruzioni (ex STR). Una suite completa che copre dal preventivo alla contabilità di cantiere fino al controllo di gestione.",
+    pros: ["Suite completa (ERP + Cantiere)", "Potentissimo per grandi imprese", "Gestione finanziaria avanzata"],
+    cons: ["Non ha prezzi pubblici", "Molto complesso da configurare", "Costoso per piccole ditte"],
+    rating: 4.4,
+    price: "Su Preventivo",
+    link: "https://www.teamsystem.com/construction?utm_source=cantiereonline"
   }
 };
 
-// MODIFICA QUI: Aggiunto 'async' e il tipo Promise per Next.js 15
-export default async function SoftwarePage({ params }: { params: Promise<{ id: string }> }) {
-  
-  // Attendiamo che i parametri siano pronti
-  const { id } = await params;
-  
-  const software = productsDB[id as keyof typeof productsDB];
+export function generateStaticParams() {
+  return Object.keys(productsDB).map((id) => ({ id }));
+}
 
-  // Se il software non esiste
-  if (!software) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 p-4">
-        <h1 className="text-2xl font-bold text-slate-900 mb-2">Software non trovato</h1>
-        <p className="text-gray-500 mb-6">L'articolo che cerchi non è disponibile.</p>
-        <Link href="/" className="flex items-center gap-2 text-blue-600 font-bold hover:underline">
-          <ArrowLeft size={20} /> Torna alla Home
-        </Link>
-      </div>
-    );
+export default function SoftwarePage({ params }: { params: { id: string } }) {
+  const product = productsDB[params.id];
+
+  if (!product) {
+    notFound();
   }
 
   return (
-    <div className="min-h-screen bg-white font-sans text-slate-900 pb-20">
-      
-      {/* NAVIGAZIONE */}
-      <nav className="p-4 border-b border-gray-100 bg-white sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto flex items-center gap-2">
-          <Link href="/" className="p-2 hover:bg-gray-100 rounded-full transition-colors text-slate-500">
-            <ArrowLeft size={20} />
-          </Link>
-          <span className="font-bold text-slate-900">Torna al confronto</span>
-        </div>
-      </nav>
-
-      {/* HEADER ARTICOLO */}
-      <header className="bg-slate-50 py-12 px-4 border-b border-gray-200">
-        <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-block bg-blue-100 text-blue-700 text-xs font-bold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
-            Recensione Completa 2025
-          </div>
-          <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6">
-            {software.name}: Ne vale la pena?
-          </h1>
-          <div className="flex justify-center items-center gap-6 text-sm">
-            <div className="flex items-center gap-1 bg-white px-3 py-1 rounded-lg border border-gray-200 shadow-sm">
-              <Star className="text-yellow-400 fill-yellow-400" size={16} />
-              <span className="font-bold">{software.rating}/5</span>
-            </div>
-            <div className="text-slate-500">
-              Prezzo: <span className="font-bold text-slate-900">{software.price}</span>
-            </div>
-          </div>
+    <div className="min-h-screen bg-white font-sans text-slate-900">
+      {/* HEADER SEMPLIFICATO */}
+      <header className="border-b border-gray-100 p-4">
+        <div className="max-w-3xl mx-auto flex items-center justify-between">
+           <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
+            <HardHat className="text-orange-500" /> CantiereOnline.it
+           </Link>
         </div>
       </header>
 
-      {/* CONTENUTO ARTICOLO */}
-      <article className="max-w-3xl mx-auto px-4 py-12 leading-relaxed text-lg text-gray-700">
-        
-        <p className="mb-10 first-letter:text-5xl first-letter:font-bold first-letter:mr-3 first-letter:float-left first-letter:text-slate-900">
-          {software.fullDescription}
+      <main className="max-w-3xl mx-auto px-4 py-12">
+        <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 mb-8 font-medium text-sm">
+          <ArrowLeft size={16} /> Torna al confronto
+        </Link>
+
+        <div className="flex flex-col md:flex-row gap-6 items-start justify-between mb-8 border-b border-gray-100 pb-8">
+          <div>
+            <h1 className="text-4xl font-extrabold text-slate-900 mb-2">{product.name}</h1>
+            <div className="flex items-center gap-2 text-yellow-500 font-bold">
+              <div className="flex"><Star className="fill-current" size={20}/> {product.rating}/5</div>
+            </div>
+          </div>
+          <div className="text-right">
+             <div className="text-3xl font-bold text-blue-600">{product.price}</div>
+             <a href={product.link} target="_blank" className="inline-flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-lg font-bold mt-2 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200">
+                Vedi Sito Ufficiale <ExternalLink size={18} />
+             </a>
+          </div>
+        </div>
+
+        <p className="text-xl leading-relaxed text-slate-600 mb-12">
+          {product.fullDescription}
         </p>
 
         <div className="grid md:grid-cols-2 gap-8 mb-12">
-          <div className="bg-green-50/50 border border-green-100 p-6 rounded-2xl">
+          <div className="bg-green-50 p-6 rounded-xl border border-green-100">
             <h3 className="font-bold text-green-800 mb-4 flex items-center gap-2">
-              <Check size={20} /> I Punti di Forza
+              <Check size={20}/> I Pro
             </h3>
             <ul className="space-y-3">
-              {software.pros.map((pro, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm md:text-base">
-                  <span className="text-green-500 mt-1">•</span> {pro}
+              {product.pros.map((pro: string, i: number) => (
+                <li key={i} className="flex gap-2 text-slate-700 text-sm">
+                  <span className="text-green-600 font-bold">✓</span> {pro}
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="bg-red-50/50 border border-red-100 p-6 rounded-2xl">
+          <div className="bg-red-50 p-6 rounded-xl border border-red-100">
             <h3 className="font-bold text-red-800 mb-4 flex items-center gap-2">
-              <ShieldAlert size={20} /> Cosa Migliorare
+              <X size={20}/> I Contro
             </h3>
             <ul className="space-y-3">
-              {software.cons.map((con, i) => (
-                <li key={i} className="flex items-start gap-2 text-sm md:text-base">
-                  <span className="text-red-500 mt-1">•</span> {con}
+              {product.cons.map((con: string, i: number) => (
+                <li key={i} className="flex gap-2 text-slate-700 text-sm">
+                  <span className="text-red-500 font-bold">•</span> {con}
                 </li>
               ))}
             </ul>
           </div>
         </div>
-
-        <div className="bg-slate-900 text-white p-8 rounded-2xl text-center shadow-xl">
-          <h2 className="text-2xl font-bold mb-4">Il nostro verdetto su {software.name}</h2>
-          <p className="text-slate-300 mb-8 text-base">
-            Se cerchi una soluzione conforme alla normativa italiana e facile da usare per il team, 
-            questa è una delle scelte migliori sul mercato oggi.
-          </p>
-          <a 
-            href={software.link} 
-            target="_blank"
-            className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 px-8 rounded-xl transition-transform hover:scale-105"
-          >
-            Vedi Offerta Ufficiale <ExternalLink size={20} />
-          </a>
-        </div>
-
-      </article>
-
+      </main>
     </div>
   );
 }
