@@ -5,7 +5,6 @@ import { Check, X, Star, Info, Tablet, ExternalLink, ArrowRight, Trash2, BarChar
 import Link from 'next/link';
 
 // --- CONFIGURAZIONE FEATURES ---
-// Colonne della tabella principale
 const mainFeatures = [
   { id: 'giornale', label: 'Giornale Lavori', tooltip: 'Compilazione digitale del giornale dei lavori (Obbligatorio)' },
   { id: 'pos_psc', label: 'Gestione POS', tooltip: 'Redazione Piani Operativi di Sicurezza e PSC' },
@@ -13,7 +12,6 @@ const mainFeatures = [
   { id: 'free_trial', label: 'Prova Gratuita', tooltip: 'Possibilità di testare il software senza pagare' },
 ];
 
-// Righe della tabella "Confronto Approfondito" (Deep Compare)
 const deepFeaturesList = [
   { category: 'Normativa', label: 'Conformità Legge Italia', id: 'ita_law' },
   { category: 'Tecnico', label: 'Funziona Offline', id: 'offline' },
@@ -75,30 +73,6 @@ const products = [
     }
   },
   {
-    id: 'teamsystem_cpm',
-    name: 'TeamSystem CPM',
-    price: 'Su Richiesta', // Prezzo Enterprise, non pubblico
-    period: '(Preventivo)',
-    rating: 4.4,
-    reviews: 'Standard Italia',
-    link: 'https://www.teamsystem.com/construction?utm_source=cantiereonline', // Link tracciato ma non pagato
-    features: { 
-      giornale: true, 
-      pos_psc: true, 
-      computo: true, 
-      free_trial: false // Di solito offrono demo guidate, non free trial self-service
-    },
-    deepFeatures: {
-      ita_law: true,
-      offline: false, // Spesso richiede connessione o moduli desktop pesanti
-      bim: true, // Hanno ottimi viewer BIM
-      chat: false,
-      export: true,
-      storage: 'Cloud/Locale',
-      support: true
-    }
-  },
-  {
     id: 'melaworks',
     name: 'Mela Works',
     price: '€15',
@@ -122,7 +96,6 @@ const products = [
       support: true
     }
   },
-  // ESEMPIO DI UN SOFTWARE COMPLETO
   {
     id: 'acca_primus',
     name: 'Primus Online',
@@ -135,7 +108,7 @@ const products = [
       giornale: true, 
       pos_psc: true, 
       computo: true, 
-      free_trial: false // Spesso a pagamento o demo limitata
+      free_trial: false 
     },
     deepFeatures: {
       ita_law: true,
@@ -146,10 +119,33 @@ const products = [
       storage: 'Cloud',
       support: true
     }
-  }
+  },
+  {
+    id: 'teamsystem_cpm',
+    name: 'TeamSystem CPM',
+    price: 'Su Richiesta',
+    period: '(Preventivo)',
+    rating: 4.4,
+    reviews: 'Standard Italia',
+    link: 'https://www.teamsystem.com/construction?utm_source=cantiereonline', 
+    features: { 
+      giornale: true, 
+      pos_psc: true, 
+      computo: true, 
+      free_trial: false 
+    },
+    deepFeatures: {
+      ita_law: true,
+      offline: false,
+      bim: true,
+      chat: false,
+      export: true,
+      storage: 'Cloud/Locale',
+      support: true
+    }
+  },
 ];
 
-// HARDWARE AMAZON
 const hardware = [
   { name: 'Apple iPad Pro 11"', note: 'Il top per visualizzare planimetrie e BIM', price: '€969', link: 'https://www.amazon.it/dp/B0D3X6K1Q2?tag=cantiereonline-21' },
   { name: 'Samsung Galaxy Tab Active', note: 'Tablet Rugged indistruttibile per cantiere', price: '€450', link: 'https://www.amazon.it/dp/B0CP2S6Y2L?tag=cantiereonline-21' },
@@ -157,7 +153,6 @@ const hardware = [
 ];
 
 export default function Home() {
-  // GESTIONE STATO SELEZIONE
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showDeepCompare, setShowDeepCompare] = useState(false);
 
@@ -176,16 +171,16 @@ export default function Home() {
   const selectedProducts = products.filter(p => selectedIds.includes(p.id));
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-slate-900 pb-32">
+    <div className="min-h-screen bg-gray-50 font-sans text-slate-900 flex flex-col">
       
-      {/* HEADER */}
+      {/* HEADER (Senza link Privacy) */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-20 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
           <div className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
             <HardHat className="text-orange-500" />
             CantiereOnline<span className="text-orange-500">.it</span>
           </div>
-          <Link href="/privacy" className="text-xs text-gray-400 hover:text-gray-600">Privacy & Policy</Link>
+          {/* Link rimosso da qui */}
         </div>
       </header>
 
@@ -200,7 +195,7 @@ export default function Home() {
       </section>
 
       {/* MAIN CONTENT */}
-      <main className="max-w-7xl mx-auto px-2 md:px-4 py-8">
+      <main className="max-w-7xl mx-auto px-2 md:px-4 py-8 flex-grow">
         
         {!showDeepCompare ? (
           /* --- VISTA TABELLA CLASSICA --- */
@@ -248,8 +243,6 @@ export default function Home() {
                           
                           {/* HEADER: NOME A SINISTRA, PREZZO A DESTRA */}
                           <div className="flex justify-between items-start gap-2">
-                            
-                            {/* Sinistra: Nome e Voto */}
                             <div>
                               <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
                                 {product.name}
@@ -261,16 +254,12 @@ export default function Home() {
                                   <span className="truncate">{product.reviews}</span>
                               </div>
                             </div>
-
-                            {/* Destra: Prezzo (Allineato a destra) */}
                             <div className="text-right shrink-0">
                               <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
                               <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">{product.period}</div>
                             </div>
-
                           </div>
 
-                          {/* BOTTONE BLU */}
                           <a 
                             href={product.link} 
                             target="_blank" 
@@ -312,7 +301,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (MATRICE) --- */
+          /* --- VISTA DEEP COMPARE --- */
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -377,7 +366,7 @@ export default function Home() {
 
       </main>
 
-      {/* FLOATING ACTION BAR (Per il confronto) */}
+      {/* FLOATING ACTION BAR */}
       {selectedIds.length > 0 && !showDeepCompare && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-6 z-50 animate-in slide-in-from-bottom-10 border border-slate-700">
           <div className="text-sm font-medium">
@@ -428,6 +417,44 @@ export default function Home() {
             </div>
         </div>
       </section>
+
+      {/* FOOTER (Disclaimer + Dati Societari) */}
+      <footer className="bg-slate-900 text-slate-400 text-sm py-12 border-t border-slate-800 mt-auto">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <div className="font-bold text-white text-lg mb-4 flex items-center gap-2">
+                <HardHat className="text-orange-500" /> CantiereOnline.it
+              </div>
+              <p className="mb-4 text-xs leading-relaxed max-w-md">
+                Il punto di riferimento per i professionisti dell'edilizia. Confrontiamo in modo indipendente i migliori software per la gestione cantieri, sicurezza e contabilità lavori.
+              </p>
+              <div className="text-xs text-slate-500">
+                <p><strong>ClusterClups SRL</strong></p>
+                <p>P.IVA 10923621212</p>
+                <p>Gragnano, Campania, Italia</p>
+              </div>
+            </div>
+            
+            <div className="md:text-right">
+              <h4 className="font-bold text-white mb-4">Note Legali</h4>
+              <ul className="space-y-2">
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link></li>
+                <li><Link href="/privacy" className="hover:text-white transition-colors">Cookie Policy</Link></li>
+                <li><a href="#" className="hover:text-white transition-colors">Termini di Servizio</a></li>
+              </ul>
+            </div>
+          </div>
+          
+          <div className="border-t border-slate-800 pt-8 text-xs text-center text-slate-600">
+            <p className="mb-2">
+              Disclaimer Affiliazioni: CantiereOnline.it partecipa al Programma Affiliazione Amazon EU e ad altri programmi di affiliazione. 
+              Quando clicchi sui link e acquisti prodotti, potremmo ricevere una commissione senza costi aggiuntivi per te.
+            </p>
+            <p>&copy; {new Date().getFullYear()} ClusterClups SRL. Tutti i diritti riservati.</p>
+          </div>
+        </div>
+      </footer>
 
     </div>
   );
