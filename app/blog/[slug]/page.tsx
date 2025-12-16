@@ -2,6 +2,12 @@ import { getPostData, getSortedPostsData } from '@/lib/posts';
 import Link from 'next/link';
 import { HardHat, ArrowLeft, Calendar, User } from 'lucide-react';
 import { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+
+// Definizione del tipo per le Props (i parametri sono una Promise)
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
 // Genera i percorsi statici per tutti gli articoli
 export function generateStaticParams() {
@@ -12,16 +18,34 @@ export function generateStaticParams() {
 }
 
 // Genera metadati SEO per ogni articolo
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  const postData = await getPostData(params.slug);
-  return {
-    title: `${postData.title} - CantiereOnline`,
-    description: postData.excerpt,
-  };
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const params = await props.params;
+  
+  try {
+    const postData = await getPostData(params.slug);
+    return {
+      title: `${postData.title} - CantiereOnline`,
+      description: postData.excerpt,
+    };
+  } catch (e) {
+    return {
+      title: 'Articolo non trovato',
+    };
+  }
 }
 
-export default async function Post({ params }: { params: { slug: string } }) {
-  const postData = await getPostData(params.slug);
+export default async function Post(props: Props) {
+  // 1. ASPETTIAMO CHE I PARAMETRI SIANO PRONTI
+  const params = await props.params;
+
+  // 2. Proviamo a recuperare i dati del post
+  let postData;
+  try {
+    postData = await getPostData(params.slug);
+  } catch (error) {
+    // Se il file .md non esiste, restituisci 404
+    notFound();
+  }
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900">
@@ -46,7 +70,9 @@ export default async function Post({ params }: { params: { slug: string } }) {
            <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 leading-tight">
              {postData.title}
            </h1>
-           <img src={postData.coverImage} alt={postData.title} className="w-full h-auto rounded-xl shadow-lg mb-8" />
+           {postData.coverImage && (
+             <img src={postData.coverImage} alt={postData.title} className="w-full h-auto rounded-xl shadow-lg mb-8" />
+           )}
         </div>
 
         {/* CONTENUTO ARTICOLO */}
