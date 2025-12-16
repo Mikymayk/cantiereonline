@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, ChevronRight, Info, Tablet } from 'lucide-react';
 import Link from 'next/link';
 import { softwareData } from '../data/software';
@@ -57,6 +57,10 @@ const hardware = [
 export default function Home() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showDeepCompare, setShowDeepCompare] = useState(false);
+  
+  // STATO PER HEADER OVERLAY
+  const [showFloatingHeader, setShowFloatingHeader] = useState(false);
+  const deepTableRef = useRef<HTMLDivElement>(null);
 
   const toggleSelection = (id: string) => {
     if (selectedIds.includes(id)) {
@@ -72,11 +76,36 @@ export default function Home() {
 
   const selectedProducts = softwareData.filter(p => selectedIds.includes(p.id));
 
-  // Helper per formattare il testo del periodo
+  // Helper formattazione testo
   const formatPeriod = (text: string) => {
-    if (text.includes('Free')) return 'Versione Free';
+    if (text.toLowerCase().includes('free')) return 'Versione Free';
     return text;
   };
+
+  // LOGICA SCROLL PER ATTIVARE L'OVERLAY
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!deepTableRef.current || !showDeepCompare) {
+        setShowFloatingHeader(false);
+        return;
+      }
+
+      // Calcola posizione della tabella rispetto allo schermo
+      const rect = deepTableRef.current.getBoundingClientRect();
+      const headerOffset = 150; // Pixel di margine dall'alto prima di far apparire l'overlay
+
+      // Se la parte alta della tabella è uscita dallo schermo (top < headerOffset)
+      // E la parte bassa è ancora visibile (bottom > headerOffset)
+      if (rect.top < headerOffset && rect.bottom > headerOffset) {
+        setShowFloatingHeader(true);
+      } else {
+        setShowFloatingHeader(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [showDeepCompare]);
 
   return (
     <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gray-50 font-sans text-slate-900">
@@ -90,6 +119,38 @@ export default function Home() {
           </div>
         </div>
       </header>
+
+      {/* --- HEADER OVERLAY (FLOTTANTE) --- */}
+      {/* Appare solo quando showFloatingHeader è true */}
+      {showFloatingHeader && showDeepCompare && (
+        <div className="fixed top-[72px] left-0 right-0 z-40 bg-white/95 backdrop-blur-sm shadow-md border-b border-gray-200 animate-in slide-in-from-top-2 duration-200">
+          <div className="max-w-7xl mx-auto px-0 md:px-4">
+             {/* Usa Flexbox invece di Table per allinearsi perfettamente alle colonne width-25% */}
+             <div className="flex w-full">
+                {/* Colonna Vuota (Caratteristica) */}
+                <div className="w-1/4 p-3 border-r border-transparent flex items-center text-xs font-bold text-gray-400 uppercase tracking-wider">
+                  Confronto Attivo
+                </div>
+                
+                {/* Colonne Prodotti */}
+                {selectedProducts.map(p => (
+                  <div key={p.id} className="w-1/4 p-2 text-center border-l border-gray-100 flex flex-col justify-center items-center gap-1">
+                    <div className="font-bold text-sm text-slate-900 leading-none">{p.name}</div>
+                    
+                    <div className="flex items-baseline justify-center gap-1 flex-wrap">
+                      <span className="text-blue-600 font-bold text-sm">{p.price}</span>
+                      <span className="text-[9px] text-gray-500 uppercase font-medium">{formatPeriod(p.paymentType)}</span>
+                    </div>
+
+                    <a href={p.website} target="_blank" className="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-bold px-3 py-1.5 rounded transition-colors w-full max-w-[100px]">
+                      Vedi Sito
+                    </a>
+                  </div>
+                ))}
+             </div>
+          </div>
+        </div>
+      )}
 
       {/* HERO SECTION */}
       {!showDeepCompare && (
@@ -163,7 +224,6 @@ export default function Home() {
                             </div>
                             <div className="text-right shrink-0">
                               <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
-                              {/* FIX PREZZO LATERALE */}
                               <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">
                                 {formatPeriod(product.paymentType)}
                               </div>
@@ -203,8 +263,8 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (CORRETTA STICKY E FORMATTAZIONE) --- */
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
+          /* --- VISTA DEEP COMPARE --- */
+          <div ref={deepTableRef} className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
             <div className="flex justify-between items-center mb-4 pt-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                 <BarChart3 className="text-blue-600" /> Analisi Tecnica
@@ -217,29 +277,26 @@ export default function Home() {
               </button>
             </div>
 
-            {/* RIMOSSO OVERFLOW-HIDDEN CHE ROMPEVA LO STICKY */}
             <div className="bg-white rounded-xl shadow-lg border border-gray-200"> 
               <div className="overflow-x-auto w-full rounded-xl">
                 
                 <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
                   
-                  {/* HEADER STICKY: APPLICATO ALLE CELLE "TH" PER MAGGIORE STABILITÀ */}
+                  {/* HEADER STATICO (Originale, non sticky) - ALTEZZA RIDOTTA */}
                   <thead>
                     <tr className="border-b border-gray-200 bg-white">
                       
-                      {/* Cella 1: Caratteristica */}
-                      <th className="p-4 text-gray-500 font-medium uppercase text-xs tracking-wider w-1/4 align-middle bg-white sticky top-[72px] z-40 shadow-sm border-b border-gray-100">
+                      <th className="p-3 text-gray-500 font-medium uppercase text-xs tracking-wider w-1/4 align-bottom bg-white">
                         Caratteristica
                       </th>
 
-                      {/* Celle Prodotti */}
                       {selectedProducts.map(p => (
-                        <th key={p.id} className="p-4 text-center border-l border-gray-200 bg-white w-1/4 align-top sticky top-[72px] z-40 shadow-sm border-b border-gray-100">
+                        <th key={p.id} className="p-3 text-center border-l border-gray-200 bg-white w-1/4 align-top">
                           <div className="flex flex-col h-full justify-between gap-2">
                             <div>
                                 <span className="block font-bold text-lg text-slate-900 leading-tight mb-1">{p.name}</span>
                                 
-                                {/* FIX PREZZO: FLEX ROW PER METTERLI VICINI */}
+                                {/* PREZZO + PERIODO IN RIGA */}
                                 <div className="flex items-baseline justify-center gap-1 flex-wrap">
                                   <span className="text-blue-600 font-bold text-lg">{p.price}</span>
                                   <span className="text-[10px] text-gray-500 uppercase font-medium whitespace-nowrap">
