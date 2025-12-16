@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, ChevronRight, Info, Tablet } from 'lucide-react';
+import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, Info, Tablet } from 'lucide-react';
 import Link from 'next/link';
 import { softwareData } from '../data/software';
 
@@ -202,7 +202,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (DARK HEADER SENZA STICKY) --- */
+          /* --- VISTA DEEP COMPARE (AGGIORNATA: DESCRIZIONI E STILE PULITO) --- */
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
             <div className="flex justify-between items-center mb-4 pt-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -216,6 +216,7 @@ export default function Home() {
               </button>
             </div>
 
+            {/* TABELLA PULITA SENZA OVERFLOW STRANI */}
             <div className="bg-white rounded-xl shadow-lg border border-gray-200"> 
               <div className="overflow-x-auto w-full rounded-xl">
                 
@@ -225,16 +226,22 @@ export default function Home() {
                   <thead>
                     <tr className="bg-slate-900 border-b border-slate-700">
                       
-                      <th className="p-4 text-slate-400 font-bold uppercase text-xs tracking-wider w-1/4 align-middle">
+                      <th className="p-4 text-slate-400 font-bold uppercase text-xs tracking-wider w-1/4 align-bottom">
                         Caratteristica
                       </th>
 
                       {selectedProducts.map(p => (
                         <th key={p.id} className="p-4 text-center border-l border-slate-700 w-1/4 align-top">
-                          <div className="flex flex-col h-full justify-between gap-2">
+                          <div className="flex flex-col h-full justify-between gap-3">
                             <div>
-                                <span className="block font-bold text-lg text-white leading-tight mb-1">{p.name}</span>
+                                <span className="block font-bold text-lg text-white leading-tight mb-2">{p.name}</span>
                                 
+                                {/* DESCRIZIONE AGGIUNTA QUI */}
+                                <div 
+                                  className="text-xs text-slate-300 font-normal leading-relaxed text-left mb-3 bg-slate-800/50 p-2 rounded border border-slate-700 min-h-[80px]"
+                                  dangerouslySetInnerHTML={{ __html: p.description }}
+                                />
+
                                 <div className="flex items-baseline justify-center gap-1 flex-wrap">
                                   <span className="text-blue-400 font-bold text-lg">{p.price}</span>
                                   <span className="text-[10px] text-slate-400 uppercase font-medium whitespace-nowrap">
@@ -243,11 +250,10 @@ export default function Home() {
                                 </div>
                             </div>
                             
-                            {/* PULSANTE BIANCO */}
                             <a 
                                 href={p.website} 
                                 target="_blank" 
-                                className="block w-full text-center py-2 px-2 rounded-md text-xs font-bold bg-white text-slate-900 hover:bg-gray-100 transition-colors"
+                                className="block w-full text-center py-2.5 px-2 rounded-md text-xs font-bold bg-white text-slate-900 hover:bg-gray-100 transition-colors shadow-sm"
                             >
                                 Vedi Sito
                             </a>
