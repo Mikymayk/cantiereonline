@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
   Search, Check, X, Star, ExternalLink, 
-  LayoutList, Scale, Trash2, ArrowRight
+  Scale, Trash2, Info, LayoutList
 } from 'lucide-react';
 import { softwareData } from '@/data/software';
 
@@ -13,7 +13,7 @@ export default function SoftwareList() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  // Filtra i software in base alla ricerca
+  // Filtra i software
   const filteredSoftware = softwareData.filter(software => 
     software.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     software.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -32,8 +32,14 @@ export default function SoftwareList() {
     }
   };
 
-  // Dati per il Modale di Confronto
   const comparisonData = softwareData.filter(s => selectedIds.includes(s.id));
+
+  // Helper per renderizzare icone check/cross stile tabella
+  const StatusIcon = ({ active }: { active: boolean }) => (
+    <div className={`flex items-center justify-center w-8 h-8 rounded-full mx-auto ${active ? 'bg-green-100 text-green-600' : 'bg-red-50 text-red-400'}`}>
+      {active ? <Check size={18} strokeWidth={3} /> : <X size={18} strokeWidth={3} />}
+    </div>
+  );
 
   return (
     <>
@@ -51,7 +57,7 @@ export default function SoftwareList() {
           </div>
       </section>
 
-      {/* --- BARRA FLOTTANTE (Appare se selezioni checkbox) --- */}
+      {/* --- BARRA FLOTTANTE COMPARAZIONE --- */}
       {selectedIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-4 animate-in slide-in-from-bottom-4">
           <span className="font-bold text-sm">{selectedIds.length} Selezionati</span>
@@ -59,7 +65,7 @@ export default function SoftwareList() {
             onClick={() => setShowCompare(true)}
             className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-full font-bold text-sm transition-colors flex items-center gap-2"
           >
-            <Scale size={16}/> Confronta
+            <Scale size={16}/> Confronta Ora
           </button>
           <button onClick={() => setSelectedIds([])} className="text-slate-400 hover:text-white">
             <X size={18}/>
@@ -67,93 +73,89 @@ export default function SoftwareList() {
         </div>
       )}
 
-      {/* --- TABELLA COMPARATIVA --- */}
+      {/* --- TABELLA PRINCIPALE (STILE SCREENSHOT) --- */}
       <div id="confronto" className="max-w-7xl mx-auto px-4 py-8">
         
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-6">
           <h3 className="font-bold text-xl text-slate-800 flex items-center gap-2">
             <LayoutList size={20} className="text-blue-600"/> 
             {filteredSoftware.length} Software Disponibili
           </h3>
-          <span className="text-sm text-gray-500 hidden md:inline">Spunta le caselle per confrontare</span>
+          <span className="text-sm text-gray-500 hidden md:inline">Spunta "CF" per confrontare</span>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                  <th className="p-4 w-12 text-center">Cfr.</th>
-                  <th className="p-4">Software</th>
-                  <th className="p-4 w-32">Prezzo</th>
-                  {/* Colonne Funzionalità Rapide */}
-                  <th className="p-4 w-24 text-center hidden md:table-cell">Giornale</th>
-                  <th className="p-4 w-24 text-center hidden md:table-cell">POS/PSC</th>
-                  <th className="p-4 w-24 text-center hidden md:table-cell">Computo</th>
-                  <th className="p-4 w-40 text-right">Sito Web</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredSoftware.map((sw) => (
-                  <tr key={sw.id} className={`hover:bg-blue-50/30 transition-colors ${selectedIds.includes(sw.id) ? 'bg-blue-50' : ''}`}>
-                    
-                    {/* Checkbox Confronto */}
-                    <td className="p-4 text-center">
-                      <input 
-                        type="checkbox" 
-                        className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                        checked={selectedIds.includes(sw.id)}
-                        onChange={() => toggleSelection(sw.id)}
-                      />
-                    </td>
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200 h-14">
+                <th className="px-4 text-center w-12">CF</th>
+                <th className="px-6 py-3 w-[40%]">SOFTWARE & DETTAGLI</th>
+                <th className="px-2 py-3 text-center w-[12%] leading-tight">NORMATIVA<br/>ITALIA <Info size={12} className="inline text-gray-400 ml-1"/></th>
+                <th className="px-2 py-3 text-center w-[12%] leading-tight">GIORNALE<br/>LAVORI <Info size={12} className="inline text-gray-400 ml-1"/></th>
+                <th className="px-2 py-3 text-center w-[12%] leading-tight">GESTIONE<br/>POS <Info size={12} className="inline text-gray-400 ml-1"/></th>
+                <th className="px-2 py-3 text-center w-[12%] leading-tight">COMPUTO<br/>METRICO <Info size={12} className="inline text-gray-400 ml-1"/></th>
+                <th className="px-2 py-3 text-center w-[12%] leading-tight">PROVA<br/>GRATUITA <Info size={12} className="inline text-gray-400 ml-1"/></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {filteredSoftware.map((sw) => (
+                <tr key={sw.id} className={`hover:bg-blue-50/20 transition-colors ${selectedIds.includes(sw.id) ? 'bg-blue-50' : ''}`}>
+                  
+                  {/* CHECKBOX */}
+                  <td className="px-4 py-6 text-center align-top pt-8">
+                    <input 
+                      type="checkbox" 
+                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                      checked={selectedIds.includes(sw.id)}
+                      onChange={() => toggleSelection(sw.id)}
+                    />
+                  </td>
 
-                    {/* Nome Software (LINK INTERNO) */}
-                    <td className="p-4">
-                      <div className="flex flex-col">
-                        <Link href={`/software/${sw.id}`} className="font-bold text-slate-900 text-lg hover:text-blue-600 hover:underline decoration-2 underline-offset-2 transition-all">
-                          {sw.name}
-                        </Link>
-                        <div className="flex items-center gap-1 text-yellow-500 text-xs mt-1">
-                          <Star size={12} fill="currentColor"/> 
-                          <span className="font-bold">{sw.rating}</span> 
-                          <span className="text-gray-400 font-normal">({sw.reviews})</span>
-                        </div>
+                  {/* COLONNA PRINCIPALE (Nome, Prezzo, Descrizione, Bottone) */}
+                  <td className="px-6 py-8 align-top">
+                    <div className="flex justify-between items-start mb-2">
+                      <Link href={`/software/${sw.id}`} className="text-xl font-bold text-slate-900 hover:text-blue-600 hover:underline">
+                        {sw.name}
+                      </Link>
+                      <div className="text-right">
+                        <div className="text-xl font-bold text-slate-900">{sw.price}</div>
+                        <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">{sw.paymentType}</div>
                       </div>
-                    </td>
+                    </div>
 
-                    {/* Prezzo */}
-                    <td className="p-4">
-                      <div className="font-bold text-slate-700">{sw.price}</div>
-                      <div className="text-xs text-gray-400">{sw.paymentType}</div>
-                    </td>
-                    
-                    {/* Icone Funzionalità */}
-                    <td className="p-4 text-center hidden md:table-cell">
-                      {sw.features.giornale_lavori ? <Check size={20} className="mx-auto text-green-500"/> : <span className="text-gray-300">•</span>}
-                    </td>
-                    <td className="p-4 text-center hidden md:table-cell">
-                      {sw.features.pos_psc ? <Check size={20} className="mx-auto text-green-500"/> : <span className="text-gray-300">•</span>}
-                    </td>
-                    <td className="p-4 text-center hidden md:table-cell">
-                      {sw.features.computo_metrico ? <Check size={20} className="mx-auto text-green-500"/> : <span className="text-gray-300">•</span>}
-                    </td>
+                    <div className="flex items-center gap-1 mb-4">
+                       <div className="flex text-yellow-400">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} size={14} fill={i < Math.floor(sw.rating) ? "currentColor" : "none"} className={i < Math.floor(sw.rating) ? "" : "text-gray-300"} />
+                          ))}
+                       </div>
+                       <span className="text-xs font-bold text-slate-700">{sw.rating}</span>
+                    </div>
 
-                    {/* Pulsante Sito Esterno (UNICO PULSANTE) */}
-                    <td className="p-4 text-right">
-                      <a 
-                        href={sw.website} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md transition-all"
-                      >
-                        Vedi Sito <ExternalLink size={14}/>
-                      </a>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    {/* DESCRIZIONE (Ripristinata) */}
+                    <p className="text-sm text-gray-600 leading-relaxed mb-6 line-clamp-3" dangerouslySetInnerHTML={{ __html: sw.description }} />
+
+                    {/* BOTTONE BLU GRANDE */}
+                    <a 
+                      href={sw.website} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-md font-bold text-sm transition-colors shadow-sm"
+                    >
+                      Vedi Sito <ExternalLink size={14} className="inline ml-1 mb-0.5"/>
+                    </a>
+                  </td>
+
+                  {/* COLONNE FEATURE (Icone Centrate) */}
+                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.conformita_ita} /></td>
+                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.giornale_lavori} /></td>
+                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.pos_psc} /></td>
+                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.computo_metrico} /></td>
+                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.free_trial} /></td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
           
           {filteredSoftware.length === 0 && (
             <div className="p-12 text-center text-gray-500">
@@ -163,7 +165,7 @@ export default function SoftwareList() {
         </div>
       </div>
 
-      {/* --- MODALE CONFRONTO COMPLETO --- */}
+      {/* --- MODALE CONFRONTO DETTAGLIATO (Fix Richiesti) --- */}
       {showCompare && (
         <div className="fixed inset-0 bg-white z-[100] overflow-y-auto animate-in fade-in duration-200">
           <div className="max-w-7xl mx-auto px-4 py-8">
@@ -188,17 +190,34 @@ export default function SoftwareList() {
               <div className="bg-slate-50 p-4 border-b border-r border-gray-200 font-bold text-slate-500 flex items-end pb-2">
                 Caratteristica
               </div>
+              
               {comparisonData.map(sw => (
                 <div key={sw.id} className="bg-slate-50 p-4 border-b border-r border-gray-200 text-center relative group">
                   <button onClick={() => toggleSelection(sw.id)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500">
                     <Trash2 size={16}/>
                   </button>
+                  
+                  {/* Nome Software */}
                   <Link href={`/software/${sw.id}`} className="font-extrabold text-lg text-slate-900 mb-1 hover:text-blue-600 hover:underline block">
                     {sw.name}
                   </Link>
-                  <div className="text-blue-600 font-bold">{sw.price}</div>
+                  
+                  {/* Prezzo + Periodo (FIX: Aggiunto paymentType) */}
+                  <div className="text-blue-600 font-bold mb-3">
+                    {sw.price} <span className="text-xs text-gray-500 font-normal">{sw.paymentType}</span>
+                  </div>
+
+                  {/* Bottone Sito (FIX: Aggiunto bottone blu) */}
+                  <a 
+                    href={sw.website} 
+                    target="_blank" 
+                    className="block w-full bg-blue-600 text-white text-xs font-bold py-2 rounded hover:bg-blue-700 transition-colors"
+                  >
+                    Vedi Sito
+                  </a>
                 </div>
               ))}
+              
               {/* Filler colonne vuote */}
               {[...Array(3 - comparisonData.length)].map((_, i) => (
                 <div key={i} className="bg-slate-50 border-b border-r border-gray-200 hidden md:block"></div>
