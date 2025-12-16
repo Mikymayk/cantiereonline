@@ -13,7 +13,7 @@ export default function SoftwareList() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  // --- LOGICA FILTRO POTENZIATA ---
+  // --- LOGICA FILTRO ---
   const filteredSoftware = softwareData.filter(software => {
     const term = searchTerm.toLowerCase();
     
@@ -52,7 +52,7 @@ export default function SoftwareList() {
     </div>
   );
 
-  // Helper per Intestazione Colonna con Tooltip
+  // Helper per Intestazione Colonna con Tooltip (AGGIORNATO: APPARE SOTTO)
   const HeaderWithTooltip = ({ label, tooltip }: { label: React.ReactNode, tooltip: string }) => (
     <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200 relative group align-middle">
       {/* Testo Centrato */}
@@ -63,11 +63,11 @@ export default function SoftwareList() {
         <Info size={14} />
       </div>
 
-      {/* Tooltip Hover */}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-slate-800 text-white text-xs font-normal p-3 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal leading-snug">
+      {/* Tooltip Hover (Posizionato SOTTO) */}
+      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-slate-800 text-white text-xs font-normal p-3 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal leading-snug">
         {tooltip}
-        {/* Freccina */}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+        {/* Freccina verso l'alto */}
+        <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-800"></div>
       </div>
     </th>
   );
