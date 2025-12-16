@@ -202,7 +202,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (DARK STICKY HEADER) --- */
+          /* --- VISTA DEEP COMPARE (DARK HEADER SENZA STICKY) --- */
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
             <div className="flex justify-between items-center mb-4 pt-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -221,19 +221,16 @@ export default function Home() {
                 
                 <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
                   
-                  {/* HEADER STICKY DARK MODE */}
-                  {/* bg-slate-900 = Sfondo Scuro | text-white = Testo Bianco */}
-                  <thead className="sticky top-[72px] z-40 shadow-xl">
+                  {/* HEADER DARK MODE (NO STICKY) */}
+                  <thead>
                     <tr className="bg-slate-900 border-b border-slate-700">
                       
-                      {/* Cella 1: Caratteristica */}
-                      <th className="p-4 text-slate-400 font-bold uppercase text-xs tracking-wider w-1/4 align-middle bg-slate-900">
+                      <th className="p-4 text-slate-400 font-bold uppercase text-xs tracking-wider w-1/4 align-middle">
                         Caratteristica
                       </th>
 
-                      {/* Celle Prodotti */}
                       {selectedProducts.map(p => (
-                        <th key={p.id} className="p-4 text-center border-l border-slate-700 bg-slate-900 w-1/4 align-top">
+                        <th key={p.id} className="p-4 text-center border-l border-slate-700 w-1/4 align-top">
                           <div className="flex flex-col h-full justify-between gap-2">
                             <div>
                                 <span className="block font-bold text-lg text-white leading-tight mb-1">{p.name}</span>
@@ -246,7 +243,7 @@ export default function Home() {
                                 </div>
                             </div>
                             
-                            {/* PULSANTE BIANCO (TEXT-SLATE-900) */}
+                            {/* PULSANTE BIANCO */}
                             <a 
                                 href={p.website} 
                                 target="_blank" 
