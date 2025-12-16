@@ -1,7 +1,7 @@
 import * as cheerio from 'cheerio';
 import * as fs from 'fs';
 import * as path from 'path';
-import { softwareData } from './data/software.ts'; // Adjust path if needed
+import { softwareData } from './data/software'; // Adjust path if needed
 
 async function fetchPrice(url: string): Promise<string | null> {
   try {
