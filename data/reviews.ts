@@ -111,7 +111,7 @@ export const reviewsData: Record<string, ReviewData> = {
 
       </div>
     `
-  }
+  },
   // Qui puoi aggiungere altri software in futuro:
   'fieldwire': {
     title: "Fieldwire: Recensione 2025. Il coordinamento cantiere come deve essere?",
