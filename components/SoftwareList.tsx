@@ -3,8 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
-  Search, Check, X, Star, ExternalLink, ArrowRight, 
-  LayoutList, Scale, Info, ChevronDown, Trash2 
+  Search, Check, X, Star, ExternalLink, 
+  LayoutList, Scale, Trash2, ArrowRight
 } from 'lucide-react';
 import { softwareData } from '@/data/software';
 
@@ -13,13 +13,13 @@ export default function SoftwareList() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  // Filtra i software
+  // Filtra i software in base alla ricerca
   const filteredSoftware = softwareData.filter(software => 
     software.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     software.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Gestione Selezione per confronto
+  // Gestione Selezione Checkbox
   const toggleSelection = (id: string) => {
     if (selectedIds.includes(id)) {
       setSelectedIds(selectedIds.filter(i => i !== id));
@@ -32,7 +32,7 @@ export default function SoftwareList() {
     }
   };
 
-  // Dati dei software selezionati per il modale
+  // Dati per il Modale di Confronto
   const comparisonData = softwareData.filter(s => selectedIds.includes(s.id));
 
   return (
@@ -51,7 +51,7 @@ export default function SoftwareList() {
           </div>
       </section>
 
-      {/* --- BARRA FLOTTANTE CONFRONTO (Appare se selezioni qualcosa) --- */}
+      {/* --- BARRA FLOTTANTE (Appare se selezioni checkbox) --- */}
       {selectedIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-4 animate-in slide-in-from-bottom-4">
           <span className="font-bold text-sm">{selectedIds.length} Selezionati</span>
@@ -59,7 +59,7 @@ export default function SoftwareList() {
             onClick={() => setShowCompare(true)}
             className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-full font-bold text-sm transition-colors flex items-center gap-2"
           >
-            <Scale size={16}/> Confronta Ora
+            <Scale size={16}/> Confronta
           </button>
           <button onClick={() => setSelectedIds([])} className="text-slate-400 hover:text-white">
             <X size={18}/>
@@ -67,7 +67,7 @@ export default function SoftwareList() {
         </div>
       )}
 
-      {/* --- TABELLA PRINCIPALE --- */}
+      {/* --- TABELLA COMPARATIVA --- */}
       <div id="confronto" className="max-w-7xl mx-auto px-4 py-8">
         
         <div className="flex justify-between items-center mb-4">
@@ -75,7 +75,7 @@ export default function SoftwareList() {
             <LayoutList size={20} className="text-blue-600"/> 
             {filteredSoftware.length} Software Disponibili
           </h3>
-          <span className="text-sm text-gray-500 hidden md:inline">Seleziona le caselle per confrontare</span>
+          <span className="text-sm text-gray-500 hidden md:inline">Spunta le caselle per confrontare</span>
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -86,15 +86,18 @@ export default function SoftwareList() {
                   <th className="p-4 w-12 text-center">Cfr.</th>
                   <th className="p-4">Software</th>
                   <th className="p-4 w-32">Prezzo</th>
+                  {/* Colonne Funzionalità Rapide */}
                   <th className="p-4 w-24 text-center hidden md:table-cell">Giornale</th>
                   <th className="p-4 w-24 text-center hidden md:table-cell">POS/PSC</th>
                   <th className="p-4 w-24 text-center hidden md:table-cell">Computo</th>
-                  <th className="p-4 w-40 text-right">Azioni</th>
+                  <th className="p-4 w-40 text-right">Sito Web</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {filteredSoftware.map((sw) => (
                   <tr key={sw.id} className={`hover:bg-blue-50/30 transition-colors ${selectedIds.includes(sw.id) ? 'bg-blue-50' : ''}`}>
+                    
+                    {/* Checkbox Confronto */}
                     <td className="p-4 text-center">
                       <input 
                         type="checkbox" 
@@ -103,9 +106,11 @@ export default function SoftwareList() {
                         onChange={() => toggleSelection(sw.id)}
                       />
                     </td>
+
+                    {/* Nome Software (LINK INTERNO) */}
                     <td className="p-4">
                       <div className="flex flex-col">
-                        <Link href={`/software/${sw.id}`} className="font-bold text-slate-900 text-lg hover:text-blue-600">
+                        <Link href={`/software/${sw.id}`} className="font-bold text-slate-900 text-lg hover:text-blue-600 hover:underline decoration-2 underline-offset-2 transition-all">
                           {sw.name}
                         </Link>
                         <div className="flex items-center gap-1 text-yellow-500 text-xs mt-1">
@@ -115,40 +120,34 @@ export default function SoftwareList() {
                         </div>
                       </div>
                     </td>
+
+                    {/* Prezzo */}
                     <td className="p-4">
                       <div className="font-bold text-slate-700">{sw.price}</div>
                       <div className="text-xs text-gray-400">{sw.paymentType}</div>
                     </td>
                     
-                    {/* COLONNE FEATURE RAPIDE */}
+                    {/* Icone Funzionalità */}
                     <td className="p-4 text-center hidden md:table-cell">
-                      {sw.features.giornale_lavori ? 
-                        <Check size={20} className="mx-auto text-green-500"/> : 
-                        <span className="text-gray-200 text-2xl">•</span>
-                      }
+                      {sw.features.giornale_lavori ? <Check size={20} className="mx-auto text-green-500"/> : <span className="text-gray-300">•</span>}
                     </td>
                     <td className="p-4 text-center hidden md:table-cell">
-                      {sw.features.pos_psc ? 
-                        <Check size={20} className="mx-auto text-green-500"/> : 
-                        <span className="text-gray-200 text-2xl">•</span>
-                      }
+                      {sw.features.pos_psc ? <Check size={20} className="mx-auto text-green-500"/> : <span className="text-gray-300">•</span>}
                     </td>
                     <td className="p-4 text-center hidden md:table-cell">
-                      {sw.features.computo_metrico ? 
-                        <Check size={20} className="mx-auto text-green-500"/> : 
-                        <span className="text-gray-200 text-2xl">•</span>
-                      }
+                      {sw.features.computo_metrico ? <Check size={20} className="mx-auto text-green-500"/> : <span className="text-gray-300">•</span>}
                     </td>
 
+                    {/* Pulsante Sito Esterno (UNICO PULSANTE) */}
                     <td className="p-4 text-right">
-                      <div className="flex justify-end gap-2">
-                        <Link href={`/software/${sw.id}`} className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm">
-                          Scheda
-                        </Link>
-                        <a href={sw.website} target="_blank" className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-blue-200 shadow-md">
-                          <ExternalLink size={18}/>
-                        </a>
-                      </div>
+                      <a 
+                        href={sw.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-bold text-sm shadow-md transition-all"
+                      >
+                        Vedi Sito <ExternalLink size={14}/>
+                      </a>
                     </td>
                   </tr>
                 ))}
@@ -164,7 +163,7 @@ export default function SoftwareList() {
         </div>
       </div>
 
-      {/* --- MODALE CONFRONTO DETTAGLIATO --- */}
+      {/* --- MODALE CONFRONTO COMPLETO --- */}
       {showCompare && (
         <div className="fixed inset-0 bg-white z-[100] overflow-y-auto animate-in fade-in duration-200">
           <div className="max-w-7xl mx-auto px-4 py-8">
@@ -182,10 +181,10 @@ export default function SoftwareList() {
               </button>
             </div>
 
-            {/* GRIGLIA CONFRONTO */}
+            {/* Matrice Confronto */}
             <div className="grid grid-cols-[200px_repeat(3,1fr)] gap-0 border border-gray-200 rounded-xl overflow-hidden shadow-xl">
               
-              {/* HEADER ROW: Nomi Software */}
+              {/* Riga Intestazione */}
               <div className="bg-slate-50 p-4 border-b border-r border-gray-200 font-bold text-slate-500 flex items-end pb-2">
                 Caratteristica
               </div>
@@ -194,21 +193,18 @@ export default function SoftwareList() {
                   <button onClick={() => toggleSelection(sw.id)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500">
                     <Trash2 size={16}/>
                   </button>
-                  <div className="font-extrabold text-lg text-slate-900 mb-1">{sw.name}</div>
+                  <Link href={`/software/${sw.id}`} className="font-extrabold text-lg text-slate-900 mb-1 hover:text-blue-600 hover:underline block">
+                    {sw.name}
+                  </Link>
                   <div className="text-blue-600 font-bold">{sw.price}</div>
-                  <div className="text-xs text-gray-500">{sw.paymentType}</div>
-                  <a href={sw.website} target="_blank" className="mt-3 block text-xs bg-blue-600 text-white py-1 rounded hover:bg-blue-700">
-                    Sito Web
-                  </a>
                 </div>
               ))}
-              {/* Filler per colonne vuote se < 3 */}
+              {/* Filler colonne vuote */}
               {[...Array(3 - comparisonData.length)].map((_, i) => (
                 <div key={i} className="bg-slate-50 border-b border-r border-gray-200 hidden md:block"></div>
               ))}
 
-              {/* --- GENERATORE RIGHE --- */}
-              {/* Funzione Helper per creare righe */}
+              {/* Generazione Righe per Categoria */}
               {[
                 { title: "HIGHLIGHTS", keys: ['giornale_lavori', 'pos_psc', 'computo_metrico', 'free_trial'] },
                 { title: "AMMINISTRAZIONE", keys: ['conformita_ita', 'fatturazione_elettronica', 'firma_digitale', 'integrazione_sdi', 'export_contabilita'] },
@@ -217,12 +213,10 @@ export default function SoftwareList() {
                 { title: "SUPPORTO", keys: ['interfaccia_italiano', 'supporto_telefono', 'supporto_chat'] }
               ].map((category) => (
                 <React.Fragment key={category.title}>
-                  {/* Intestazione Categoria */}
                   <div className="col-span-4 bg-gray-100 p-2 text-xs font-bold text-gray-500 uppercase tracking-widest pl-4 border-b border-gray-200">
                     {category.title}
                   </div>
                   
-                  {/* Righe Feature */}
                   {category.keys.map((key) => (
                     <React.Fragment key={key}>
                       <div className="p-3 border-b border-r border-gray-100 text-sm font-medium text-slate-700 flex items-center bg-white">
@@ -230,7 +224,7 @@ export default function SoftwareList() {
                       </div>
                       {comparisonData.map(sw => (
                         <div key={`${sw.id}-${key}`} className="p-3 border-b border-r border-gray-100 text-center flex items-center justify-center bg-white">
-                          {/* @ts-ignore - Accesso dinamico alle feature */}
+                          {/* @ts-ignore */}
                           {sw.features[key] ? (
                             <Check size={20} className="text-green-500" />
                           ) : (
@@ -238,7 +232,6 @@ export default function SoftwareList() {
                           )}
                         </div>
                       ))}
-                      {/* Filler colonne vuote */}
                       {[...Array(3 - comparisonData.length)].map((_, i) => (
                         <div key={i} className="bg-white border-b border-r border-gray-100 hidden md:block"></div>
                       ))}
@@ -246,7 +239,6 @@ export default function SoftwareList() {
                   ))}
                 </React.Fragment>
               ))}
-
             </div>
           </div>
         </div>

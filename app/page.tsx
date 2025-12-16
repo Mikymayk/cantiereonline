@@ -40,7 +40,7 @@ export default function Home() {
           </h2>
         </section>
 
-        {/* --- COMPONENTE CLIENT: RICERCA + TABELLA + MODALE --- */}
+        {/* --- LISTA E COMPARATORE (CLIENT COMPONENT) --- */}
         <SoftwareList />
 
         {/* --- SEZIONE BLOG --- */}
@@ -93,6 +93,12 @@ export default function Home() {
                   </div>
                 </Link>
               ))}
+              
+              {recentPosts.length === 0 && (
+                 <div className="col-span-2 text-center text-gray-400 py-10 bg-white rounded-2xl border border-dashed">
+                   Presto in arrivo nuove guide...
+                 </div>
+              )}
             </div>
 
             <div className="mt-8 text-center md:hidden">
@@ -100,6 +106,7 @@ export default function Home() {
                 Vedi tutti gli articoli <ArrowRight size={18} />
               </Link>
             </div>
+
           </div>
         </section>
 
