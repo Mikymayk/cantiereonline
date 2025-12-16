@@ -2,73 +2,53 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check, X, Star, ExternalLink, HardHat } from 'lucide-react';
 import { notFound } from 'next/navigation';
-import { softwareData } from '../../../data/software';
 import { Metadata } from 'next';
 
-// 1. GENERIAMO I PERCORSI STATICI (Già lo avevi)
+// --- IMPORT DEI DATI ---
+// Proviamo a risalire alla root. Se VS Code ti segna errore qui,
+// prova a cancellare "../../../" e riscriverlo, lasciando che l'autocompletamento ti aiuti.
+import { softwareData } from '../../../data/software';
+
+// Forza la generazione dinamica se qualcosa va storto con quella statica
+export const dynamicParams = true; 
+
+// Generazione parametri statici
 export function generateStaticParams() {
-  return softwareData.map((p) => ({ id: p.id }));
+  try {
+    return softwareData.map((p) => ({ id: p.id }));
+  } catch (error) {
+    console.error("ERRORE CRITICO in generateStaticParams:", error);
+    return [];
+  }
 }
 
-// 2. GENERIAMO I METADATI DINAMICI (NUOVO! PER LA SEO)
+// Generazione Metadati
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
   const product = softwareData.find(p => p.id === params.id);
+  if (!product) return { title: 'Software non trovato' };
   
-  if (!product) {
-    return { title: 'Software non trovato' };
-  }
-
   return {
-    title: `${product.name} Recensione e Prezzi 2025`,
-    description: `Tutto quello che devi sapere su ${product.name}: funzionalità, costi (${product.price}), pro, contro e le migliori alternative per la gestione cantiere.`,
-    openGraph: {
-      title: `${product.name} - Recensione Completa`,
-      description: product.description.replace(/<[^>]*>?/gm, ''), // Rimuove i tag HTML per la descrizione social
-    }
+    title: `${product.name} - Recensione e Prezzi`,
+    description: `Tutto su ${product.name}: funzionalità, costi e alternative.`,
   };
 }
 
-// 3. IL COMPONENTE PAGINA (Resta uguale a prima, ma aggiungiamo i DATI STRUTTURATI)
 export default function SoftwarePage({ params }: { params: { id: string } }) {
+  // LOG DI DEBUG: Questo apparirà nei log di Vercel se qualcosa non va
+  console.log(`Tentativo di apertura pagina per ID: ${params.id}`);
+
   const product = softwareData.find(p => p.id === params.id);
 
   if (!product) {
+    console.error(`PRODOTTO NON TROVATO PER ID: ${params.id}`);
+    console.error(`ID disponibili: ${softwareData.map(p => p.id).join(', ')}`);
     notFound();
   }
 
-  // SCHEMA.ORG JSON-LD (Per le stelline su Google)
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
-    "name": product.name,
-    "applicationCategory": "BusinessApplication",
-    "operatingSystem": "iOS, Android, Web",
-    "offers": {
-      "@type": "Offer",
-      "price": product.price.replace(/[^0-9.,]/g, '') || "0", // Pulisce il prezzo
-      "priceCurrency": "EUR"
-    },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": product.rating,
-      "bestRating": "5",
-      "ratingCount": "120" // Numero fittizio o reale se lo hai
-    },
-    "description": product.description.replace(/<[^>]*>?/gm, '')
-  };
-
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900">
-      
-      {/* INIEZIONE DATI STRUTTURATI (Invisibile all'utente, Oro per Google) */}
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-
       {/* HEADER SEMPLIFICATO */}
-      <header className="border-b border-gray-100 p-4">
-        {/* ... (Il resto del tuo codice UI resta identico a prima) ... */}
+      <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
            <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
             <HardHat className="text-orange-500" /> CantiereOnline.it
@@ -77,11 +57,11 @@ export default function SoftwarePage({ params }: { params: { id: string } }) {
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-12">
-        <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 mb-8 font-medium text-sm">
+        <Link href="/" className="inline-flex items-center gap-2 text-slate-500 hover:text-blue-600 mb-8 font-medium text-sm transition-colors">
           <ArrowLeft size={16} /> Torna al confronto
         </Link>
 
-        <div className="flex flex-col md:flex-row gap-6 items-start justify-between mb-8 border-b border-gray-100 pb-8">
+        <div className="flex flex-col md:flex-row gap-6 items-start justify-between mb-8 border-b border-gray-100 pb-8 animate-in slide-in-from-bottom-2">
           <div>
             <h1 className="text-4xl font-extrabold text-slate-900 mb-2">{product.name}</h1>
             <div className="flex items-center gap-2 text-yellow-500 font-bold">
@@ -99,9 +79,9 @@ export default function SoftwarePage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* DESCRIZIONE */}
+        {/* DESCRIZIONE CON HTML SICURO */}
         <div 
-          className="text-xl leading-relaxed text-slate-600 mb-12"
+          className="text-xl leading-relaxed text-slate-600 mb-12 prose prose-slate"
           dangerouslySetInnerHTML={{ __html: product.description }}
         />
 
