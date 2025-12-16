@@ -1,13 +1,28 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import CookieBanner from "../components/CookieBanner";
+import CookieBanner from "@/components/CookieBanner"; 
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CantiereOnline.it | Software per Edilizia",
-  description: "Il comparatore N.1 in Italia per software edili e gestione cantieri.",
+  title: {
+    default: "CantiereOnline.it | I Migliori Software per Edilizia e Cantieri (2025)",
+    template: "%s | CantiereOnline.it"
+  },
+  description: "Confronto indipendente dei migliori software gestionali per cantiere, computo metrico, POS e sicurezza. Scopri prezzi, recensioni e alternative.",
+  keywords: ["software cantiere", "gestionale edilizia", "app cantiere", "computo metrico", "giornale dei lavori digitale", "confronto software edili"],
+  authors: [{ name: "ClusterClups SRL" }],
+  creator: "ClusterClups SRL",
+  publisher: "ClusterClups SRL",
+  openGraph: {
+    title: "CantiereOnline.it - Scegli il software giusto",
+    description: "Confronta prezzi e funzionalità dei migliori software per l'edilizia.",
+    url: "https://www.cantiereonline.it",
+    siteName: "CantiereOnline.it",
+    locale: "it_IT",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -18,17 +33,9 @@ export default function RootLayout({
   return (
     <html lang="it">
       <body className={inter.className}>
-        {/* Il noscript può restare, si attiva solo se non c'è JS */}
-        <noscript>
-          <iframe 
-            src="https://www.googletagmanager.com/ns.html?id=GTM-WHFPC3L4"
-            height="0" 
-            width="0" 
-            style={{ display: 'none', visibility: 'hidden' }}
-          />
-        </noscript>
-
         {children}
+        
+        {/* 2. INSERIAMO IL BANNER QUI IN FONDO */}
         <CookieBanner />
       </body>
     </html>
