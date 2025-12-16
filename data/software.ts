@@ -8,41 +8,30 @@ export interface Software {
   rating: number;
   reviews: string;
   website: string;
-  
-  // Questa descrizione ora conterrà HTML per il grassetto
   description: string;
   pros: string[];
   cons: string[];
 
   features: {
-    // --- HIGHLIGHTS ---
     giornale_lavori: boolean;
     pos_psc: boolean;
     computo_metrico: boolean;
     free_trial: boolean;
-
-    // --- AMMINISTRAZIONE ---
     conformita_ita: boolean;
     fatturazione_elettronica: boolean;
     firma_digitale: boolean;
     integrazione_sdi: boolean;
     export_contabilita: boolean;
-
-    // --- TECNICO ---
     funziona_offline: boolean;
     bim_viewer: boolean;
     foto_360: boolean;
     gps_staff: boolean;
     app_ios: boolean;
     app_android: boolean;
-
-    // --- COLLABORAZIONE ---
     chat_interna: boolean;
     notifiche_push: boolean;
     utenti_illimitati: boolean;
     inviti_esterni: boolean;
-
-    // --- SUPPORTO ---
     interfaccia_italiano: boolean;
     supporto_telefono: boolean;
     supporto_chat: boolean;
@@ -59,7 +48,7 @@ export const softwareData: Software[] = [
     rating: 4.8,
     reviews: 'Eccellente',
     website: 'https://www.planradar.com/it/?ref=cantiereonline',
-    description: "<strong>PlanRadar</strong> è la soluzione leader per la <strong>documentazione digitale</strong> e gestione difetti. Appunta note, foto e memo vocali su planimetrie digitali via app. Ideale per creare <strong>report rapidi</strong>, PlanRadar elimina il lavoro amministrativo ripetitivo post-sopralluogo.",
+    description: "La soluzione leader per la <strong>documentazione digitale</strong> e gestione difetti. Appunta note, foto e memo vocali su planimetrie via app per creare <strong>report rapidi</strong>, eliminando il lavoro amministrativo post-sopralluogo.",
     pros: ["Interfaccia intuitiva su Tablet", "Report PDF istantanei", "Funziona offline perfettamente"],
     cons: ["Costoso per piccoli team", "Manca la contabilità avanzata"],
     features: {
@@ -78,7 +67,7 @@ export const softwareData: Software[] = [
     rating: 4.6,
     reviews: 'Molto Buono',
     website: 'https://www.fieldwire.com/?ref=cantiereonline',
-    description: "Scegli <strong>Fieldwire</strong> per un <strong>jobsite management</strong> che connette ufficio e campo. La piattaforma eccelle nel <strong>coordinamento squadre</strong> e visualizzazione di disegni tecnici su mobile. Con Fieldwire ottimizzi task e avanzamento lavori in <strong>tempo reale</strong>.",
+    description: "Connette ufficio e campo per un <strong>jobsite management</strong> ottimale. Eccelle nel <strong>coordinamento squadre</strong> e visualizzazione disegni su mobile, ottimizzando task e avanzamento lavori in <strong>tempo reale</strong>.",
     pros: ["Versione gratuita a vita", "Visualizzatore tavole velocissimo", "Gestione task eccellente"],
     cons: ["Normativa italiana assente", "Supporto in inglese prevalente"],
     features: {
@@ -97,7 +86,7 @@ export const softwareData: Software[] = [
     rating: 4.5,
     reviews: 'Ottimo',
     website: 'https://www.mela.work/?ref=cantiereonline',
-    description: "<strong>Mela Works</strong> ti fa gestire il cantiere con la <strong>semplicità di una chat</strong>. Traccia attività, scambia <strong>foto geolocalizzate</strong> e compila il <strong>Giornale dei Lavori</strong> in automatico. Usa Mela Works per verbali e rapportini legali senza formazione complessa.",
+    description: "Gestisci il cantiere con la <strong>semplicità di una chat</strong>. Traccia attività, scambia <strong>foto geolocalizzate</strong> e compila il <strong>Giornale dei Lavori</strong> in automatico per verbali e rapportini legali.",
     pros: ["Facile come usare WhatsApp", "Giornale Lavori Automatico", "Supporto italiano eccezionale"],
     cons: ["Meno adatto per grandi appalti", "Funzioni BIM limitate"],
     features: {
@@ -116,7 +105,7 @@ export const softwareData: Software[] = [
     rating: 4.7,
     reviews: 'Leader',
     website: 'https://www.acca.it/?ref=cantiereonline',
-    description: "<strong>Primus Online</strong> porta lo standard del <strong>computo metrico estimativo</strong> nel <strong>100% Cloud</strong>. Redigi <strong>preventivi collaborativi</strong> e accedi ai prezzari edili senza installazioni. Primus Online offre potenza e mobilità totale per la contabilità lavori.",
+    description: "Porta lo standard del <strong>computo metrico estimativo</strong> nel <strong>100% Cloud</strong>. Redigi <strong>preventivi collaborativi</strong> e accedi ai prezzari edili senza installazioni, con potenza e mobilità totale.",
     pros: ["Standard assoluto in Italia", "Banche dati prezziari integrate", "Computo metrico perfetto"],
     cons: ["Interfaccia datata", "Curva di apprendimento ripida"],
     features: {
@@ -135,7 +124,7 @@ export const softwareData: Software[] = [
     rating: 4.4,
     reviews: 'Enterprise',
     website: 'https://www.teamsystem.com/construction?utm_source=cantiereonline',
-    description: "<strong>TeamSystem CPM</strong> è il gestionale evoluto per il <strong>Construction Project Management</strong> di General Contractor e grandi imprese. Integra controllo finanziario e <strong>BIM 4D/5D</strong>. TeamSystem CPM gestisce l'intero ciclo commessa per il massimo controllo dei margini.",
+    description: "Gestionale evoluto per il <strong>Construction Project Management</strong> di General Contractor e grandi imprese. Integra controllo finanziario e <strong>BIM 4D/5D</strong> gestendo l'intero ciclo commessa.",
     pros: ["Suite completa Enterprise", "Potentissimo per grandi imprese", "Gestione finanziaria avanzata"],
     cons: ["Prezzi non pubblici", "Complesso da configurare"],
     features: {

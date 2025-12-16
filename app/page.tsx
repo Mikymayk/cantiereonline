@@ -8,7 +8,6 @@ import { softwareData } from '../data/software';
 // --- CONFIGURAZIONE VISUALIZZAZIONE ---
 
 const mainColumns = [
-  // NUOVA COLONNA RICHIESTA
   { id: 'conformita_ita', label: 'Normativa Italia', tooltip: 'Piena conformità a leggi italiane (POS/PSC/Fattura)' },
   { id: 'giornale_lavori', label: 'Giornale Lavori', tooltip: 'Compilazione digitale del giornale dei lavori' },
   { id: 'pos_psc', label: 'Gestione POS', tooltip: 'Redazione Piani Operativi di Sicurezza e PSC' },
@@ -150,12 +149,12 @@ export default function Home() {
                         />
                       </td>
 
-                      {/* CELLA PRODOTTO: NOME + PREZZO + DESCRIZIONE + CTA */}
+                      {/* CELLA PRODOTTO */}
                       <td className="p-4 align-top bg-white">
                         <div className="flex flex-col h-full justify-between gap-4">
                           
                           <div>
-                            {/* Header Riga: Nome e Prezzo */}
+                            {/* Header Riga */}
                             <div className="flex justify-between items-start gap-2 mb-3">
                               <div>
                                 <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
@@ -174,14 +173,13 @@ export default function Home() {
                               </div>
                             </div>
 
-                            {/* DESCRIZIONE (Inserita qui come richiesto) */}
+                            {/* DESCRIZIONE (Testo più grande e spaziato) */}
                             <div 
-                              className="text-xs text-slate-600 leading-relaxed mb-4 line-clamp-4"
+                              className="text-sm text-slate-600 leading-snug mb-4"
                               dangerouslySetInnerHTML={{ __html: product.description }} 
                             />
                           </div>
 
-                          {/* Pulsante Blu */}
                           <a 
                             href={product.website} 
                             target="_blank" 
@@ -193,15 +191,16 @@ export default function Home() {
                         </div>
                       </td>
 
+                      {/* FEATURES ALLINEATE AL CENTRO */}
                       {mainColumns.map(col => (
-                        <td key={col.id} className="p-4 text-center align-top pt-8">
+                        <td key={col.id} className="p-4 text-center align-middle">
                           <div className="flex justify-center">
                             {product.features[col.id as keyof typeof product.features] ? (
-                              <div className="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
+                              <div className="w-8 h-8 rounded-full bg-green-200 text-green-800 flex items-center justify-center">
                                 <Check size={18} strokeWidth={3} />
                               </div>
                             ) : (
-                              <div className="w-8 h-8 rounded-full bg-gray-50 text-gray-300 flex items-center justify-center">
+                              <div className="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center">
                                 <X size={18} strokeWidth={2} />
                               </div>
                             )}
@@ -235,7 +234,6 @@ export default function Home() {
                 
                 <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
                   
-                  {/* HEADER DARK MODE (Senza Descrizione) */}
                   <thead>
                     <tr className="bg-slate-900 border-b border-slate-700">
                       
