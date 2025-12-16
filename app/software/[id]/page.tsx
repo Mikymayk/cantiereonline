@@ -57,7 +57,7 @@ export function generateStaticParams() {
 }
 
 export default function SoftwarePage({ params }: { params: { id: string } }) {
-  const product = productsDB[params.id];
+  const product = softwareData.find(p => p.id === params.id);
 
   if (!product) {
     notFound();
