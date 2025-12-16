@@ -1,27 +1,48 @@
-"use client"; // Questo gestisce l'interattività (Search)
+"use client";
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Search, Check, Star, ExternalLink, ArrowRight, ChevronRight } from 'lucide-react';
+import { 
+  Search, Check, X, Star, ExternalLink, ArrowRight, 
+  LayoutList, Scale, Info, ChevronDown, Trash2 
+} from 'lucide-react';
 import { softwareData } from '@/data/software';
 
 export default function SoftwareList() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [showCompare, setShowCompare] = useState(false);
 
+  // Filtra i software
   const filteredSoftware = softwareData.filter(software => 
     software.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    software.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    software.pros.some(p => p.toLowerCase().includes(searchTerm.toLowerCase()))
+    software.description.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  // Gestione Selezione per confronto
+  const toggleSelection = (id: string) => {
+    if (selectedIds.includes(id)) {
+      setSelectedIds(selectedIds.filter(i => i !== id));
+    } else {
+      if (selectedIds.length < 3) {
+        setSelectedIds([...selectedIds, id]);
+      } else {
+        alert("Puoi confrontare massimo 3 software alla volta.");
+      }
+    }
+  };
+
+  // Dati dei software selezionati per il modale
+  const comparisonData = softwareData.filter(s => selectedIds.includes(s.id));
 
   return (
     <>
-      {/* BARRA DI RICERCA (Spostata qui dentro) */}
-      <section className="px-4 text-center w-full -mt-6 mb-12 relative z-10">
+      {/* --- BARRA DI RICERCA --- */}
+      <section className="px-4 text-center w-full -mt-6 mb-8 relative z-10">
          <div className="max-w-lg mx-auto relative">
             <input 
               type="text" 
-              placeholder="Cerca per nome (es. PlanRadar) o funzione (es. POS)" 
+              placeholder="Cerca software (es. PlanRadar, POS, Computo...)" 
               className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -30,105 +51,206 @@ export default function SoftwareList() {
           </div>
       </section>
 
-      {/* LISTA SOFTWARE */}
-      <div id="confronto" className="max-w-6xl mx-auto px-4 py-8">
-          
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="font-bold text-xl text-slate-800">
-            {filteredSoftware.length} Software Analizzati
+      {/* --- BARRA FLOTTANTE CONFRONTO (Appare se selezioni qualcosa) --- */}
+      {selectedIds.length > 0 && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-4 animate-in slide-in-from-bottom-4">
+          <span className="font-bold text-sm">{selectedIds.length} Selezionati</span>
+          <button 
+            onClick={() => setShowCompare(true)}
+            className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-1.5 rounded-full font-bold text-sm transition-colors flex items-center gap-2"
+          >
+            <Scale size={16}/> Confronta Ora
+          </button>
+          <button onClick={() => setSelectedIds([])} className="text-slate-400 hover:text-white">
+            <X size={18}/>
+          </button>
+        </div>
+      )}
+
+      {/* --- TABELLA PRINCIPALE --- */}
+      <div id="confronto" className="max-w-7xl mx-auto px-4 py-8">
+        
+        <div className="flex justify-between items-center mb-4">
+          <h3 className="font-bold text-xl text-slate-800 flex items-center gap-2">
+            <LayoutList size={20} className="text-blue-600"/> 
+            {filteredSoftware.length} Software Disponibili
           </h3>
+          <span className="text-sm text-gray-500 hidden md:inline">Seleziona le caselle per confrontare</span>
         </div>
 
-        <div className="grid gap-8">
-          {filteredSoftware.map((sw) => (
-            <div key={sw.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden relative group">
-              
-              {/* Badge Top Rated */}
-              {sw.rating >= 4.7 && (
-                <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-bl-xl z-10">
-                  TOP SCELTA
-                </div>
-              )}
-
-              <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8">
-                
-                {/* COLONNA 1: Info */}
-                <div className="md:w-1/4 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-100 pb-6 md:pb-0 md:pr-6">
-                  <div>
-                    <h3 className="text-2xl font-extrabold text-slate-900 mb-2">{sw.name}</h3>
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex text-yellow-400">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={16} fill={i < Math.floor(sw.rating) ? "currentColor" : "none"} className={i < Math.floor(sw.rating) ? "" : "text-gray-300"} />
-                          ))}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                  <th className="p-4 w-12 text-center">Cfr.</th>
+                  <th className="p-4">Software</th>
+                  <th className="p-4 w-32">Prezzo</th>
+                  <th className="p-4 w-24 text-center hidden md:table-cell">Giornale</th>
+                  <th className="p-4 w-24 text-center hidden md:table-cell">POS/PSC</th>
+                  <th className="p-4 w-24 text-center hidden md:table-cell">Computo</th>
+                  <th className="p-4 w-40 text-right">Azioni</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredSoftware.map((sw) => (
+                  <tr key={sw.id} className={`hover:bg-blue-50/30 transition-colors ${selectedIds.includes(sw.id) ? 'bg-blue-50' : ''}`}>
+                    <td className="p-4 text-center">
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        checked={selectedIds.includes(sw.id)}
+                        onChange={() => toggleSelection(sw.id)}
+                      />
+                    </td>
+                    <td className="p-4">
+                      <div className="flex flex-col">
+                        <Link href={`/software/${sw.id}`} className="font-bold text-slate-900 text-lg hover:text-blue-600">
+                          {sw.name}
+                        </Link>
+                        <div className="flex items-center gap-1 text-yellow-500 text-xs mt-1">
+                          <Star size={12} fill="currentColor"/> 
+                          <span className="font-bold">{sw.rating}</span> 
+                          <span className="text-gray-400 font-normal">({sw.reviews})</span>
+                        </div>
                       </div>
-                      <span className="text-sm font-bold text-slate-600">{sw.rating}</span>
-                    </div>
-                    <div className="text-3xl font-bold text-blue-600 mb-1">{sw.price}</div>
-                    <div className="text-sm text-gray-500 mb-4">{sw.paymentType}</div>
-                  </div>
-                  
-                  <div className="flex flex-col gap-3 mt-auto">
-                    <Link href={`/software/${sw.id}`} className="w-full bg-blue-50 text-blue-700 hover:bg-blue-100 py-3 rounded-lg font-bold text-center transition-colors flex items-center justify-center gap-2">
-                      Scheda Completa <ArrowRight size={16}/>
-                    </Link>
-                    <a href={sw.website} target="_blank" rel="noopener noreferrer" className="w-full border border-gray-200 text-gray-600 hover:bg-gray-50 py-3 rounded-lg font-bold text-center transition-colors flex items-center justify-center gap-2 text-sm">
-                      Sito Ufficiale <ExternalLink size={14}/>
-                    </a>
-                  </div>
-                </div>
-
-                {/* COLONNA 2: Dettagli */}
-                <div className="md:w-3/4 flex flex-col justify-between">
-                  <div className="mb-6">
-                      <p className="text-slate-600 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: sw.description }}></p>
-                  </div>
-
-                  <div className="grid md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded-xl border border-gray-100">
-                    <div>
-                      <h4 className="font-bold text-sm text-slate-900 uppercase tracking-wide mb-3 flex items-center gap-2">
-                        <Check size={16} className="text-green-500"/> I Punti di Forza
-                      </h4>
-                      <ul className="space-y-2">
-                        {sw.pros.slice(0, 3).map((pro, idx) => (
-                          <li key={idx} className="text-sm text-slate-700 flex items-start gap-2">
-                            <span className="text-green-500 font-bold mt-0.5">✓</span> {pro}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    </td>
+                    <td className="p-4">
+                      <div className="font-bold text-slate-700">{sw.price}</div>
+                      <div className="text-xs text-gray-400">{sw.paymentType}</div>
+                    </td>
                     
-                    <div className="mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-gray-200">
-                      <h4 className="font-bold text-sm text-slate-900 uppercase tracking-wide mb-3">Funzioni Chiave</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {sw.features.giornale_lavori && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Giornale Lavori</span>}
-                        {sw.features.pos_psc && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Sicurezza POS</span>}
-                        {sw.features.computo_metrico && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Computo</span>}
-                        {sw.features.bim_viewer && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">BIM Viewer</span>}
-                        {sw.features.funziona_offline && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Offline</span>}
+                    {/* COLONNE FEATURE RAPIDE */}
+                    <td className="p-4 text-center hidden md:table-cell">
+                      {sw.features.giornale_lavori ? 
+                        <Check size={20} className="mx-auto text-green-500"/> : 
+                        <span className="text-gray-200 text-2xl">•</span>
+                      }
+                    </td>
+                    <td className="p-4 text-center hidden md:table-cell">
+                      {sw.features.pos_psc ? 
+                        <Check size={20} className="mx-auto text-green-500"/> : 
+                        <span className="text-gray-200 text-2xl">•</span>
+                      }
+                    </td>
+                    <td className="p-4 text-center hidden md:table-cell">
+                      {sw.features.computo_metrico ? 
+                        <Check size={20} className="mx-auto text-green-500"/> : 
+                        <span className="text-gray-200 text-2xl">•</span>
+                      }
+                    </td>
+
+                    <td className="p-4 text-right">
+                      <div className="flex justify-end gap-2">
+                        <Link href={`/software/${sw.id}`} className="px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold text-gray-600 hover:border-blue-500 hover:text-blue-600 transition-all shadow-sm">
+                          Scheda
+                        </Link>
+                        <a href={sw.website} target="_blank" className="p-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-blue-200 shadow-md">
+                          <ExternalLink size={18}/>
+                        </a>
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 md:hidden">
-                      <Link href={`/software/${sw.id}`} className="text-blue-600 font-bold text-sm flex items-center gap-1">
-                        Leggi recensione completa <ChevronRight size={16} />
-                      </Link>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-          ))}
-
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          
           {filteredSoftware.length === 0 && (
-              <div className="text-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
-                <p className="text-xl text-gray-500 mb-2">Nessun software trovato per "{searchTerm}"</p>
-                <button onClick={() => setSearchTerm('')} className="text-blue-600 font-bold underline">Resetta filtri</button>
-              </div>
+            <div className="p-12 text-center text-gray-500">
+              Nessun risultato per "{searchTerm}"
+            </div>
           )}
         </div>
       </div>
+
+      {/* --- MODALE CONFRONTO DETTAGLIATO --- */}
+      {showCompare && (
+        <div className="fixed inset-0 bg-white z-[100] overflow-y-auto animate-in fade-in duration-200">
+          <div className="max-w-7xl mx-auto px-4 py-8">
+            
+            {/* Header Modale */}
+            <div className="flex justify-between items-center mb-8 sticky top-0 bg-white/95 backdrop-blur py-4 border-b border-gray-100 z-10">
+              <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                <Scale className="text-blue-600"/> Confronto Dettagliato
+              </h2>
+              <button 
+                onClick={() => setShowCompare(false)}
+                className="bg-gray-100 hover:bg-gray-200 text-slate-700 px-4 py-2 rounded-lg font-bold flex items-center gap-2"
+              >
+                <X size={20}/> Chiudi
+              </button>
+            </div>
+
+            {/* GRIGLIA CONFRONTO */}
+            <div className="grid grid-cols-[200px_repeat(3,1fr)] gap-0 border border-gray-200 rounded-xl overflow-hidden shadow-xl">
+              
+              {/* HEADER ROW: Nomi Software */}
+              <div className="bg-slate-50 p-4 border-b border-r border-gray-200 font-bold text-slate-500 flex items-end pb-2">
+                Caratteristica
+              </div>
+              {comparisonData.map(sw => (
+                <div key={sw.id} className="bg-slate-50 p-4 border-b border-r border-gray-200 text-center relative group">
+                  <button onClick={() => toggleSelection(sw.id)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500">
+                    <Trash2 size={16}/>
+                  </button>
+                  <div className="font-extrabold text-lg text-slate-900 mb-1">{sw.name}</div>
+                  <div className="text-blue-600 font-bold">{sw.price}</div>
+                  <div className="text-xs text-gray-500">{sw.paymentType}</div>
+                  <a href={sw.website} target="_blank" className="mt-3 block text-xs bg-blue-600 text-white py-1 rounded hover:bg-blue-700">
+                    Sito Web
+                  </a>
+                </div>
+              ))}
+              {/* Filler per colonne vuote se < 3 */}
+              {[...Array(3 - comparisonData.length)].map((_, i) => (
+                <div key={i} className="bg-slate-50 border-b border-r border-gray-200 hidden md:block"></div>
+              ))}
+
+              {/* --- GENERATORE RIGHE --- */}
+              {/* Funzione Helper per creare righe */}
+              {[
+                { title: "HIGHLIGHTS", keys: ['giornale_lavori', 'pos_psc', 'computo_metrico', 'free_trial'] },
+                { title: "AMMINISTRAZIONE", keys: ['conformita_ita', 'fatturazione_elettronica', 'firma_digitale', 'integrazione_sdi', 'export_contabilita'] },
+                { title: "TECNICO & CAMPO", keys: ['funziona_offline', 'bim_viewer', 'foto_360', 'gps_staff', 'app_ios', 'app_android'] },
+                { title: "COLLABORAZIONE", keys: ['chat_interna', 'notifiche_push', 'utenti_illimitati', 'inviti_esterni'] },
+                { title: "SUPPORTO", keys: ['interfaccia_italiano', 'supporto_telefono', 'supporto_chat'] }
+              ].map((category) => (
+                <React.Fragment key={category.title}>
+                  {/* Intestazione Categoria */}
+                  <div className="col-span-4 bg-gray-100 p-2 text-xs font-bold text-gray-500 uppercase tracking-widest pl-4 border-b border-gray-200">
+                    {category.title}
+                  </div>
+                  
+                  {/* Righe Feature */}
+                  {category.keys.map((key) => (
+                    <React.Fragment key={key}>
+                      <div className="p-3 border-b border-r border-gray-100 text-sm font-medium text-slate-700 flex items-center bg-white">
+                        {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </div>
+                      {comparisonData.map(sw => (
+                        <div key={`${sw.id}-${key}`} className="p-3 border-b border-r border-gray-100 text-center flex items-center justify-center bg-white">
+                          {/* @ts-ignore - Accesso dinamico alle feature */}
+                          {sw.features[key] ? (
+                            <Check size={20} className="text-green-500" />
+                          ) : (
+                            <X size={20} className="text-red-300 opacity-50" />
+                          )}
+                        </div>
+                      ))}
+                      {/* Filler colonne vuote */}
+                      {[...Array(3 - comparisonData.length)].map((_, i) => (
+                        <div key={i} className="bg-white border-b border-r border-gray-100 hidden md:block"></div>
+                      ))}
+                    </React.Fragment>
+                  ))}
+                </React.Fragment>
+              ))}
+
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

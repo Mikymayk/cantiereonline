@@ -1,10 +1,9 @@
 import Link from 'next/link';
 import { HardHat, Menu, ArrowRight, Calendar, BookOpen } from 'lucide-react';
 import { getSortedPostsData } from '@/lib/posts';
-import SoftwareList from '@/components/SoftwareList'; // Importiamo il componente client
+import SoftwareList from '@/components/SoftwareList';
 
 export default function Home() {
-  // Ora possiamo usare fs qui perché siamo sul server!
   const allPosts = getSortedPostsData();
   const recentPosts = allPosts.slice(0, 2);
 
@@ -13,7 +12,7 @@ export default function Home() {
       
       {/* --- HEADER --- */}
       <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
-        <div className="max-w-6xl mx-auto flex items-center justify-between">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
             <HardHat className="text-orange-500" /> CantiereOnline.it
           </Link>
@@ -41,10 +40,10 @@ export default function Home() {
           </h2>
         </section>
 
-        {/* --- COMPONENTE CLIENT: BARRA DI RICERCA + LISTA --- */}
+        {/* --- COMPONENTE CLIENT: RICERCA + TABELLA + MODALE --- */}
         <SoftwareList />
 
-        {/* --- SEZIONE BLOG PREVIEW --- */}
+        {/* --- SEZIONE BLOG --- */}
         <section className="bg-slate-50 py-16 border-t border-gray-200 mt-12">
           <div className="max-w-6xl mx-auto px-4">
             
@@ -65,16 +64,15 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-8">
               {recentPosts.map((post) => (
                 <Link key={post.id} href={`/blog/${post.id}`} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col md:flex-row h-full">
-                  {/* Immagine */}
                   <div className="md:w-2/5 h-48 md:h-auto bg-gray-200 relative overflow-hidden">
-                     <img 
-                       src={post.coverImage} 
-                       alt={post.title} 
-                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                     />
+                     {post.coverImage && (
+                       <img 
+                         src={post.coverImage} 
+                         alt={post.title} 
+                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                       />
+                     )}
                   </div>
-                  
-                  {/* Contenuto */}
                   <div className="p-6 md:w-3/5 flex flex-col justify-between">
                     <div>
                       <div className="flex items-center gap-2 text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">
@@ -95,22 +93,13 @@ export default function Home() {
                   </div>
                 </Link>
               ))}
-              
-              {/* Fallback se non ci sono post */}
-              {recentPosts.length === 0 && (
-                 <div className="col-span-2 text-center text-gray-400 py-10 bg-white rounded-2xl border border-dashed">
-                   Presto in arrivo nuove guide...
-                 </div>
-              )}
             </div>
 
-            {/* Link Mobile */}
             <div className="mt-8 text-center md:hidden">
               <Link href="/blog" className="inline-flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800">
                 Vedi tutti gli articoli <ArrowRight size={18} />
               </Link>
             </div>
-
           </div>
         </section>
 
