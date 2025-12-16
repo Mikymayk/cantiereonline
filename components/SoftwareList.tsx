@@ -52,8 +52,9 @@ export default function SoftwareList() {
     </div>
   );
 
-  // Helper per Intestazione Colonna con Tooltip (AGGIORNATO: APPARE SOTTO)
-  const HeaderWithTooltip = ({ label, tooltip }: { label: React.ReactNode, tooltip: string }) => (
+  // Helper per Intestazione Colonna con Tooltip (AGGIORNATO: GESTIONE BORDO DESTRO)
+  // Aggiunta prop "align" per decidere se centrare il tooltip o allinearlo a destra
+  const HeaderWithTooltip = ({ label, tooltip, align = "center" }: { label: React.ReactNode, tooltip: string, align?: "center" | "right" }) => (
     <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200 relative group align-middle">
       {/* Testo Centrato */}
       <span className="block mt-1">{label}</span>
@@ -64,10 +65,23 @@ export default function SoftwareList() {
       </div>
 
       {/* Tooltip Hover (Posizionato SOTTO) */}
-      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-48 bg-slate-800 text-white text-xs font-normal p-3 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal leading-snug">
+      <div className={`
+        absolute top-full mt-2 bg-slate-800 text-white text-xs font-normal p-2 rounded shadow-xl 
+        opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 
+        normal-case tracking-normal leading-snug
+        /* QUI LA LOGICA DI POSIZIONAMENTO E LARGHEZZA */
+        ${align === "right" 
+          ? "right-0 w-36 md:w-48"  // Se allineato a destra: agganciato al bordo destro (non esce)
+          : "left-1/2 -translate-x-1/2 w-40 md:w-48" // Se centrato: classico comportamento
+        }
+      `}>
         {tooltip}
-        {/* Freccina verso l'alto */}
-        <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-800"></div>
+        
+        {/* Freccina verso l'alto (si sposta in base all'allineamento del box) */}
+        <div className={`
+          absolute bottom-full border-4 border-transparent border-b-slate-800
+          ${align === "right" ? "right-2" : "left-1/2 -translate-x-1/2"}
+        `}></div>
       </div>
     </th>
   );
@@ -129,26 +143,31 @@ export default function SoftwareList() {
                   <th className="px-4 text-center w-12 border-r border-gray-200">CF</th>
                   <th className="px-6 py-3 w-[40%] border-r border-gray-200 align-middle">SOFTWARE & DETTAGLI</th>
                   
-                  {/* INTESTAZIONI CON TOOLTIP */}
+                  {/* LE PRIME 3 COLONNE HANNO ALLINEAMENTO CENTRALE (DEFAULT) */}
                   <HeaderWithTooltip 
                     label={<>NORMATIVA<br/>ITALIA</>} 
-                    tooltip="Il software rispetta le normative italiane vigenti (Codice Appalti, D.Lgs 81/08)." 
+                    tooltip="Rispetta Codice Appalti e D.Lgs 81/08." 
                   />
                   <HeaderWithTooltip 
                     label={<>GIORNALE<br/>LAVORI</>} 
-                    tooltip="Permette la compilazione digitale del Giornale dei Lavori e report giornalieri." 
+                    tooltip="Compilazione digitale del Giornale dei Lavori." 
                   />
                   <HeaderWithTooltip 
                     label={<>GESTIONE<br/>POS</>} 
-                    tooltip="Funzionalità specifiche per redigere o gestire il Piano Operativo di Sicurezza." 
+                    tooltip="Funzioni per redigere o gestire il POS." 
                   />
+                  
+                  {/* LE ULTIME 2 COLONNE HANNO ALLINEAMENTO DESTRO (align="right") 
+                      Così il tooltip si apre verso sinistra e non esce dallo schermo */}
                   <HeaderWithTooltip 
                     label={<>COMPUTO<br/>METRICO</>} 
-                    tooltip="Include strumenti per il computo metrico estimativo e la contabilità." 
+                    tooltip="Include strumenti per il computo metrico e la contabilità." 
+                    align="right"
                   />
                   <HeaderWithTooltip 
                     label={<>PROVA<br/>GRATUITA</>} 
-                    tooltip="Disponibile una prova gratuita o un piano 'Free' per testare il software." 
+                    tooltip="Disponibile prova gratuita o piano Free." 
+                    align="right"
                   />
                 </tr>
               </thead>
@@ -221,7 +240,7 @@ export default function SoftwareList() {
         </div>
       </div>
 
-      {/* --- MODALE CONFRONTO DETTAGLIATO --- */}
+      {/* --- MODALE CONFRONTO DETTAGLIATO (INVARIATO) --- */}
       {showCompare && (
         <div className="fixed inset-0 bg-white z-[100] overflow-y-auto animate-in fade-in duration-200">
           <div className="max-w-7xl mx-auto px-4 py-8">
