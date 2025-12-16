@@ -2,19 +2,21 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check, X, Star, ExternalLink, HardHat } from 'lucide-react';
 import { notFound } from 'next/navigation';
-// IMPORTANTE: Importiamo i dati dal cervello centrale
-// Nota: I "..." servono per risalire le cartelle fino alla root
+
+// --- IMPORTANTE: QUESTA È LA RIGA CHE MANCAVA ---
+// Stiamo importando i dati dalla cartella data che abbiamo creato prima
 import { softwareData } from '../../../data/software';
 
-// Generiamo le pagine statiche basandoci sui dati centrali
+// Generiamo le pagine statiche per ogni software presente nel database
 export function generateStaticParams() {
   return softwareData.map((p) => ({ id: p.id }));
 }
 
 export default function SoftwarePage({ params }: { params: { id: string } }) {
-  // Cerchiamo il software nel file unico
+  // Cerchiamo il software corrispondente all'ID nell'URL
   const product = softwareData.find(p => p.id === params.id);
 
+  // Se non lo troviamo (es. utente scrive un URL a caso), diamo errore 404
   if (!product) {
     notFound();
   }
