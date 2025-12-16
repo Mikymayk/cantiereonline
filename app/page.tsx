@@ -91,15 +91,16 @@ export default function Home() {
         </div>
       </header>
 
-      {/* HERO SECTION */}
+{/* HERO SECTION */}
       {!showDeepCompare && (
         <section className="bg-white pb-10 pt-12 px-4 text-center border-b border-gray-100 w-full">
-          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight max-w-4xl mx-auto leading-tight">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight max-w-4xl mx-auto leading-tight">
             Scegli il miglior software gestionale <br className="hidden md:block"/> per edilizia e cantieri
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-            Confronto indipendente aggiornato al 2025 su funzionalità, normativa POS/PSC e prezzi.
-          </p>
+          
+          <h2 className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-6 leading-relaxed font-normal">
+            Nel 2025, gestire un cantiere con carta e penna è un rischio. In questa guida confrontiamo i migliori software per l'edilizia in base a tre criteri: <strong className="text-slate-800 font-semibold">conformità alla legge italiana</strong>, <strong className="text-slate-800 font-semibold">facilità d'uso in mobilità</strong> e <strong className="text-slate-800 font-semibold">integrazione BIM</strong>.
+          </h2>
         </section>
       )}
 
