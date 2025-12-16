@@ -13,11 +13,22 @@ export default function SoftwareList() {
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  // Filtra i software
-  const filteredSoftware = softwareData.filter(software => 
-    software.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    software.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // --- LOGICA FILTRO POTENZIATA ---
+  const filteredSoftware = softwareData.filter(software => {
+    const term = searchTerm.toLowerCase();
+    
+    // 1. Cerca nel testo (Nome e Descrizione)
+    const matchesText = 
+      software.name.toLowerCase().includes(term) ||
+      software.description.toLowerCase().includes(term);
+
+    // 2. Cerca nelle funzionalità attive (es. cerca "ios", "offline", "bim")
+    const matchesFeature = Object.entries(software.features).some(([key, value]) => 
+      value === true && key.replace(/_/g, ' ').toLowerCase().includes(term)
+    );
+
+    return matchesText || matchesFeature;
+  });
 
   // Gestione Selezione Checkbox
   const toggleSelection = (id: string) => {
@@ -41,6 +52,26 @@ export default function SoftwareList() {
     </div>
   );
 
+  // Helper per Intestazione Colonna con Tooltip
+  const HeaderWithTooltip = ({ label, tooltip }: { label: React.ReactNode, tooltip: string }) => (
+    <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200 relative group align-middle">
+      {/* Testo Centrato */}
+      <span className="block mt-1">{label}</span>
+      
+      {/* Icona Info in Alto a Destra */}
+      <div className="absolute top-1 right-1 text-gray-300 hover:text-blue-500 cursor-help">
+        <Info size={14} />
+      </div>
+
+      {/* Tooltip Hover */}
+      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-slate-800 text-white text-xs font-normal p-3 rounded shadow-xl opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 normal-case tracking-normal leading-snug">
+        {tooltip}
+        {/* Freccina */}
+        <div className="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-slate-800"></div>
+      </div>
+    </th>
+  );
+
   return (
     <>
       {/* --- BARRA DI RICERCA --- */}
@@ -48,7 +79,7 @@ export default function SoftwareList() {
          <div className="max-w-lg mx-auto relative">
             <input 
               type="text" 
-              placeholder="Cerca software (es. PlanRadar, POS, Computo...)" 
+              placeholder="Cerca software (es. PlanRadar, IOS, Offline...)" 
               className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg transition-all"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -96,12 +127,29 @@ export default function SoftwareList() {
               <thead>
                 <tr className="bg-gray-100 text-sm font-extrabold text-slate-800 uppercase tracking-wide border-b-2 border-gray-300 h-16">
                   <th className="px-4 text-center w-12 border-r border-gray-200">CF</th>
-                  <th className="px-6 py-3 w-[40%] border-r border-gray-200">SOFTWARE & DETTAGLI</th>
-                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">NORMATIVA<br/>ITALIA <Info size={14} className="inline text-gray-400 ml-1"/></th>
-                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">GIORNALE<br/>LAVORI <Info size={14} className="inline text-gray-400 ml-1"/></th>
-                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">GESTIONE<br/>POS <Info size={14} className="inline text-gray-400 ml-1"/></th>
-                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">COMPUTO<br/>METRICO <Info size={14} className="inline text-gray-400 ml-1"/></th>
-                  <th className="px-2 py-3 text-center w-[12%] leading-tight">PROVA<br/>GRATUITA <Info size={14} className="inline text-gray-400 ml-1"/></th>
+                  <th className="px-6 py-3 w-[40%] border-r border-gray-200 align-middle">SOFTWARE & DETTAGLI</th>
+                  
+                  {/* INTESTAZIONI CON TOOLTIP */}
+                  <HeaderWithTooltip 
+                    label={<>NORMATIVA<br/>ITALIA</>} 
+                    tooltip="Il software rispetta le normative italiane vigenti (Codice Appalti, D.Lgs 81/08)." 
+                  />
+                  <HeaderWithTooltip 
+                    label={<>GIORNALE<br/>LAVORI</>} 
+                    tooltip="Permette la compilazione digitale del Giornale dei Lavori e report giornalieri." 
+                  />
+                  <HeaderWithTooltip 
+                    label={<>GESTIONE<br/>POS</>} 
+                    tooltip="Funzionalità specifiche per redigere o gestire il Piano Operativo di Sicurezza." 
+                  />
+                  <HeaderWithTooltip 
+                    label={<>COMPUTO<br/>METRICO</>} 
+                    tooltip="Include strumenti per il computo metrico estimativo e la contabilità." 
+                  />
+                  <HeaderWithTooltip 
+                    label={<>PROVA<br/>GRATUITA</>} 
+                    tooltip="Disponibile una prova gratuita o un piano 'Free' per testare il software." 
+                  />
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
@@ -141,10 +189,8 @@ export default function SoftwareList() {
                          <span className="text-xs font-bold text-slate-700">{sw.rating}</span>
                       </div>
 
-                      {/* DESCRIZIONE (Senza line-clamp) */}
                       <p className="text-sm text-gray-700 leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: sw.description }} />
 
-                      {/* BOTTONE BLU */}
                       <a 
                         href={sw.website} 
                         target="_blank" 
