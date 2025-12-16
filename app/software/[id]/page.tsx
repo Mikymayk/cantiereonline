@@ -3,51 +3,41 @@ import Link from 'next/link';
 import { ArrowLeft, Check, X, Star, ExternalLink, HardHat } from 'lucide-react';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-
-// --- IMPORT DEI DATI ---
-// Proviamo a risalire alla root. Se VS Code ti segna errore qui,
-// prova a cancellare "../../../" e riscriverlo, lasciando che l'autocompletamento ti aiuti.
 import { softwareData } from '../../../data/software';
 
-// Forza la generazione dinamica se qualcosa va storto con quella statica
-export const dynamicParams = true; 
+// --- TRUCCO PER SBLOCCARE ---
+// 1. Diciamo a Next.js che questa pagina è DINAMICA (niente cache di build)
+export const dynamic = 'force-dynamic';
+// 2. Rimuoviamo generateStaticParams per evitare che blocchi le pagine non in lista
 
-// Generazione parametri statici
-export function generateStaticParams() {
-  try {
-    return softwareData.map((p) => ({ id: p.id }));
-  } catch (error) {
-    console.error("ERRORE CRITICO in generateStaticParams:", error);
-    return [];
-  }
-}
-
-// Generazione Metadati
 export function generateMetadata({ params }: { params: { id: string } }): Metadata {
   const product = softwareData.find(p => p.id === params.id);
   if (!product) return { title: 'Software non trovato' };
   
   return {
-    title: `${product.name} - Recensione e Prezzi`,
-    description: `Tutto su ${product.name}: funzionalità, costi e alternative.`,
+    title: `${product.name} - Recensione, Prezzi e Funzionalità`,
+    description: `Analisi completa di ${product.name}. Prezzo: ${product.price}. Scopri i pro, i contro e se è adatto alla tua impresa edile.`,
   };
 }
 
 export default function SoftwarePage({ params }: { params: { id: string } }) {
-  // LOG DI DEBUG: Questo apparirà nei log di Vercel se qualcosa non va
-  console.log(`Tentativo di apertura pagina per ID: ${params.id}`);
-
+  // Cerchiamo il prodotto
   const product = softwareData.find(p => p.id === params.id);
 
+  // Se non esiste, 404
   if (!product) {
-    console.error(`PRODOTTO NON TROVATO PER ID: ${params.id}`);
-    console.error(`ID disponibili: ${softwareData.map(p => p.id).join(', ')}`);
-    notFound();
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
+        <h1 className="text-2xl font-bold mb-4">Software non trovato</h1>
+        <p className="mb-4">Non riusciamo a trovare l'ID: <span className="font-mono bg-gray-100 p-1">{params.id}</span></p>
+        <Link href="/" className="text-blue-600 underline">Torna alla Home</Link>
+      </div>
+    );
   }
 
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900">
-      {/* HEADER SEMPLIFICATO */}
+      {/* HEADER */}
       <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
            <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
@@ -79,7 +69,7 @@ export default function SoftwarePage({ params }: { params: { id: string } }) {
           </div>
         </div>
 
-        {/* DESCRIZIONE CON HTML SICURO */}
+        {/* DESCRIZIONE */}
         <div 
           className="text-xl leading-relaxed text-slate-600 mb-12 prose prose-slate"
           dangerouslySetInnerHTML={{ __html: product.description }}
