@@ -34,7 +34,7 @@ export default function SoftwareList() {
 
   const comparisonData = softwareData.filter(s => selectedIds.includes(s.id));
 
-  // Helper per renderizzare icone check/cross stile tabella
+  // Helper per renderizzare icone check/cross
   const StatusIcon = ({ active }: { active: boolean }) => (
     <div className={`flex items-center justify-center w-8 h-8 rounded-full mx-auto ${active ? 'bg-green-100 text-green-600' : 'bg-red-50 text-red-400'}`}>
       {active ? <Check size={18} strokeWidth={3} /> : <X size={18} strokeWidth={3} />}
@@ -73,7 +73,7 @@ export default function SoftwareList() {
         </div>
       )}
 
-      {/* --- TABELLA PRINCIPALE (STILE SCREENSHOT) --- */}
+      {/* --- TABELLA PRINCIPALE --- */}
       <div id="confronto" className="max-w-7xl mx-auto px-4 py-8">
         
         <div className="flex justify-between items-center mb-6">
@@ -85,77 +85,87 @@ export default function SoftwareList() {
         </div>
 
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-50 text-[11px] font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200 h-14">
-                <th className="px-4 text-center w-12">CF</th>
-                <th className="px-6 py-3 w-[40%]">SOFTWARE & DETTAGLI</th>
-                <th className="px-2 py-3 text-center w-[12%] leading-tight">NORMATIVA<br/>ITALIA <Info size={12} className="inline text-gray-400 ml-1"/></th>
-                <th className="px-2 py-3 text-center w-[12%] leading-tight">GIORNALE<br/>LAVORI <Info size={12} className="inline text-gray-400 ml-1"/></th>
-                <th className="px-2 py-3 text-center w-[12%] leading-tight">GESTIONE<br/>POS <Info size={12} className="inline text-gray-400 ml-1"/></th>
-                <th className="px-2 py-3 text-center w-[12%] leading-tight">COMPUTO<br/>METRICO <Info size={12} className="inline text-gray-400 ml-1"/></th>
-                <th className="px-2 py-3 text-center w-[12%] leading-tight">PROVA<br/>GRATUITA <Info size={12} className="inline text-gray-400 ml-1"/></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filteredSoftware.map((sw) => (
-                <tr key={sw.id} className={`hover:bg-blue-50/20 transition-colors ${selectedIds.includes(sw.id) ? 'bg-blue-50' : ''}`}>
-                  
-                  {/* CHECKBOX */}
-                  <td className="px-4 py-6 text-center align-top pt-8">
-                    <input 
-                      type="checkbox" 
-                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
-                      checked={selectedIds.includes(sw.id)}
-                      onChange={() => toggleSelection(sw.id)}
-                    />
-                  </td>
+          
+          {/* AVVISO MOBILE (SCROLL) */}
+          <div className="md:hidden bg-blue-50 text-blue-800 text-xs font-bold py-2 px-4 flex items-center gap-2 border-b border-blue-100">
+            👉 Scorri la tabella a destra per vedere tutti i dati
+          </div>
 
-                  {/* COLONNA PRINCIPALE (Nome, Prezzo, Descrizione, Bottone) */}
-                  <td className="px-6 py-8 align-top">
-                    <div className="flex justify-between items-start mb-2">
-                      <Link href={`/software/${sw.id}`} className="text-xl font-bold text-slate-900 hover:text-blue-600 hover:underline">
-                        {sw.name}
-                      </Link>
-                      <div className="text-right">
-                        <div className="text-xl font-bold text-slate-900">{sw.price}</div>
-                        <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">{sw.paymentType}</div>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1 mb-4">
-                       <div className="flex text-yellow-400">
-                          {[...Array(5)].map((_, i) => (
-                            <Star key={i} size={14} fill={i < Math.floor(sw.rating) ? "currentColor" : "none"} className={i < Math.floor(sw.rating) ? "" : "text-gray-300"} />
-                          ))}
-                       </div>
-                       <span className="text-xs font-bold text-slate-700">{sw.rating}</span>
-                    </div>
-
-                    {/* DESCRIZIONE (Ripristinata) */}
-                    <p className="text-sm text-gray-600 leading-relaxed mb-6 line-clamp-3" dangerouslySetInnerHTML={{ __html: sw.description }} />
-
-                    {/* BOTTONE BLU GRANDE */}
-                    <a 
-                      href={sw.website} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-md font-bold text-sm transition-colors shadow-sm"
-                    >
-                      Vedi Sito <ExternalLink size={14} className="inline ml-1 mb-0.5"/>
-                    </a>
-                  </td>
-
-                  {/* COLONNE FEATURE (Icone Centrate) */}
-                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.conformita_ita} /></td>
-                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.giornale_lavori} /></td>
-                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.pos_psc} /></td>
-                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.computo_metrico} /></td>
-                  <td className="align-middle text-center border-l border-gray-50"><StatusIcon active={sw.features.free_trial} /></td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-gray-100 text-sm font-extrabold text-slate-800 uppercase tracking-wide border-b-2 border-gray-300 h-16">
+                  <th className="px-4 text-center w-12 border-r border-gray-200">CF</th>
+                  <th className="px-6 py-3 w-[40%] border-r border-gray-200">SOFTWARE & DETTAGLI</th>
+                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">NORMATIVA<br/>ITALIA <Info size={14} className="inline text-gray-400 ml-1"/></th>
+                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">GIORNALE<br/>LAVORI <Info size={14} className="inline text-gray-400 ml-1"/></th>
+                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">GESTIONE<br/>POS <Info size={14} className="inline text-gray-400 ml-1"/></th>
+                  <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200">COMPUTO<br/>METRICO <Info size={14} className="inline text-gray-400 ml-1"/></th>
+                  <th className="px-2 py-3 text-center w-[12%] leading-tight">PROVA<br/>GRATUITA <Info size={14} className="inline text-gray-400 ml-1"/></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-200">
+                {filteredSoftware.map((sw) => (
+                  <tr key={sw.id} className={`transition-colors even:bg-slate-50 ${selectedIds.includes(sw.id) ? '!bg-blue-100 border-l-4 border-blue-600' : ''}`}>
+                    
+                    {/* CHECKBOX */}
+                    <td className="px-4 py-6 text-center align-top pt-8 border-r border-gray-200">
+                      <input 
+                        type="checkbox" 
+                        className="w-5 h-5 rounded border-gray-400 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                        checked={selectedIds.includes(sw.id)}
+                        onChange={() => toggleSelection(sw.id)}
+                      />
+                    </td>
+
+                    {/* COLONNA PRINCIPALE */}
+                    <td className="px-6 py-8 align-top border-r border-gray-200">
+                      <div className="flex justify-between items-start mb-2">
+                        <Link href={`/software/${sw.id}`} className="text-xl font-bold text-slate-900 hover:text-blue-600 hover:underline">
+                          {sw.name}
+                        </Link>
+                        <div className="text-right">
+                          <div className="text-xl font-bold text-slate-900">{sw.price}</div>
+                          <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">
+                            {sw.paymentType === '(Free)' ? '(Versione Free)' : sw.paymentType}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center gap-1 mb-4">
+                         <div className="flex text-yellow-400">
+                            {[...Array(5)].map((_, i) => (
+                              <Star key={i} size={14} fill={i < Math.floor(sw.rating) ? "currentColor" : "none"} className={i < Math.floor(sw.rating) ? "" : "text-gray-300"} />
+                            ))}
+                         </div>
+                         <span className="text-xs font-bold text-slate-700">{sw.rating}</span>
+                      </div>
+
+                      {/* DESCRIZIONE (Senza line-clamp) */}
+                      <p className="text-sm text-gray-700 leading-relaxed mb-6" dangerouslySetInnerHTML={{ __html: sw.description }} />
+
+                      {/* BOTTONE BLU */}
+                      <a 
+                        href={sw.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 rounded-md font-bold text-sm transition-colors shadow-sm"
+                      >
+                        Vedi Sito <ExternalLink size={14} className="inline ml-1 mb-0.5"/>
+                      </a>
+                    </td>
+
+                    {/* COLONNE FEATURE */}
+                    <td className="align-middle text-center border-r border-gray-200"><StatusIcon active={sw.features.conformita_ita} /></td>
+                    <td className="align-middle text-center border-r border-gray-200"><StatusIcon active={sw.features.giornale_lavori} /></td>
+                    <td className="align-middle text-center border-r border-gray-200"><StatusIcon active={sw.features.pos_psc} /></td>
+                    <td className="align-middle text-center border-r border-gray-200"><StatusIcon active={sw.features.computo_metrico} /></td>
+                    <td className="align-middle text-center"><StatusIcon active={sw.features.free_trial} /></td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
           
           {filteredSoftware.length === 0 && (
             <div className="p-12 text-center text-gray-500">
@@ -165,12 +175,11 @@ export default function SoftwareList() {
         </div>
       </div>
 
-      {/* --- MODALE CONFRONTO DETTAGLIATO (Fix Richiesti) --- */}
+      {/* --- MODALE CONFRONTO DETTAGLIATO --- */}
       {showCompare && (
         <div className="fixed inset-0 bg-white z-[100] overflow-y-auto animate-in fade-in duration-200">
           <div className="max-w-7xl mx-auto px-4 py-8">
             
-            {/* Header Modale */}
             <div className="flex justify-between items-center mb-8 sticky top-0 bg-white/95 backdrop-blur py-4 border-b border-gray-100 z-10">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                 <Scale className="text-blue-600"/> Confronto Dettagliato
@@ -183,10 +192,8 @@ export default function SoftwareList() {
               </button>
             </div>
 
-            {/* Matrice Confronto */}
             <div className="grid grid-cols-[200px_repeat(3,1fr)] gap-0 border border-gray-200 rounded-xl overflow-hidden shadow-xl">
               
-              {/* Riga Intestazione */}
               <div className="bg-slate-50 p-4 border-b border-r border-gray-200 font-bold text-slate-500 flex items-end pb-2">
                 Caratteristica
               </div>
@@ -197,17 +204,14 @@ export default function SoftwareList() {
                     <Trash2 size={16}/>
                   </button>
                   
-                  {/* Nome Software */}
                   <Link href={`/software/${sw.id}`} className="font-extrabold text-lg text-slate-900 mb-1 hover:text-blue-600 hover:underline block">
                     {sw.name}
                   </Link>
                   
-                  {/* Prezzo + Periodo (FIX: Aggiunto paymentType) */}
                   <div className="text-blue-600 font-bold mb-3">
-                    {sw.price} <span className="text-xs text-gray-500 font-normal">{sw.paymentType}</span>
+                    {sw.price} <span className="text-xs text-gray-500 font-normal">{sw.paymentType === '(Free)' ? '(Versione Free)' : sw.paymentType}</span>
                   </div>
 
-                  {/* Bottone Sito (FIX: Aggiunto bottone blu) */}
                   <a 
                     href={sw.website} 
                     target="_blank" 
@@ -218,12 +222,10 @@ export default function SoftwareList() {
                 </div>
               ))}
               
-              {/* Filler colonne vuote */}
               {[...Array(3 - comparisonData.length)].map((_, i) => (
                 <div key={i} className="bg-slate-50 border-b border-r border-gray-200 hidden md:block"></div>
               ))}
 
-              {/* Generazione Righe per Categoria */}
               {[
                 { title: "HIGHLIGHTS", keys: ['giornale_lavori', 'pos_psc', 'computo_metrico', 'free_trial'] },
                 { title: "AMMINISTRAZIONE", keys: ['conformita_ita', 'fatturazione_elettronica', 'firma_digitale', 'integrazione_sdi', 'export_contabilita'] },

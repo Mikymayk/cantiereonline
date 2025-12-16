@@ -40,7 +40,7 @@ export default function Home() {
           </h2>
         </section>
 
-        {/* --- LISTA E COMPARATORE (CLIENT COMPONENT) --- */}
+        {/* --- LISTA E COMPARATORE --- */}
         <SoftwareList />
 
         {/* --- SEZIONE BLOG --- */}
@@ -112,23 +112,42 @@ export default function Home() {
 
       </main>
 
-      {/* --- FOOTER --- */}
-      <footer className="bg-slate-900 text-slate-400 py-12">
-        <div className="max-w-6xl mx-auto px-4 text-center md:text-left">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div>
-               <div className="text-white font-bold text-xl flex items-center justify-center md:justify-start gap-2 mb-2">
+      {/* --- FOOTER AGGIORNATO --- */}
+      <footer className="bg-slate-900 text-slate-400 py-12 text-sm">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex flex-col md:flex-row justify-between gap-8">
+            
+            {/* Colonna Sinistra */}
+            <div className="md:w-1/2">
+               <div className="text-white font-bold text-xl flex items-center gap-2 mb-4">
                  <HardHat className="text-orange-500"/> CantiereOnline.it
                </div>
-               <p className="text-sm">Il punto di riferimento per il software edile in Italia.</p>
+               <p className="mb-4 leading-relaxed">
+                 Il punto di riferimento per i professionisti dell'edilizia. Confrontiamo in modo indipendente i migliori software per la gestione cantieri.
+               </p>
+               <div className="text-xs text-slate-500">
+                 Un progetto di <a href="https://www.clusterclups.com/" target="_blank" rel="nofollow noreferrer" className="hover:text-slate-300 transition-colors">ClusterClups srl</a> - P.IVA 10923621212
+               </div>
             </div>
-            <div className="flex gap-6 text-sm font-medium">
-               <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
-               <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
-               <a href="mailto:info@cantiereonline.it" className="hover:text-white transition-colors">Contatti</a>
+
+            {/* Colonna Destra - Link & Contatti */}
+            <div className="md:w-1/2 md:text-right flex flex-col md:items-end justify-between">
+               <div className="flex gap-6 font-medium mb-6">
+                  <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                  <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+               </div>
+               
+               <div>
+                 <p className="text-slate-500 mb-1">Hai bisogno di informazioni?</p>
+                 <div className="font-medium text-slate-300 select-all">
+                   Per info e collaborazioni: contatto@cantiereonline.it
+                 </div>
+               </div>
             </div>
+
           </div>
-          <div className="border-t border-slate-800 mt-8 pt-8 text-xs text-center">
+          
+          <div className="border-t border-slate-800 mt-10 pt-8 text-xs text-center text-slate-600">
             © {new Date().getFullYear()} CantiereOnline.it - Tutti i diritti riservati.
           </div>
         </div>
