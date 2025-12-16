@@ -3,12 +3,10 @@
 import React, { useState } from 'react';
 import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, ChevronRight, Info, Tablet } from 'lucide-react';
 import Link from 'next/link';
-// IMPORTA I DATI DAL NUOVO FILE
-import { softwareData, Software } from '../data/software';
+import { softwareData } from '../data/software';
 
 // --- CONFIGURAZIONE VISUALIZZAZIONE ---
 
-// 1. Colonne della Tabella Principale (Highlights)
 const mainColumns = [
   { id: 'giornale_lavori', label: 'Giornale Lavori', tooltip: 'Compilazione digitale del giornale dei lavori' },
   { id: 'pos_psc', label: 'Gestione POS', tooltip: 'Redazione Piani Operativi di Sicurezza e PSC' },
@@ -16,38 +14,41 @@ const mainColumns = [
   { id: 'free_trial', label: 'Prova Gratuita', tooltip: 'Possibilità di testare il software senza pagare' },
 ];
 
-// 2. Righe del Confronto Approfondito (Deep Compare)
-// Qui definiamo l'ordine esatto: Prima gli Highlights, poi le categorie, infine il Supporto.
+// Configurazione Deep Compare (Senza ripetere le categorie nell'array, le estraiamo dinamicamente)
 const deepFeaturesConfig = [
-  // --- HIGHLIGHTS (In cima come richiesto) ---
+  // --- HIGHLIGHTS ---
   { id: 'giornale_lavori', label: 'Giornale Lavori', category: 'Principale' },
   { id: 'pos_psc', label: 'Gestione POS / PSC', category: 'Principale' },
   { id: 'computo_metrico', label: 'Computo Metrico', category: 'Principale' },
   { id: 'free_trial', label: 'Prova Gratuita', category: 'Principale' },
 
   // --- AMMINISTRAZIONE ---
-  { id: 'conformita_ita', label: 'Conformità Legge Italia', category: 'Normativa' },
-  { id: 'fatturazione_elettronica', label: 'Fatturazione Elettronica', category: 'Normativa' },
-  { id: 'firma_digitale', label: 'Firma Digitale', category: 'Normativa' },
-  { id: 'export_contabilita', label: 'Export Contabilità (XPWE)', category: 'Normativa' },
+  { id: 'conformita_ita', label: 'Conformità Legge Italia', category: 'Normativa & Amministrazione' },
+  { id: 'fatturazione_elettronica', label: 'Fatturazione Elettronica', category: 'Normativa & Amministrazione' },
+  { id: 'firma_digitale', label: 'Firma Digitale', category: 'Normativa & Amministrazione' },
+  { id: 'export_contabilita', label: 'Export Contabilità (XPWE)', category: 'Normativa & Amministrazione' },
 
   // --- TECNICO ---
-  { id: 'funziona_offline', label: 'Funziona Offline', category: 'Tecnico' },
-  { id: 'bim_viewer', label: 'Visualizzatore BIM (IFC)', category: 'Tecnico' },
-  { id: 'foto_360', label: 'Foto a 360°', category: 'Tecnico' },
-  { id: 'app_ios', label: 'App iOS Nativa', category: 'Tecnico' },
-  { id: 'app_android', label: 'App Android Nativa', category: 'Tecnico' },
+  { id: 'funziona_offline', label: 'Funziona Offline', category: 'Funzionalità Tecniche' },
+  { id: 'bim_viewer', label: 'Visualizzatore BIM (IFC)', category: 'Funzionalità Tecniche' },
+  { id: 'foto_360', label: 'Foto a 360°', category: 'Funzionalità Tecniche' },
+  { id: 'app_ios', label: 'App iOS Nativa', category: 'Funzionalità Tecniche' },
+  { id: 'app_android', label: 'App Android Nativa', category: 'Funzionalità Tecniche' },
 
   // --- COLLABORAZIONE ---
   { id: 'chat_interna', label: 'Chat di Cantiere', category: 'Collaborazione' },
   { id: 'inviti_esterni', label: 'Accesso Committente', category: 'Collaborazione' },
+  { id: 'notifiche_push', label: 'Notifiche Push', category: 'Collaborazione' },
   
-  // --- SUPPORTO (Nuova Sezione in fondo) ---
-  { id: 'interfaccia_italiano', label: 'Interfaccia in Italiano', category: 'Supporto' },
-  { id: 'supporto_italiano', label: 'Operatori Italiani', category: 'Supporto' },
-  { id: 'supporto_telefono', label: 'Assistenza Telefonica', category: 'Supporto' },
-  { id: 'supporto_chat', label: 'Assistenza via Chat', category: 'Supporto' },
+  // --- SUPPORTO ---
+  { id: 'interfaccia_italiano', label: 'Interfaccia in Italiano', category: 'Supporto & Assistenza' },
+  { id: 'supporto_italiano', label: 'Operatori Italiani', category: 'Supporto & Assistenza' },
+  { id: 'supporto_telefono', label: 'Assistenza Telefonica', category: 'Supporto & Assistenza' },
+  { id: 'supporto_chat', label: 'Assistenza via Chat', category: 'Supporto & Assistenza' },
 ];
+
+// Estraiamo le categorie uniche per creare le sezioni
+const categories = Array.from(new Set(deepFeaturesConfig.map(f => f.category)));
 
 const hardware = [
   { name: 'Apple iPad Pro 11"', note: 'Il top per visualizzare planimetrie e BIM', price: '€969', link: 'https://www.amazon.it/dp/B0D3X6K1Q2?tag=cantiereonline-21' },
@@ -76,9 +77,9 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gray-50 font-sans text-slate-900">
       
-      {/* HEADER */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30 shadow-sm w-full">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      {/* HEADER SITO (Sticky Principale) */}
+      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm w-full h-[72px] flex items-center">
+        <div className="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
           <div className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
             <HardHat className="text-orange-500" />
             CantiereOnline<span className="text-orange-500">.it</span>
@@ -87,14 +88,16 @@ export default function Home() {
       </header>
 
       {/* HERO SECTION */}
-      <section className="bg-white pb-10 pt-12 px-4 text-center border-b border-gray-100 w-full">
-        <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight max-w-4xl mx-auto leading-tight">
-          Scegli il miglior software gestionale <br className="hidden md:block"/> per edilizia e cantieri
-        </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
-          Confronto indipendente aggiornato al 2025 su funzionalità, normativa POS/PSC e prezzi.
-        </p>
-      </section>
+      {!showDeepCompare && (
+        <section className="bg-white pb-10 pt-12 px-4 text-center border-b border-gray-100 w-full">
+          <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight max-w-4xl mx-auto leading-tight">
+            Scegli il miglior software gestionale <br className="hidden md:block"/> per edilizia e cantieri
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-6">
+            Confronto indipendente aggiornato al 2025 su funzionalità, normativa POS/PSC e prezzi.
+          </p>
+        </section>
+      )}
 
       {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto px-0 md:px-4 py-8 flex-grow w-full">
@@ -102,15 +105,12 @@ export default function Home() {
         {!showDeepCompare ? (
           /* --- VISTA TABELLA CLASSICA --- */
           <div className="bg-white md:rounded-xl shadow-sm border-y md:border border-gray-200 overflow-hidden relative">
-            
             <div className="w-full overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[1000px] divide-x divide-gray-100">
-                
                 <thead>
                   <tr className="bg-slate-50 border-b border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider divide-x divide-gray-200">
                     <th className="p-4 text-center w-12 bg-slate-100 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">CF</th>
                     <th className="p-4 w-[280px] bg-slate-100/50">Software & Prezzo</th>
-                    
                     {mainColumns.map(col => (
                       <th key={col.id} className="p-4 text-center w-[130px] relative">
                         <div className="group flex flex-col items-center justify-center gap-1 cursor-help z-10">
@@ -127,8 +127,6 @@ export default function Home() {
                 </thead>
 
                 <tbody className="divide-y divide-gray-100">
-                  
-                  {/* RIGA GUIDA MOBILE */}
                   <tr className="md:hidden bg-blue-50/80 border-b border-blue-100">
                     <td className="sticky left-0 bg-blue-50/80 z-20 border-r border-blue-200"></td>
                     <td colSpan={5} className="p-2 text-xs text-blue-700 font-bold text-left animate-pulse pl-4">
@@ -138,7 +136,6 @@ export default function Home() {
 
                   {softwareData.map((product, index) => (
                     <tr key={product.id} className={`hover:bg-blue-50/20 transition-colors divide-x divide-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
-                      
                       <td className="p-4 text-center bg-slate-50/30 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
                         <input 
                           type="checkbox" 
@@ -199,9 +196,9 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (AGGIORNATA) --- */
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2">
-            <div className="flex justify-between items-center mb-4">
+          /* --- VISTA DEEP COMPARE (AGGIORNATA: STICKY + WIDTH FIX + CATEGORIE) --- */
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
+            <div className="flex justify-between items-center mb-4 pt-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                 <BarChart3 className="text-blue-600" /> Analisi Tecnica
               </h2>
@@ -215,41 +212,78 @@ export default function Home() {
 
             <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
               <div className="overflow-x-auto w-full">
-                <table className="w-full text-left border-collapse min-w-[600px]">
-                  <thead>
-                    <tr className="bg-slate-50 border-b border-gray-200">
-                      <th className="p-4 w-1/3 text-gray-500 font-medium uppercase text-xs tracking-wider">Caratteristica</th>
+                
+                {/* TABLE-FIXED: Forza tutte le colonne ad avere larghezza uguale */}
+                <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
+                  
+                  {/* HEADER STICKY: Top-72px per stare sotto l'header del sito */}
+                  <thead className="sticky top-[72px] z-40 bg-white shadow-md">
+                    <tr className="border-b border-gray-200">
+                      <th className="p-4 text-gray-500 font-medium uppercase text-xs tracking-wider w-1/4 align-bottom pb-6">
+                        Caratteristica
+                      </th>
                       {selectedProducts.map(p => (
-                        <th key={p.id} className="p-4 w-1/4 text-center border-l border-gray-200 bg-white">
-                          <span className="block font-bold text-lg text-slate-900 mb-1">{p.name}</span>
-                          <div className="text-blue-600 font-bold text-sm">{p.price}</div>
+                        <th key={p.id} className="p-4 text-center border-l border-gray-200 bg-white w-1/4 align-top">
+                          <div className="flex flex-col h-full justify-between gap-2">
+                            <div>
+                                <span className="block font-bold text-lg text-slate-900 leading-tight mb-1">{p.name}</span>
+                                <div className="text-blue-600 font-bold text-lg">{p.price}</div>
+                            </div>
+                            
+                            {/* BOTTONE CHE SCORRE INSIEME AL TITOLO */}
+                            <a 
+                                href={p.website} 
+                                target="_blank" 
+                                className="block w-full text-center py-2 px-2 rounded-md text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+                            >
+                                Vedi Sito
+                            </a>
+                          </div>
                         </th>
                       ))}
                     </tr>
                   </thead>
+
                   <tbody className="divide-y divide-gray-100">
-                    {deepFeaturesConfig.map((feat, i) => (
-                      <tr key={feat.id} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                        <td className="p-4 border-r border-gray-100">
-                           <span className="block font-bold text-slate-700">{feat.label}</span>
-                           <span className="text-xs text-gray-400 uppercase tracking-wider block mt-0.5">{feat.category}</span>
-                        </td>
-                        {selectedProducts.map(p => {
-                          const val = p.features[feat.id as keyof typeof p.features];
-                          return (
-                            <td key={p.id} className="p-4 text-center border-l border-gray-100 align-middle">
-                              {val === true ? (
-                                <div className="flex justify-center"><Check className="text-green-500" /></div>
-                              ) : val === false ? (
-                                <div className="flex justify-center"><X className="text-gray-300" /></div>
-                              ) : (
-                                <span className="font-medium text-slate-400 text-sm">-</span>
-                              )}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
+                    {/* ITERAZIONE PER CATEGORIE */}
+                    {categories.map((cat) => {
+                       // Filtriamo le features di questa categoria
+                       const featuresInCat = deepFeaturesConfig.filter(f => f.category === cat);
+                       
+                       return (
+                         <React.Fragment key={cat}>
+                           {/* RIGA DIVISORIA CATEGORIA */}
+                           <tr className="bg-slate-100 border-y border-gray-200">
+                             <td colSpan={selectedProducts.length + 1} className="p-3 text-xs font-bold text-slate-500 uppercase tracking-widest pl-4">
+                               {cat}
+                             </td>
+                           </tr>
+
+                           {/* RIGHE FEATURES */}
+                           {featuresInCat.map(feat => (
+                             <tr key={feat.id} className="bg-white hover:bg-slate-50 transition-colors">
+                               <td className="p-4 border-r border-gray-100 font-medium text-slate-700 text-sm">
+                                  {feat.label}
+                               </td>
+                               {selectedProducts.map(p => {
+                                 const val = p.features[feat.id as keyof typeof p.features];
+                                 return (
+                                   <td key={p.id} className="p-4 text-center border-l border-gray-100 align-middle">
+                                     {val === true ? (
+                                       <div className="flex justify-center"><Check className="text-green-500" size={20} /></div>
+                                     ) : val === false ? (
+                                       <div className="flex justify-center"><X className="text-gray-300" size={20} /></div>
+                                     ) : (
+                                       <span className="font-medium text-slate-400 text-sm">-</span>
+                                     )}
+                                   </td>
+                                 );
+                               })}
+                             </tr>
+                           ))}
+                         </React.Fragment>
+                       );
+                    })}
                   </tbody>
                 </table>
               </div>
@@ -282,34 +316,6 @@ export default function Home() {
           </div>
         </div>
       )}
-
-      {/* CROSS SELL HARDWARE */}
-      <section className="max-w-7xl mx-auto px-4 mt-8 mb-12 w-full">
-        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
-            <h3 className="font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
-            <Tablet className="text-orange-500" /> Spesso comprati insieme ai software
-            </h3>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {hardware.map((item, i) => (
-                <a key={i} href={item.link} target="_blank" rel="nofollow sponsored" className="flex gap-4 group hover:bg-gray-50 p-2 rounded-lg transition-colors">
-                    <div className="w-20 h-20 bg-gray-100 rounded-md flex items-center justify-center text-gray-300 border border-gray-200 shrink-0">
-                        <Tablet size={32} />
-                    </div>
-                    <div>
-                        <div className="text-sm text-blue-600 group-hover:underline line-clamp-2 mb-1">
-                            {item.name}
-                        </div>
-                        <div className="text-xs text-gray-500 mb-2">{item.note}</div>
-                        <div className="text-red-700 font-bold text-sm">
-                            {item.price} <span className="text-gray-400 font-normal text-xs">Prime</span>
-                        </div>
-                    </div>
-                </a>
-            ))}
-            </div>
-        </div>
-      </section>
 
       {/* FOOTER */}
       <footer className="bg-slate-900 text-slate-400 text-sm py-12 border-t border-slate-800 mt-auto relative z-10">
