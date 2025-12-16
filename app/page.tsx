@@ -1,13 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, Info, Tablet } from 'lucide-react';
+import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, ChevronRight, Info, Tablet } from 'lucide-react';
 import Link from 'next/link';
 import { softwareData } from '../data/software';
 
 // --- CONFIGURAZIONE VISUALIZZAZIONE ---
 
 const mainColumns = [
+  // NUOVA COLONNA RICHIESTA
+  { id: 'conformita_ita', label: 'Normativa Italia', tooltip: 'Piena conformità a leggi italiane (POS/PSC/Fattura)' },
   { id: 'giornale_lavori', label: 'Giornale Lavori', tooltip: 'Compilazione digitale del giornale dei lavori' },
   { id: 'pos_psc', label: 'Gestione POS', tooltip: 'Redazione Piani Operativi di Sicurezza e PSC' },
   { id: 'computo_metrico', label: 'Computo Metrico', tooltip: 'Creazione ed export computi metrici estimativi' },
@@ -72,7 +74,6 @@ export default function Home() {
 
   const selectedProducts = softwareData.filter(p => selectedIds.includes(p.id));
 
-  // Helper per formattare il testo del periodo
   const formatPeriod = (text: string) => {
     if (text.toLowerCase().includes('free')) return 'Versione Free';
     return text;
@@ -81,7 +82,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gray-50 font-sans text-slate-900">
       
-      {/* HEADER SITO */}
+      {/* HEADER */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm w-full h-[72px] flex items-center">
         <div className="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
           <div className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
@@ -107,14 +108,14 @@ export default function Home() {
       <main className="max-w-7xl mx-auto px-0 md:px-4 py-8 flex-grow w-full">
         
         {!showDeepCompare ? (
-          /* --- VISTA TABELLA CLASSICA --- */
+          /* --- VISTA TABELLA PRINCIPALE (HIGHLIGHTS) --- */
           <div className="bg-white md:rounded-xl shadow-sm border-y md:border border-gray-200 overflow-hidden relative">
             <div className="w-full overflow-x-auto">
               <table className="w-full text-left border-collapse min-w-[1000px] divide-x divide-gray-100">
                 <thead>
                   <tr className="bg-slate-50 border-b border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider divide-x divide-gray-200">
                     <th className="p-4 text-center w-12 bg-slate-100 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">CF</th>
-                    <th className="p-4 w-[280px] bg-slate-100/50">Software & Prezzo</th>
+                    <th className="p-4 w-[380px] bg-slate-100/50">Software & Dettagli</th>
                     {mainColumns.map(col => (
                       <th key={col.id} className="p-4 text-center w-[130px] relative">
                         <div className="group flex flex-col items-center justify-center gap-1 cursor-help z-10">
@@ -133,41 +134,54 @@ export default function Home() {
                 <tbody className="divide-y divide-gray-100">
                   <tr className="md:hidden bg-blue-50/80 border-b border-blue-100">
                     <td className="sticky left-0 bg-blue-50/80 z-20 border-r border-blue-200"></td>
-                    <td colSpan={5} className="p-2 text-xs text-blue-700 font-bold text-left animate-pulse pl-4">
+                    <td colSpan={6} className="p-2 text-xs text-blue-700 font-bold text-left animate-pulse pl-4">
                        👉 Scorri la tabella verso destra
                     </td>
                   </tr>
 
                   {softwareData.map((product, index) => (
                     <tr key={product.id} className={`hover:bg-blue-50/20 transition-colors divide-x divide-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
-                      <td className="p-4 text-center bg-slate-50/30 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">
+                      <td className="p-4 text-center bg-slate-50/30 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] align-top">
                         <input 
                           type="checkbox" 
                           checked={selectedIds.includes(product.id)}
                           onChange={() => toggleSelection(product.id)}
-                          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer mt-2"
                         />
                       </td>
 
+                      {/* CELLA PRODOTTO: NOME + PREZZO + DESCRIZIONE + CTA */}
                       <td className="p-4 align-top bg-white">
                         <div className="flex flex-col h-full justify-between gap-4">
-                          <div className="flex justify-between items-start gap-2">
-                            <div>
-                              <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
-                                {product.name}
-                              </Link>
-                              <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5">
-                                  <Star size={12} className="fill-yellow-400 text-yellow-400" />
-                                  <span className="font-medium text-slate-700">{product.rating}</span> 
+                          
+                          <div>
+                            {/* Header Riga: Nome e Prezzo */}
+                            <div className="flex justify-between items-start gap-2 mb-3">
+                              <div>
+                                <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
+                                  {product.name}
+                                </Link>
+                                <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5">
+                                    <Star size={12} className="fill-yellow-400 text-yellow-400" />
+                                    <span className="font-medium text-slate-700">{product.rating}</span> 
+                                </div>
+                              </div>
+                              <div className="text-right shrink-0">
+                                <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
+                                <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">
+                                  {formatPeriod(product.paymentType)}
+                                </div>
                               </div>
                             </div>
-                            <div className="text-right shrink-0">
-                              <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
-                              <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">
-                                {formatPeriod(product.paymentType)}
-                              </div>
-                            </div>
+
+                            {/* DESCRIZIONE (Inserita qui come richiesto) */}
+                            <div 
+                              className="text-xs text-slate-600 leading-relaxed mb-4 line-clamp-4"
+                              dangerouslySetInnerHTML={{ __html: product.description }} 
+                            />
                           </div>
+
+                          {/* Pulsante Blu */}
                           <a 
                             href={product.website} 
                             target="_blank" 
@@ -180,7 +194,7 @@ export default function Home() {
                       </td>
 
                       {mainColumns.map(col => (
-                        <td key={col.id} className="p-4 text-center align-middle">
+                        <td key={col.id} className="p-4 text-center align-top pt-8">
                           <div className="flex justify-center">
                             {product.features[col.id as keyof typeof product.features] ? (
                               <div className="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center">
@@ -202,7 +216,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (AGGIORNATA: DESCRIZIONI E STILE PULITO) --- */
+          /* --- VISTA DEEP COMPARE (ANALISI TECNICA) --- */
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
             <div className="flex justify-between items-center mb-4 pt-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -216,32 +230,24 @@ export default function Home() {
               </button>
             </div>
 
-            {/* TABELLA PULITA SENZA OVERFLOW STRANI */}
             <div className="bg-white rounded-xl shadow-lg border border-gray-200"> 
               <div className="overflow-x-auto w-full rounded-xl">
                 
                 <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
                   
-                  {/* HEADER DARK MODE (NO STICKY) */}
+                  {/* HEADER DARK MODE (Senza Descrizione) */}
                   <thead>
                     <tr className="bg-slate-900 border-b border-slate-700">
                       
-                      <th className="p-4 text-slate-400 font-bold uppercase text-xs tracking-wider w-1/4 align-bottom">
+                      <th className="p-4 text-slate-400 font-bold uppercase text-xs tracking-wider w-1/4 align-middle">
                         Caratteristica
                       </th>
 
                       {selectedProducts.map(p => (
                         <th key={p.id} className="p-4 text-center border-l border-slate-700 w-1/4 align-top">
-                          <div className="flex flex-col h-full justify-between gap-3">
+                          <div className="flex flex-col h-full justify-between gap-2">
                             <div>
-                                <span className="block font-bold text-lg text-white leading-tight mb-2">{p.name}</span>
-                                
-                                {/* DESCRIZIONE AGGIUNTA QUI */}
-                                <div 
-                                  className="text-xs text-slate-300 font-normal leading-relaxed text-left mb-3 bg-slate-800/50 p-2 rounded border border-slate-700 min-h-[80px]"
-                                  dangerouslySetInnerHTML={{ __html: p.description }}
-                                />
-
+                                <span className="block font-bold text-lg text-white leading-tight mb-1">{p.name}</span>
                                 <div className="flex items-baseline justify-center gap-1 flex-wrap">
                                   <span className="text-blue-400 font-bold text-lg">{p.price}</span>
                                   <span className="text-[10px] text-slate-400 uppercase font-medium whitespace-nowrap">
@@ -253,7 +259,7 @@ export default function Home() {
                             <a 
                                 href={p.website} 
                                 target="_blank" 
-                                className="block w-full text-center py-2.5 px-2 rounded-md text-xs font-bold bg-white text-slate-900 hover:bg-gray-100 transition-colors shadow-sm"
+                                className="block w-full text-center py-2 px-2 rounded-md text-xs font-bold bg-white text-slate-900 hover:bg-gray-100 transition-colors"
                             >
                                 Vedi Sito
                             </a>
