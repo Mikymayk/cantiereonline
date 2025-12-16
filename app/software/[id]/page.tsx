@@ -2,55 +2,53 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check, X, Star, ExternalLink, HardHat } from 'lucide-react';
 import { Metadata } from 'next';
-// Usiamo la chiocciola @ per essere sicuri di prendere il percorso giusto dalla root
 import { softwareData } from '@/data/software'; 
+import { notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-export function generateMetadata({ params }: { params: { id: string } }): Metadata {
+// Gestione Metadata (Anche qui params potrebbe essere una Promise in futuro, ma per ora Next lo gestisce)
+export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const params = await props.params;
   const product = softwareData.find(p => p.id === params.id);
   if (!product) return { title: 'Software non trovato' };
-  return { title: `${product.name} - Recensione` };
+  return { 
+    title: `${product.name} - Recensione e Prezzi`,
+    description: product.description.replace(/<[^>]*>?/gm, '').substring(0, 160)
+  };
 }
 
-export default function SoftwarePage({ params }: { params: { id: string } }) {
-  // --- DEBUG X-RAY ---
-  const debugInfo = {
-    parametroRicevuto: params,
-    idCercato: params?.id,
-    totaleSoftwareNelDB: softwareData.length,
-    primi3SoftwareNelDB: softwareData.slice(0, 3).map(s => s.id),
-    esisteMatch: softwareData.some(p => p.id === params?.id) ? "SI" : "NO"
-  };
-  // -------------------
+// DEFINIZIONE TIPO PROPS
+type Props = {
+  params: Promise<{ id: string }>;
+};
 
-  const product = softwareData.find(p => p.id === params.id);
+// NOTA: La funzione ora è ASYNC e i params sono una PROMISE
+export default async function SoftwarePage(props: Props) {
+  
+  // 1. ASPETTIAMO CHE I PARAMETRI SIANO PRONTI
+  const params = await props.params;
+  const { id } = params;
 
+  // 2. ORA CERCHIAMO IL PRODOTTO
+  const product = softwareData.find(p => p.id === id);
+
+  // Se non esiste, mostriamo errore
   if (!product) {
     return (
-      <div className="min-h-screen p-8 font-mono text-sm bg-gray-50">
-        <h1 className="text-2xl font-bold text-red-600 mb-4">⚠️ DIAGNOSTICA ERRORE</h1>
-        
-        <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 mb-6 text-slate-800">
-          <h3 className="font-bold mb-2">Cosa vede il sistema:</h3>
-          <pre className="whitespace-pre-wrap">{JSON.stringify(debugInfo, null, 2)}</pre>
-        </div>
-
-        <p className="mb-2"><strong>Possibili cause:</strong></p>
-        <ul className="list-disc pl-5 mb-6">
-          <li>Se "idCercato" è undefined: La cartella non si chiama <code>[id]</code></li>
-          <li>Se "totaleSoftwareNelDB" è 0: L'import dei dati è vuoto.</li>
-          <li>Se "esisteMatch" è NO: C'è una differenza di maiuscole/minuscole o l'ID è sbagliato.</li>
-        </ul>
-
-        <Link href="/" className="bg-blue-600 text-white px-4 py-2 rounded">Torna alla Home</Link>
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 text-center">
+        <h1 className="text-2xl font-bold mb-4">Software non trovato</h1>
+        <p className="mb-4">ID richiesto: <span className="font-mono bg-gray-100 p-1">{id}</span></p>
+        <p className="text-sm text-gray-500 mb-6">Controlla che l'ID nell'URL corrisponda esattamente a quello nel file dati.</p>
+        <Link href="/" className="bg-blue-600 text-white px-6 py-2 rounded-lg font-bold">Torna alla Home</Link>
       </div>
     );
   }
 
-  // ... SE IL PRODOTTO ESISTE, MOSTRA LA PAGINA NORMALE ...
+  // 3. RENDERIZZIAMO LA PAGINA
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900">
+      
       <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
            <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
