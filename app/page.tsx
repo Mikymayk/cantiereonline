@@ -72,6 +72,12 @@ export default function Home() {
 
   const selectedProducts = softwareData.filter(p => selectedIds.includes(p.id));
 
+  // Helper per formattare il testo del periodo
+  const formatPeriod = (text: string) => {
+    if (text.includes('Free')) return 'Versione Free';
+    return text;
+  };
+
   return (
     <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gray-50 font-sans text-slate-900">
       
@@ -157,7 +163,10 @@ export default function Home() {
                             </div>
                             <div className="text-right shrink-0">
                               <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
-                              <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">{product.paymentType}</div>
+                              {/* FIX PREZZO LATERALE */}
+                              <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">
+                                {formatPeriod(product.paymentType)}
+                              </div>
                             </div>
                           </div>
                           <a 
@@ -194,7 +203,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (CORRETTA STICKY) --- */
+          /* --- VISTA DEEP COMPARE (CORRETTA STICKY E FORMATTAZIONE) --- */
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
             <div className="flex justify-between items-center mb-4 pt-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -208,29 +217,33 @@ export default function Home() {
               </button>
             </div>
 
-            {/* RIMOSSO OVERFLOW-HIDDEN DAL CONTAINER PRINCIPALE PER PERMETTERE LO STICKY */}
+            {/* RIMOSSO OVERFLOW-HIDDEN CHE ROMPEVA LO STICKY */}
             <div className="bg-white rounded-xl shadow-lg border border-gray-200"> 
               <div className="overflow-x-auto w-full rounded-xl">
                 
                 <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
                   
-                  {/* HEADER STICKY: Top-72px per agganciarsi alla barra di navigazione */}
-                  <thead className="sticky top-[72px] z-40 shadow-md">
+                  {/* HEADER STICKY: APPLICATO ALLE CELLE "TH" PER MAGGIORE STABILITÀ */}
+                  <thead>
                     <tr className="border-b border-gray-200 bg-white">
-                      <th className="p-4 text-gray-500 font-medium uppercase text-xs tracking-wider w-1/4 align-bottom pb-6 bg-white">
+                      
+                      {/* Cella 1: Caratteristica */}
+                      <th className="p-4 text-gray-500 font-medium uppercase text-xs tracking-wider w-1/4 align-middle bg-white sticky top-[72px] z-40 shadow-sm border-b border-gray-100">
                         Caratteristica
                       </th>
+
+                      {/* Celle Prodotti */}
                       {selectedProducts.map(p => (
-                        <th key={p.id} className="p-4 text-center border-l border-gray-200 bg-white w-1/4 align-top">
+                        <th key={p.id} className="p-4 text-center border-l border-gray-200 bg-white w-1/4 align-top sticky top-[72px] z-40 shadow-sm border-b border-gray-100">
                           <div className="flex flex-col h-full justify-between gap-2">
                             <div>
                                 <span className="block font-bold text-lg text-slate-900 leading-tight mb-1">{p.name}</span>
                                 
-                                {/* FIX PREZZO: Mostra sia il valore che il tipo (es. Versione Free) */}
-                                <div className="text-blue-600 font-bold text-lg leading-none">
-                                  {p.price} 
-                                  <span className="block text-[10px] font-normal text-gray-500 mt-1 uppercase">
-                                    {p.paymentType}
+                                {/* FIX PREZZO: FLEX ROW PER METTERLI VICINI */}
+                                <div className="flex items-baseline justify-center gap-1 flex-wrap">
+                                  <span className="text-blue-600 font-bold text-lg">{p.price}</span>
+                                  <span className="text-[10px] text-gray-500 uppercase font-medium whitespace-nowrap">
+                                    {formatPeriod(p.paymentType)}
                                   </span>
                                 </div>
                             </div>
