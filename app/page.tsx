@@ -14,7 +14,6 @@ const mainColumns = [
   { id: 'free_trial', label: 'Prova Gratuita', tooltip: 'Possibilità di testare il software senza pagare' },
 ];
 
-// Configurazione Deep Compare (Senza ripetere le categorie nell'array, le estraiamo dinamicamente)
 const deepFeaturesConfig = [
   // --- HIGHLIGHTS ---
   { id: 'giornale_lavori', label: 'Giornale Lavori', category: 'Principale' },
@@ -47,7 +46,6 @@ const deepFeaturesConfig = [
   { id: 'supporto_chat', label: 'Assistenza via Chat', category: 'Supporto & Assistenza' },
 ];
 
-// Estraiamo le categorie uniche per creare le sezioni
 const categories = Array.from(new Set(deepFeaturesConfig.map(f => f.category)));
 
 const hardware = [
@@ -77,7 +75,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gray-50 font-sans text-slate-900">
       
-      {/* HEADER SITO (Sticky Principale) */}
+      {/* HEADER SITO */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm w-full h-[72px] flex items-center">
         <div className="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
           <div className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
@@ -196,7 +194,7 @@ export default function Home() {
             </div>
           </div>
         ) : (
-          /* --- VISTA DEEP COMPARE (AGGIORNATA: STICKY + WIDTH FIX + CATEGORIE) --- */
+          /* --- VISTA DEEP COMPARE (CORRETTA STICKY) --- */
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
             <div className="flex justify-between items-center mb-4 pt-4">
               <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
@@ -210,16 +208,16 @@ export default function Home() {
               </button>
             </div>
 
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-              <div className="overflow-x-auto w-full">
+            {/* RIMOSSO OVERFLOW-HIDDEN DAL CONTAINER PRINCIPALE PER PERMETTERE LO STICKY */}
+            <div className="bg-white rounded-xl shadow-lg border border-gray-200"> 
+              <div className="overflow-x-auto w-full rounded-xl">
                 
-                {/* TABLE-FIXED: Forza tutte le colonne ad avere larghezza uguale */}
                 <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
                   
-                  {/* HEADER STICKY: Top-72px per stare sotto l'header del sito */}
-                  <thead className="sticky top-[72px] z-40 bg-white shadow-md">
-                    <tr className="border-b border-gray-200">
-                      <th className="p-4 text-gray-500 font-medium uppercase text-xs tracking-wider w-1/4 align-bottom pb-6">
+                  {/* HEADER STICKY: Top-72px per agganciarsi alla barra di navigazione */}
+                  <thead className="sticky top-[72px] z-40 shadow-md">
+                    <tr className="border-b border-gray-200 bg-white">
+                      <th className="p-4 text-gray-500 font-medium uppercase text-xs tracking-wider w-1/4 align-bottom pb-6 bg-white">
                         Caratteristica
                       </th>
                       {selectedProducts.map(p => (
@@ -227,10 +225,16 @@ export default function Home() {
                           <div className="flex flex-col h-full justify-between gap-2">
                             <div>
                                 <span className="block font-bold text-lg text-slate-900 leading-tight mb-1">{p.name}</span>
-                                <div className="text-blue-600 font-bold text-lg">{p.price}</div>
+                                
+                                {/* FIX PREZZO: Mostra sia il valore che il tipo (es. Versione Free) */}
+                                <div className="text-blue-600 font-bold text-lg leading-none">
+                                  {p.price} 
+                                  <span className="block text-[10px] font-normal text-gray-500 mt-1 uppercase">
+                                    {p.paymentType}
+                                  </span>
+                                </div>
                             </div>
                             
-                            {/* BOTTONE CHE SCORRE INSIEME AL TITOLO */}
                             <a 
                                 href={p.website} 
                                 target="_blank" 
@@ -245,21 +249,17 @@ export default function Home() {
                   </thead>
 
                   <tbody className="divide-y divide-gray-100">
-                    {/* ITERAZIONE PER CATEGORIE */}
                     {categories.map((cat) => {
-                       // Filtriamo le features di questa categoria
                        const featuresInCat = deepFeaturesConfig.filter(f => f.category === cat);
                        
                        return (
                          <React.Fragment key={cat}>
-                           {/* RIGA DIVISORIA CATEGORIA */}
                            <tr className="bg-slate-100 border-y border-gray-200">
                              <td colSpan={selectedProducts.length + 1} className="p-3 text-xs font-bold text-slate-500 uppercase tracking-widest pl-4">
                                {cat}
                              </td>
                            </tr>
 
-                           {/* RIGHE FEATURES */}
                            {featuresInCat.map(feat => (
                              <tr key={feat.id} className="bg-white hover:bg-slate-50 transition-colors">
                                <td className="p-4 border-r border-gray-100 font-medium text-slate-700 text-sm">
