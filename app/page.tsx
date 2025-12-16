@@ -1,381 +1,267 @@
-'use client';
-
 import React, { useState } from 'react';
-import { Check, X, Star, ExternalLink, ArrowRight, Trash2, BarChart3, HardHat, ChevronRight, Info, Tablet } from 'lucide-react';
 import Link from 'next/link';
-import { softwareData } from '../data/software';
-
-// --- CONFIGURAZIONE VISUALIZZAZIONE ---
-
-const mainColumns = [
-  { id: 'conformita_ita', label: 'Normativa Italia', tooltip: 'Piena conformità a leggi italiane (POS/PSC/Fattura)' },
-  { id: 'giornale_lavori', label: 'Giornale Lavori', tooltip: 'Compilazione digitale del giornale dei lavori' },
-  { id: 'pos_psc', label: 'Gestione POS', tooltip: 'Redazione Piani Operativi di Sicurezza e PSC' },
-  { id: 'computo_metrico', label: 'Computo Metrico', tooltip: 'Creazione ed export computi metrici estimativi' },
-  { id: 'free_trial', label: 'Prova Gratuita', tooltip: 'Possibilità di testare il software senza pagare' },
-];
-
-const deepFeaturesConfig = [
-  // --- HIGHLIGHTS ---
-  { id: 'giornale_lavori', label: 'Giornale Lavori', category: 'Principale' },
-  { id: 'pos_psc', label: 'Gestione POS / PSC', category: 'Principale' },
-  { id: 'computo_metrico', label: 'Computo Metrico', category: 'Principale' },
-  { id: 'free_trial', label: 'Prova Gratuita', category: 'Principale' },
-
-  // --- AMMINISTRAZIONE ---
-  { id: 'conformita_ita', label: 'Conformità Legge Italia', category: 'Normativa & Amministrazione' },
-  { id: 'fatturazione_elettronica', label: 'Fatturazione Elettronica', category: 'Normativa & Amministrazione' },
-  { id: 'firma_digitale', label: 'Firma Digitale', category: 'Normativa & Amministrazione' },
-  { id: 'export_contabilita', label: 'Export Contabilità (XPWE)', category: 'Normativa & Amministrazione' },
-
-  // --- TECNICO ---
-  { id: 'funziona_offline', label: 'Funziona Offline', category: 'Funzionalità Tecniche' },
-  { id: 'bim_viewer', label: 'Visualizzatore BIM (IFC)', category: 'Funzionalità Tecniche' },
-  { id: 'foto_360', label: 'Foto a 360°', category: 'Funzionalità Tecniche' },
-  { id: 'app_ios', label: 'App iOS Nativa', category: 'Funzionalità Tecniche' },
-  { id: 'app_android', label: 'App Android Nativa', category: 'Funzionalità Tecniche' },
-
-  // --- COLLABORAZIONE ---
-  { id: 'chat_interna', label: 'Chat di Cantiere', category: 'Collaborazione' },
-  { id: 'inviti_esterni', label: 'Accesso Committente', category: 'Collaborazione' },
-  { id: 'notifiche_push', label: 'Notifiche Push', category: 'Collaborazione' },
-  
-  // --- SUPPORTO ---
-  { id: 'interfaccia_italiano', label: 'Interfaccia in Italiano', category: 'Supporto & Assistenza' },
-  { id: 'supporto_italiano', label: 'Operatori Italiani', category: 'Supporto & Assistenza' },
-  { id: 'supporto_telefono', label: 'Assistenza Telefonica', category: 'Supporto & Assistenza' },
-  { id: 'supporto_chat', label: 'Assistenza via Chat', category: 'Supporto & Assistenza' },
-];
-
-const categories = Array.from(new Set(deepFeaturesConfig.map(f => f.category)));
-
-const hardware = [
-  { name: 'Apple iPad Pro 11"', note: 'Il top per visualizzare planimetrie e BIM', price: '€969', link: 'https://www.amazon.it/dp/B0D3X6K1Q2?tag=cantiereonline-21' },
-  { name: 'Samsung Galaxy Tab Active', note: 'Tablet Rugged indistruttibile per cantiere', price: '€450', link: 'https://www.amazon.it/dp/B0CP2S6Y2L?tag=cantiereonline-21' },
-  { name: 'Leica Disto X3', note: 'Distanziometro Laser professionale Bluetooth', price: '€310', link: 'https://www.amazon.it/dp/B07B9Q6L3Z?tag=cantiereonline-21' },
-];
+import { 
+  Search, Check, X, Star, ExternalLink, HardHat, 
+  Menu, ArrowRight, Calendar, BookOpen, ChevronRight 
+} from 'lucide-react';
+import { softwareData } from '@/data/software';
+import { getSortedPostsData } from '@/lib/posts';
 
 export default function Home() {
-  const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [showDeepCompare, setShowDeepCompare] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  const toggleSelection = (id: string) => {
-    if (selectedIds.includes(id)) {
-      setSelectedIds(selectedIds.filter(item => item !== id));
-    } else {
-      if (selectedIds.length < 3) {
-        setSelectedIds([...selectedIds, id]);
-      } else {
-        alert("Puoi confrontare massimo 3 software alla volta.");
-      }
-    }
-  };
+  // --- LOGICA BLOG ---
+  // Recupera tutti i post e prendi solo i primi 2 più recenti
+  const allPosts = getSortedPostsData();
+  const recentPosts = allPosts.slice(0, 2);
 
-  const selectedProducts = softwareData.filter(p => selectedIds.includes(p.id));
-
-  const formatPeriod = (text: string) => {
-    if (text.toLowerCase().includes('free')) return 'Versione Free';
-    return text;
-  };
+  // --- LOGICA FILTRO SOFTWARE ---
+  const filteredSoftware = softwareData.filter(software => 
+    software.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    software.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    software.pros.some(p => p.toLowerCase().includes(searchTerm.toLowerCase()))
+  );
 
   return (
-    <div className="flex flex-col min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-gray-50 font-sans text-slate-900">
+    <div className="min-h-screen bg-white font-sans text-slate-900">
       
-      {/* HEADER */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-50 shadow-sm w-full h-[72px] flex items-center">
-        <div className="max-w-7xl mx-auto px-4 w-full flex justify-between items-center">
-          <div className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
-            <HardHat className="text-orange-500" />
-            CantiereOnline<span className="text-orange-500">.it</span>
-          </div>
+      {/* --- HEADER --- */}
+      <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
+            <HardHat className="text-orange-500" /> CantiereOnline.it
+          </Link>
+          
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
+            <Link href="/blog" className="hover:text-blue-600 transition-colors">Blog & Guide</Link>
+            <Link href="#confronto" className="hover:text-blue-600 transition-colors">Confronto Software</Link>
+          </nav>
+
+          <Link href="/blog" className="md:hidden p-2 text-slate-600">
+             <Menu size={24} />
+          </Link>
         </div>
       </header>
 
-{/* HERO SECTION */}
-      {!showDeepCompare && (
-        <section className="bg-white pb-10 pt-12 px-4 text-center border-b border-gray-100 w-full">
+      <main>
+        {/* --- HERO SECTION AGGIORNATA --- */}
+        <section className="bg-white pb-10 pt-16 px-4 text-center border-b border-gray-100 w-full">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight max-w-4xl mx-auto leading-tight">
             Scegli il miglior software gestionale <br className="hidden md:block"/> per edilizia e cantieri
           </h1>
           
-          <h2 className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-6 leading-relaxed font-normal">
+          <h2 className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-10 leading-relaxed font-normal">
             Nel 2025, gestire un cantiere con carta e penna è un rischio. In questa guida confrontiamo i migliori software per l'edilizia in base a tre criteri: <strong className="text-slate-800 font-semibold">conformità alla legge italiana</strong>, <strong className="text-slate-800 font-semibold">facilità d'uso in mobilità</strong> e <strong className="text-slate-800 font-semibold">integrazione BIM</strong>.
           </h2>
+
+          {/* BARRA DI RICERCA */}
+          <div className="max-w-lg mx-auto relative mb-6">
+            <input 
+              type="text" 
+              placeholder="Cerca per nome (es. PlanRadar) o funzione (es. POS)" 
+              className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg transition-all"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+          </div>
         </section>
-      )}
 
-      {/* MAIN CONTENT */}
-      <main className="max-w-7xl mx-auto px-0 md:px-4 py-8 flex-grow w-full">
-        
-        {!showDeepCompare ? (
-          /* --- VISTA TABELLA PRINCIPALE (HIGHLIGHTS) --- */
-          <div className="bg-white md:rounded-xl shadow-sm border-y md:border border-gray-200 overflow-hidden relative">
-            <div className="w-full overflow-x-auto">
-              <table className="w-full text-left border-collapse min-w-[1000px] divide-x divide-gray-100">
-                <thead>
-                  <tr className="bg-slate-50 border-b border-gray-200 text-xs font-bold text-gray-600 uppercase tracking-wider divide-x divide-gray-200">
-                    <th className="p-4 text-center w-12 bg-slate-100 sticky left-0 z-20 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)]">CF</th>
-                    <th className="p-4 w-[380px] bg-slate-100/50">Software & Dettagli</th>
-                    {mainColumns.map(col => (
-                      <th key={col.id} className="p-4 text-center w-[130px] relative">
-                        <div className="group flex flex-col items-center justify-center gap-1 cursor-help z-10">
-                          <span className="text-center">{col.label}</span>
-                          <Info size={14} className="text-gray-400" />
-                          <div className="absolute top-full mt-2 hidden group-hover:block w-40 bg-slate-800 text-white text-[10px] normal-case p-2 rounded z-50 text-center shadow-lg mx-auto left-0 right-0">
-                            {col.tooltip}
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 border-4 border-transparent border-b-slate-800"></div>
-                          </div>
-                        </div>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-
-                <tbody className="divide-y divide-gray-100">
-                  <tr className="md:hidden bg-blue-50/80 border-b border-blue-100">
-                    <td className="sticky left-0 bg-blue-50/80 z-20 border-r border-blue-200"></td>
-                    <td colSpan={6} className="p-2 text-xs text-blue-700 font-bold text-left animate-pulse pl-4">
-                       👉 Scorri la tabella verso destra
-                    </td>
-                  </tr>
-
-                  {softwareData.map((product, index) => (
-                    <tr key={product.id} className={`hover:bg-blue-50/20 transition-colors divide-x divide-gray-100 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
-                      <td className="p-4 text-center bg-slate-50/30 sticky left-0 z-10 shadow-[2px_0_5px_-2px_rgba(0,0,0,0.1)] align-top">
-                        <input 
-                          type="checkbox" 
-                          checked={selectedIds.includes(product.id)}
-                          onChange={() => toggleSelection(product.id)}
-                          className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500 cursor-pointer mt-2"
-                        />
-                      </td>
-
-                      {/* CELLA PRODOTTO */}
-                      <td className="p-4 align-top bg-white">
-                        <div className="flex flex-col h-full justify-between gap-4">
-                          
-                          <div>
-                            {/* Header Riga */}
-                            <div className="flex justify-between items-start gap-2 mb-3">
-                              <div>
-                                <Link href={`/software/${product.id}`} className="font-bold text-lg text-slate-900 hover:text-blue-600 hover:underline decoration-2 underline-offset-4 block leading-tight">
-                                  {product.name}
-                                </Link>
-                                <div className="flex items-center gap-1 text-xs text-gray-500 mt-1.5">
-                                    <Star size={12} className="fill-yellow-400 text-yellow-400" />
-                                    <span className="font-medium text-slate-700">{product.rating}</span> 
-                                </div>
-                              </div>
-                              <div className="text-right shrink-0">
-                                <div className="font-bold text-xl text-slate-900 leading-none">{product.price}</div>
-                                <div className="text-[10px] text-gray-500 uppercase font-medium mt-1">
-                                  {formatPeriod(product.paymentType)}
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* DESCRIZIONE (Testo più grande e spaziato) */}
-                            <div 
-                              className="text-sm text-slate-600 leading-snug mb-4"
-                              dangerouslySetInnerHTML={{ __html: product.description }} 
-                            />
-                          </div>
-
-                          <a 
-                            href={product.website} 
-                            target="_blank" 
-                            rel="nofollow sponsored"
-                            className="w-full text-center py-2.5 px-3 rounded-lg text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-1.5"
-                          >
-                            Vedi Sito <ExternalLink size={13} />
-                          </a>
-                        </div>
-                      </td>
-
-                      {/* FEATURES ALLINEATE AL CENTRO */}
-                      {mainColumns.map(col => (
-                        <td key={col.id} className="p-4 text-center align-middle">
-                          <div className="flex justify-center">
-                            {product.features[col.id as keyof typeof product.features] ? (
-                              <div className="w-8 h-8 rounded-full bg-green-200 text-green-800 flex items-center justify-center">
-                                <Check size={18} strokeWidth={3} />
-                              </div>
-                            ) : (
-                              <div className="w-8 h-8 rounded-full bg-red-100 text-red-700 flex items-center justify-center">
-                                <X size={18} strokeWidth={2} />
-                              </div>
-                            )}
-                          </div>
-                        </td>
-                      ))}
-
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+        {/* --- LISTA SOFTWARE (GRID) --- */}
+        <div id="confronto" className="max-w-6xl mx-auto px-4 py-12">
+          
+          <div className="flex justify-between items-center mb-6">
+            <h3 className="font-bold text-xl text-slate-800">
+              {filteredSoftware.length} Software Analizzati
+            </h3>
           </div>
-        ) : (
-          /* --- VISTA DEEP COMPARE (ANALISI TECNICA) --- */
-          <div className="animate-in fade-in slide-in-from-bottom-4 duration-300 px-2 pb-20">
-            <div className="flex justify-between items-center mb-4 pt-4">
-              <h2 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                <BarChart3 className="text-blue-600" /> Analisi Tecnica
-              </h2>
-              <button 
-                onClick={() => setShowDeepCompare(false)}
-                className="text-sm font-medium text-slate-500 hover:text-slate-900 flex items-center gap-1 bg-white border border-gray-300 px-3 py-1.5 rounded-lg shadow-sm"
-              >
-                <X size={16} /> Chiudi Confronto
-              </button>
-            </div>
 
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200"> 
-              <div className="overflow-x-auto w-full rounded-xl">
+          <div className="grid gap-8">
+            {filteredSoftware.map((sw) => (
+              <div key={sw.id} className="bg-white rounded-2xl border border-gray-200 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden relative group">
                 
-                <table className="w-full text-left border-collapse min-w-[600px] table-fixed">
+                {/* Badge Top Rated se rating > 4.7 */}
+                {sw.rating >= 4.7 && (
+                  <div className="absolute top-0 right-0 bg-yellow-400 text-yellow-900 text-xs font-bold px-3 py-1 rounded-bl-xl z-10">
+                    TOP SCELTA
+                  </div>
+                )}
+
+                <div className="p-6 md:p-8 flex flex-col md:flex-row gap-8">
                   
-                  <thead>
-                    <tr className="bg-slate-900 border-b border-slate-700">
-                      
-                      <th className="p-4 text-slate-400 font-bold uppercase text-xs tracking-wider w-1/4 align-middle">
-                        Caratteristica
-                      </th>
-
-                      {selectedProducts.map(p => (
-                        <th key={p.id} className="p-4 text-center border-l border-slate-700 w-1/4 align-top">
-                          <div className="flex flex-col h-full justify-between gap-2">
-                            <div>
-                                <span className="block font-bold text-lg text-white leading-tight mb-1">{p.name}</span>
-                                <div className="flex items-baseline justify-center gap-1 flex-wrap">
-                                  <span className="text-blue-400 font-bold text-lg">{p.price}</span>
-                                  <span className="text-[10px] text-slate-400 uppercase font-medium whitespace-nowrap">
-                                    {formatPeriod(p.paymentType)}
-                                  </span>
-                                </div>
-                            </div>
-                            
-                            <a 
-                                href={p.website} 
-                                target="_blank" 
-                                className="block w-full text-center py-2 px-2 rounded-md text-xs font-bold bg-white text-slate-900 hover:bg-gray-100 transition-colors"
-                            >
-                                Vedi Sito
-                            </a>
-                          </div>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-
-                  <tbody className="divide-y divide-gray-100">
-                    {categories.map((cat) => {
-                       const featuresInCat = deepFeaturesConfig.filter(f => f.category === cat);
-                       
-                       return (
-                         <React.Fragment key={cat}>
-                           <tr className="bg-slate-100 border-y border-gray-200">
-                             <td colSpan={selectedProducts.length + 1} className="p-3 text-xs font-bold text-slate-500 uppercase tracking-widest pl-4">
-                               {cat}
-                             </td>
-                           </tr>
-
-                           {featuresInCat.map(feat => (
-                             <tr key={feat.id} className="bg-white hover:bg-slate-50 transition-colors">
-                               <td className="p-4 border-r border-gray-100 font-medium text-slate-700 text-sm">
-                                  {feat.label}
-                               </td>
-                               {selectedProducts.map(p => {
-                                 const val = p.features[feat.id as keyof typeof p.features];
-                                 return (
-                                   <td key={p.id} className="p-4 text-center border-l border-gray-100 align-middle">
-                                     {val === true ? (
-                                       <div className="flex justify-center"><Check className="text-green-500" size={20} /></div>
-                                     ) : val === false ? (
-                                       <div className="flex justify-center"><X className="text-gray-300" size={20} /></div>
-                                     ) : (
-                                       <span className="font-medium text-slate-400 text-sm">-</span>
-                                     )}
-                                   </td>
-                                 );
-                               })}
-                             </tr>
+                  {/* COLONNA 1: Info Principali */}
+                  <div className="md:w-1/4 flex flex-col justify-between border-b md:border-b-0 md:border-r border-gray-100 pb-6 md:pb-0 md:pr-6">
+                    <div>
+                      <h3 className="text-2xl font-extrabold text-slate-900 mb-2">{sw.name}</h3>
+                      <div className="flex items-center gap-2 mb-4">
+                        <div className="flex text-yellow-400">
+                           {[...Array(5)].map((_, i) => (
+                             <Star key={i} size={16} fill={i < Math.floor(sw.rating) ? "currentColor" : "none"} className={i < Math.floor(sw.rating) ? "" : "text-gray-300"} />
                            ))}
-                         </React.Fragment>
-                       );
-                    })}
-                  </tbody>
-                </table>
+                        </div>
+                        <span className="text-sm font-bold text-slate-600">{sw.rating}</span>
+                      </div>
+                      <div className="text-3xl font-bold text-blue-600 mb-1">{sw.price}</div>
+                      <div className="text-sm text-gray-500 mb-4">{sw.paymentType}</div>
+                    </div>
+                    
+                    <div className="flex flex-col gap-3 mt-auto">
+                      <Link href={`/software/${sw.id}`} className="w-full bg-blue-50 text-blue-700 hover:bg-blue-100 py-3 rounded-lg font-bold text-center transition-colors flex items-center justify-center gap-2">
+                        Scheda Completa <ArrowRight size={16}/>
+                      </Link>
+                      <a href={sw.website} target="_blank" rel="noopener noreferrer" className="w-full border border-gray-200 text-gray-600 hover:bg-gray-50 py-3 rounded-lg font-bold text-center transition-colors flex items-center justify-center gap-2 text-sm">
+                        Sito Ufficiale <ExternalLink size={14}/>
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* COLONNA 2: Descrizione e Pro/Contro */}
+                  <div className="md:w-3/4 flex flex-col justify-between">
+                    <div className="mb-6">
+                       <p className="text-slate-600 text-lg leading-relaxed" dangerouslySetInnerHTML={{ __html: sw.description }}></p>
+                    </div>
+
+                    <div className="grid md:grid-cols-2 gap-6 bg-gray-50 p-5 rounded-xl border border-gray-100">
+                      <div>
+                        <h4 className="font-bold text-sm text-slate-900 uppercase tracking-wide mb-3 flex items-center gap-2">
+                          <Check size={16} className="text-green-500"/> I Punti di Forza
+                        </h4>
+                        <ul className="space-y-2">
+                          {sw.pros.slice(0, 3).map((pro, idx) => (
+                            <li key={idx} className="text-sm text-slate-700 flex items-start gap-2">
+                              <span className="text-green-500 font-bold mt-0.5">✓</span> {pro}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                      
+                      <div className="mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-gray-200">
+                        {/* FEATURE HIGHLIGHTS */}
+                        <h4 className="font-bold text-sm text-slate-900 uppercase tracking-wide mb-3">Funzioni Chiave</h4>
+                        <div className="flex flex-wrap gap-2">
+                          {sw.features.giornale_lavori && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Giornale Lavori</span>}
+                          {sw.features.pos_psc && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Sicurezza POS</span>}
+                          {sw.features.computo_metrico && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Computo</span>}
+                          {sw.features.bim_viewer && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">BIM Viewer</span>}
+                          {sw.features.funziona_offline && <span className="bg-white border border-gray-200 px-2 py-1 rounded text-xs font-medium text-slate-600">Offline</span>}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Link Mobile (visibile solo su schermi piccoli in basso) */}
+                    <div className="mt-6 md:hidden">
+                       <Link href={`/software/${sw.id}`} className="text-blue-600 font-bold text-sm flex items-center gap-1">
+                          Leggi recensione completa <ChevronRight size={16} />
+                       </Link>
+                    </div>
+                  </div>
+
+                </div>
               </div>
-            </div>
+            ))}
+
+            {filteredSoftware.length === 0 && (
+               <div className="text-center py-20 bg-gray-50 rounded-2xl border border-dashed border-gray-300">
+                 <p className="text-xl text-gray-500 mb-2">Nessun software trovato per "{searchTerm}"</p>
+                 <button onClick={() => setSearchTerm('')} className="text-blue-600 font-bold underline">Resetta filtri</button>
+               </div>
+            )}
           </div>
-        )}
+        </div>
+
+        {/* --- SEZIONE BLOG PREVIEW --- */}
+        <section className="bg-slate-50 py-16 border-t border-gray-200 mt-12">
+          <div className="max-w-6xl mx-auto px-4">
+            
+            <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
+              <div>
+                <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">
+                  Guide e Approfondimenti
+                </h2>
+                <p className="text-slate-600 max-w-xl text-lg">
+                  Strategie, normative e consigli pratici per digitalizzare la tua impresa edile senza errori.
+                </p>
+              </div>
+              <Link href="/blog" className="hidden md:flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800 transition-colors bg-white px-4 py-2 rounded-full border border-blue-100 shadow-sm">
+                Vedi tutti gli articoli <ArrowRight size={18} />
+              </Link>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {recentPosts.map((post) => (
+                <Link key={post.id} href={`/blog/${post.id}`} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col md:flex-row h-full">
+                  {/* Immagine */}
+                  <div className="md:w-2/5 h-48 md:h-auto bg-gray-200 relative overflow-hidden">
+                     <img 
+                       src={post.coverImage} 
+                       alt={post.title} 
+                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                     />
+                  </div>
+                  
+                  {/* Contenuto */}
+                  <div className="p-6 md:w-3/5 flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-center gap-2 text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">
+                        <BookOpen size={12} className="text-blue-500"/> Blog
+                        <span>•</span>
+                        <span className="flex items-center gap-1"><Calendar size={12}/> {post.date}</span>
+                      </div>
+                      <h3 className="text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-slate-500 text-sm line-clamp-2 mb-4">
+                        {post.excerpt}
+                      </p>
+                    </div>
+                    <span className="text-blue-600 text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
+                      Leggi tutto <ArrowRight size={14} />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+              
+              {/* Fallback se non ci sono post */}
+              {recentPosts.length === 0 && (
+                 <div className="col-span-2 text-center text-gray-400 py-10 bg-white rounded-2xl border border-dashed">
+                   Presto in arrivo nuove guide...
+                 </div>
+              )}
+            </div>
+
+            {/* Link Mobile */}
+            <div className="mt-8 text-center md:hidden">
+              <Link href="/blog" className="inline-flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800">
+                Vedi tutti gli articoli <ArrowRight size={18} />
+              </Link>
+            </div>
+
+          </div>
+        </section>
 
       </main>
 
-      {/* FLOATING ACTION BAR */}
-      {selectedIds.length > 0 && !showDeepCompare && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-6 z-40 animate-in slide-in-from-bottom-10 border border-slate-700 w-[90%] md:w-auto justify-center">
-          <div className="text-sm font-medium whitespace-nowrap">
-            <span className="font-bold text-orange-400">{selectedIds.length}</span> scelti
-          </div>
-          <div className="flex items-center gap-2">
-             <button 
-               onClick={() => setSelectedIds([])}
-               className="p-2 hover:bg-slate-800 rounded-full text-slate-400 hover:text-white transition-colors"
-               title="Deseleziona tutto"
-             >
-               <Trash2 size={16} />
-             </button>
-             <button 
-               onClick={() => setShowDeepCompare(true)}
-               className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 transition-transform active:scale-95 shadow-lg shadow-blue-900/50 whitespace-nowrap"
-             >
-               Confronta <ArrowRight size={16} />
-             </button>
-          </div>
-        </div>
-      )}
-
-      {/* FOOTER */}
-      <footer className="bg-slate-900 text-slate-400 text-sm py-12 border-t border-slate-800 mt-auto relative z-10">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+      {/* --- FOOTER --- */}
+      <footer className="bg-slate-900 text-slate-400 py-12">
+        <div className="max-w-6xl mx-auto px-4 text-center md:text-left">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div>
-              <div className="font-bold text-white text-lg mb-4 flex items-center gap-2">
-                <HardHat className="text-orange-500" /> CantiereOnline.it
-              </div>
-              <p className="mb-4 text-xs leading-relaxed max-w-md">
-                Il punto di riferimento per i professionisti dell'edilizia. Confrontiamo in modo indipendente i migliori software per la gestione cantieri.
-              </p>
-              <div className="text-xs text-slate-500">
-                <p><strong>ClusterClups SRL</strong></p>
-                <p>P.IVA 10923621212</p>
-              </div>
+               <div className="text-white font-bold text-xl flex items-center justify-center md:justify-start gap-2 mb-2">
+                 <HardHat className="text-orange-500"/> CantiereOnline.it
+               </div>
+               <p className="text-sm">Il punto di riferimento per il software edile in Italia.</p>
             </div>
-            
-            <div className="md:text-right">
-              <h4 className="font-bold text-white mb-4">Note Legali</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/privacy" className="hover:text-white transition-colors underline decoration-slate-700 underline-offset-4">
-                    Privacy Policy
-                  </Link>
-                </li>
-              </ul>
+            <div className="flex gap-6 text-sm font-medium">
+               <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+               <Link href="/blog" className="hover:text-white transition-colors">Blog</Link>
+               <a href="mailto:info@cantiereonline.it" className="hover:text-white transition-colors">Contatti</a>
             </div>
           </div>
-          
-          <div className="border-t border-slate-800 pt-8 text-xs text-center text-slate-600">
-            <p className="mb-2">
-              Disclaimer: Le informazioni e i prezzi riportati in tabella sono frutto di ricerche web e analisi indipendenti. 
-              I dati potrebbero non essere aggiornati in tempo reale rispetto ai listini ufficiali delle software house, che fanno unicamente fede.
-            </p>
-            <p>&copy; {new Date().getFullYear()} ClusterClups SRL. Tutti i diritti riservati.</p>
+          <div className="border-t border-slate-800 mt-8 pt-8 text-xs text-center">
+            © {new Date().getFullYear()} CantiereOnline.it - Tutti i diritti riservati.
           </div>
         </div>
       </footer>
-
     </div>
   );
 }
