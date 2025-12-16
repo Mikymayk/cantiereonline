@@ -1,3 +1,5 @@
+"use client"; // <--- QUESTA RIGA È FONDAMENTALE
+
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { 
@@ -11,8 +13,10 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
 
   // --- LOGICA BLOG ---
-  // Recupera tutti i post e prendi solo i primi 2 più recenti
-  const allPosts = getSortedPostsData();
+  // In un Client Component, a volte leggere file system direttamente può dare noia in build.
+  // Ma in Next.js spesso funziona se i dati sono importati staticamente.
+  // Se dovesse darti errore su 'fs', useremo una soluzione diversa.
+  const allPosts = getSortedPostsData ? getSortedPostsData() : [];
   const recentPosts = allPosts.slice(0, 2);
 
   // --- LOGICA FILTRO SOFTWARE ---
