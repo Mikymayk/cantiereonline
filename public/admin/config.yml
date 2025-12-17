@@ -2,25 +2,23 @@ backend:
   name: github
   repo: Mikymayk/cantiereonline
   branch: main
-  base_url: https://cantiere-auth.vercel.app # <--- L'indirizzo del tuo ponte
-  auth_endpoint: auth # Spesso è 'api/auth' o 'auth', dipende dal template usato
+  base_url: https://cantiere-auth.vercel.app
+  auth_endpoint: auth
 
-media_folder: "public/images" # Dove il CMS salverà le foto che carichi
-public_folder: "/images"      # Come il sito leggerà le foto
+media_folder: "public/images"
+public_folder: "/images"
 
-# Impostazioni Editor
 editor:
-  preview: false # Disabilita l'anteprima laterale complessa per velocità
+  preview: false
 
-# Qui definisci cosa puoi modificare
 collections:
-  - name: "blog" # Nome della collezione
+  - name: "blog"
     label: "Articoli Blog"
-    folder: "posts" # La cartella dove Next.js cerca i file .md
-    create: true # Puoi creare nuovi articoli
-    slug: "{{year}}-{{month}}-{{day}}-{{slug}}" # Nome del file generato
-    fields: # I campi che dovrai compilare
+    folder: "posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
       - {label: "Titolo", name: "title", widget: "string"}
       - {label: "Data Pubblicazione", name: "date", widget: "datetime", format: "YYYY-MM-DD", dateFormat: "YYYY-MM-DD", timeFormat: false}
-      - {label: "Descrizione SEO", name: "description", widget: "text", hint: "La descrizione che appare su Google e sotto il titolo"}
+      - {label: "Descrizione SEO", name: "description", widget: "text"}
       - {label: "Contenuto Articolo", name: "body", widget: "markdown"}
