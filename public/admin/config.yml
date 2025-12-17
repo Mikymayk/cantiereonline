@@ -1,7 +1,9 @@
 backend:
   name: github
-  repo: Mikymayk/cantiereonline # <--- CAMBIA QUESTO! (es. clusterclups/cantiere-nextjs)
-  branch: main # Assicurati che il tuo branch principale si chiami main (o master)
+  repo: Mikymayk/cantiereonline
+  branch: main
+  base_url: https://cantiere-auth.vercel.app # <--- L'indirizzo del tuo ponte
+  auth_endpoint: auth # Spesso è 'api/auth' o 'auth', dipende dal template usato
 
 media_folder: "public/images" # Dove il CMS salverà le foto che carichi
 public_folder: "/images"      # Come il sito leggerà le foto
