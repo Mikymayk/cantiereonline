@@ -1,0 +1,26 @@
+backend:
+  name: github
+  repo: Mikymayk/cantiereonline
+  branch: main
+  base_url: https://www.cantiereonline.it
+  auth_endpoint: api/auth
+
+media_folder: "public/images"
+public_folder: "/images"
+
+editor:
+  preview: false
+
+collections:
+  - name: "blog"
+    label: "Articoli Blog"
+    folder: "posts"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    fields:
+      - {label: "Titolo", name: "title", widget: "string"}
+      - {label: "Data Pubblicazione", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false}
+      - {label: "Riassunto (Excerpt)", name: "excerpt", widget: "text"}
+      - {label: "Immagine di Copertina", name: "coverImage", widget: "image"}
+      - {label: "Autore", name: "author", widget: "string"}
+      - {label: "Contenuto Articolo", name: "body", widget: "markdown"}

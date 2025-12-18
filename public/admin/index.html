@@ -4,63 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CantiereOnline Admin</title>
+  <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
 </head>
 <body>
-  <!-- Define the flag to prevent auto-initialization -->
-  <script>window.CMS_MANUAL_INIT = true;</script>
-
   <!-- Include the script that builds the page and powers Decap CMS -->
-  <script src="https://unpkg.com/decap-cms@3.1.2/dist/decap-cms.js"></script>
-
-  <script>
-    // Wait for the CMS script to load before initializing
-    // Using a simple check or window.onload if the script is synchronous
-    // Since the script above is blocking, CMS should be available here.
-    // However, to be safe against the race condition causing removeChild:
-
-    document.addEventListener('DOMContentLoaded', function() {
-        if (typeof CMS !== 'undefined') {
-            initCMS();
-        } else {
-            console.error('CMS object not found');
-        }
-    });
-
-    function initCMS() {
-        CMS.init({
-          config: {
-            backend: {
-              name: 'github',
-              repo: 'Mikymayk/cantiereonline',
-              branch: 'main',
-              base_url: 'https://www.cantiereonline.it',
-              auth_endpoint: 'api/auth'
-            },
-            media_folder: 'public/images',
-            public_folder: '/images',
-            editor: {
-              preview: false
-            },
-            collections: [
-              {
-                name: 'blog',
-                label: 'Articoli Blog',
-                folder: 'posts',
-                create: true,
-                slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
-                fields: [
-                  { label: 'Titolo', name: 'title', widget: 'string' },
-                  { label: 'Data Pubblicazione', name: 'date', widget: 'datetime', date_format: 'YYYY-MM-DD', time_format: false },
-                  { label: 'Riassunto (Excerpt)', name: 'excerpt', widget: 'text' },
-                  { label: 'Immagine di Copertina', name: 'coverImage', widget: 'image' },
-                  { label: 'Autore', name: 'author', widget: 'string' },
-                  { label: 'Contenuto Articolo', name: 'body', widget: 'markdown' }
-                ]
-              }
-            ]
-          }
-        });
-    }
-  </script>
+  <script src="https://unpkg.com/decap-cms@^3.1.2/dist/decap-cms.js"></script>
 </body>
 </html>
