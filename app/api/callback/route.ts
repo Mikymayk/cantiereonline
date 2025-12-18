@@ -50,12 +50,17 @@ export async function GET(request: Request) {
       <script>
         const receiveMessage = () => {
           if (window.opener) {
+            // We target the production origin specifically for security and reliability.
+            // If you are testing locally (localhost), you might need to adjust this or use '*' strictly for development.
+            // Given the user is testing on production (cantiereonline.it), this is correct.
+            const targetOrigin = "https://www.cantiereonline.it";
+
             // Send the message expected by Decap CMS
-            window.opener.postMessage('${message}', '*');
+            window.opener.postMessage('${message}', targetOrigin);
 
-            console.log("Authentication successful, message sent to opener.");
+            console.log("Authentication successful, message sent to " + targetOrigin);
 
-            // Close the window after a short delay to ensure the message is processed
+            // Close the window after a short delay
             setTimeout(() => {
                 window.close();
             }, 200);
