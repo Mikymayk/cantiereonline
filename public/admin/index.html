@@ -4,72 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CantiereOnline Admin</title>
+  <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
 </head>
 <body>
-  <!--
-    Clean Admin Setup
-    1. Disable auto-init to prevent conflicts.
-    2. Load CMS script (Pinned strictly to 3.3.3 to avoid React 18+ crashes).
-    3. Initialize manually with embedded config.
-  -->
-  <script>window.CMS_MANUAL_INIT = true;</script>
-  <script src="https://unpkg.com/decap-cms@3.3.3/dist/decap-cms.js"></script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      console.log("Initializing CantiereOnline Admin...");
-
-      if (typeof CMS === 'undefined') {
-        console.error("Critical Error: Decap CMS script failed to load.");
-        document.body.innerHTML = "<h1>Error: CMS failed to load. Check console.</h1>";
-        return;
-      }
-
-      try {
-        CMS.init({
-          config: {
-            backend: {
-              name: 'github',
-              repo: 'Mikymayk/cantiereonline',
-              branch: 'main',
-              // Base URL is critical to override default Netlify endpoint
-              base_url: 'https://www.cantiereonline.it',
-              // Relative path to our API route
-              auth_endpoint: 'api/auth'
-            },
-            // Local media handling
-            media_folder: 'public/images',
-            public_folder: '/images',
-            // UI Settings
-            editor: {
-              preview: false
-            },
-            // Content Collections
-            collections: [
-              {
-                name: 'blog',
-                label: 'Articoli Blog',
-                folder: 'posts',
-                create: true,
-                slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
-                fields: [
-                  { label: 'Titolo', name: 'title', widget: 'string' },
-                  { label: 'Data Pubblicazione', name: 'date', widget: 'datetime', date_format: 'YYYY-MM-DD', time_format: false },
-                  { label: 'Riassunto (Excerpt)', name: 'excerpt', widget: 'text' },
-                  { label: 'Immagine di Copertina', name: 'coverImage', widget: 'image' },
-                  { label: 'Autore', name: 'author', widget: 'string' },
-                  { label: 'Contenuto Articolo', name: 'body', widget: 'markdown' }
-                ]
-              }
-            ]
-          }
-        });
-        console.log("CMS Initialized successfully.");
-      } catch (e) {
-        console.error("CMS Initialization crashed:", e);
-        document.body.innerHTML = "<h1>Error: CMS crashed during init. See console.</h1>";
-      }
-    });
-  </script>
+  <!-- Include the script that builds the page and powers Decap CMS -->
+  <!-- STRICTLY PINNED to 3.0.12 to avoid React hydration issues -->
+  <script src="https://unpkg.com/decap-cms@3.0.12/dist/decap-cms.js"></script>
 </body>
 </html>
