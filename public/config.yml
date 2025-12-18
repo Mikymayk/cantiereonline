@@ -3,7 +3,7 @@ backend:
   repo: Mikymayk/cantiereonline
   branch: main
   base_url: https://www.cantiereonline.it
-  auth_endpoint: api/auth
+  auth_endpoint: /api/auth
 
 media_folder: "public/images"
 public_folder: "/images"
