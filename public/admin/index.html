@@ -6,12 +6,14 @@
   <title>CantiereOnline Admin</title>
 </head>
 <body>
+  <!-- Define the flag to prevent auto-initialization -->
+  <script>window.CMS_MANUAL_INIT = true;</script>
+
   <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 
   <script>
     // Manually initialize the CMS to force the correct backend configuration
-    // This bypasses issues where base_url might be ignored or default to Netlify
     CMS.init({
       config: {
         backend: {
