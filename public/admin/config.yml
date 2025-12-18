@@ -2,8 +2,8 @@ backend:
   name: github
   repo: Mikymayk/cantiereonline
   branch: main
-  base_url: https://cantiere-auth.vercel.app
-  auth_endpoint: auth
+  base_url: https://www.cantiereonline.it
+  auth_endpoint: api/auth
 
 media_folder: "public/images"
 public_folder: "/images"
