@@ -3,7 +3,7 @@ backend:
   repo: Mikymayk/cantiereonline
   branch: main
   base_url: https://www.cantiereonline.it
-  auth_endpoint: api/auth
+  auth_endpoint: /api/auth
 
 media_folder: "public/images"
 public_folder: "/images"
@@ -20,5 +20,7 @@ collections:
     fields:
       - {label: "Titolo", name: "title", widget: "string"}
       - {label: "Data Pubblicazione", name: "date", widget: "datetime", format: "YYYY-MM-DD", dateFormat: "YYYY-MM-DD", timeFormat: false}
-      - {label: "Descrizione SEO", name: "description", widget: "text"}
+      - {label: "Riassunto (Excerpt)", name: "excerpt", widget: "text"}
+      - {label: "Immagine di Copertina", name: "coverImage", widget: "image"}
+      - {label: "Autore", name: "author", widget: "string"}
       - {label: "Contenuto Articolo", name: "body", widget: "markdown"}

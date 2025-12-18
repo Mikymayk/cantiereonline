@@ -36,12 +36,11 @@ export async function GET(request: Request) {
     }
 
     const token = data.access_token;
+    const provider = 'github';
 
-    // Decap CMS expects a message in a specific format via postMessage
-    // 'authorization:github:success:{"token":"..."}'
-    const message = `authorization:github:success:${JSON.stringify({
+    const message = `authorization:${provider}:success:${JSON.stringify({
       token: token,
-      provider: 'github',
+      provider: provider,
     })}`;
 
     const content = `
@@ -50,11 +49,19 @@ export async function GET(request: Request) {
       <body>
       <script>
         const receiveMessage = () => {
-          window.opener.postMessage(
-            '${message}',
-            '*'
-          );
-          window.close();
+          if (window.opener) {
+            // Send the message expected by Decap CMS
+            window.opener.postMessage('${message}', '*');
+
+            console.log("Authentication successful, message sent to opener.");
+
+            // Close the window after a short delay to ensure the message is processed
+            setTimeout(() => {
+                window.close();
+            }, 200);
+          } else {
+             document.body.innerHTML = "Authentication successful. You can close this window.";
+          }
         };
         receiveMessage();
       </script>
