@@ -46,22 +46,26 @@ export async function GET(request: Request) {
     const content = `
       <!DOCTYPE html>
       <html>
+      <head>
+        <title>Auth Success</title>
+      </head>
       <body>
+      <h3>Authentication Successful!</h3>
+      <p>Sending credentials to the CMS...</p>
       <script>
         const receiveMessage = () => {
           if (window.opener) {
-            // Using '*' to ensure the message is delivered regardless of protocol/subdomain matches.
-            // This fixes issues where the opener might be detected as different origin.
+            console.log("Found opener, sending message...");
+            // Sending to * to ensure delivery
             window.opener.postMessage('${message}', '*');
 
-            console.log("Authentication successful, message sent to opener.");
-
-            // Close the window after a short delay
+            // Close the window after a delay to ensure message is sent
             setTimeout(() => {
+                console.log("Closing window...");
                 window.close();
-            }, 200);
+            }, 1000);
           } else {
-             document.body.innerHTML = "Authentication successful. You can close this window.";
+             document.body.innerHTML += "<p style='color:red'>Error: Could not find the parent window (opener is null). Please ensure you did not block popups.</p>";
           }
         };
         receiveMessage();
