@@ -48,28 +48,43 @@ export async function GET(request: Request) {
       <html>
       <head>
         <title>Auth Success</title>
+        <style>
+          body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; text-align: center; color: #333; }
+          .success { color: #2e7d32; font-size: 24px; margin-bottom: 20px; }
+          .status { margin-bottom: 30px; color: #666; }
+          button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+        </style>
       </head>
       <body>
-      <h3>Authentication Successful!</h3>
-      <p>Sending credentials to the CMS...</p>
+      <div class="success">✅ Authentication Successful!</div>
+      <div id="status" class="status">Initializing handshake...</div>
+
       <script>
         const receiveMessage = () => {
+          const statusDiv = document.getElementById("status");
+
           if (window.opener) {
+            statusDiv.innerText = "Found parent window. Sending credentials...";
             console.log("Found opener, sending message...");
-            // Sending to * to ensure delivery
+
+            // Sending to * to ensure delivery across protocols/subdomains
             window.opener.postMessage('${message}', '*');
+
+            statusDiv.innerText = "Credentials sent! Closing window in 3 seconds...";
 
             // Close the window after a delay to ensure message is sent
             setTimeout(() => {
                 console.log("Closing window...");
                 window.close();
-            }, 1000);
+            }, 3000);
           } else {
-             document.body.innerHTML += "<p style='color:red'>Error: Could not find the parent window (opener is null). Please ensure you did not block popups.</p>";
+             statusDiv.innerHTML = "<span style='color:red'>Error: Could not find the parent window.</span><br>Please ensure you did not block popups or use an incognito window that separates contexts.";
           }
         };
         receiveMessage();
       </script>
+
+      <button onclick="window.close()">Close this window manually</button>
       </body>
       </html>
     `;

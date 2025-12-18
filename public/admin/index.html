@@ -8,27 +8,35 @@
 </head>
 <body>
   <!-- Include the script that builds the page and powers Decap CMS -->
-  <script src="https://unpkg.com/decap-cms@^3.1.2/dist/decap-cms.js"></script>
+  <!-- STRICTLY PINNED to 3.1.2 to avoid React 18+ hydration issues in newer versions -->
+  <script src="https://unpkg.com/decap-cms@3.1.2/dist/decap-cms.js"></script>
 
   <script>
     // Debug listener to verify if the auth message is reaching the main window
     window.addEventListener("message", (event) => {
-      console.log("Admin Page received message:", event);
-      if (typeof event.data === "string" && event.data.startsWith("authorization:github:success")) {
+      // Ignore empty messages or messages from extensions
+      if (!event.data || typeof event.data !== "string") return;
+
+      console.log("Admin Page received message:", event.data);
+
+      if (event.data.startsWith("authorization:github:success")) {
           console.log("✅ GitHub Auth Success Message received!", event.data);
 
           // Visual feedback
           const div = document.createElement("div");
           div.style.position = "fixed";
-          div.style.top = "0";
-          div.style.left = "0";
-          div.style.width = "100%";
-          div.style.backgroundColor = "green";
+          div.style.top = "20px";
+          div.style.left = "50%";
+          div.style.transform = "translateX(-50%)";
+          div.style.backgroundColor = "#4caf50";
           div.style.color = "white";
-          div.style.padding = "20px";
-          div.style.zIndex = "9999";
-          div.style.textAlign = "center";
-          div.innerText = "Login riuscito! Il CMS si sta avviando...";
+          div.style.padding = "15px 30px";
+          div.style.borderRadius = "8px";
+          div.style.boxShadow = "0 4px 6px rgba(0,0,0,0.1)";
+          div.style.zIndex = "10000";
+          div.style.fontSize = "16px";
+          div.style.fontWeight = "bold";
+          div.innerText = "Login riuscito! Accesso in corso...";
           document.body.appendChild(div);
       }
     });
