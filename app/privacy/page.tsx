@@ -18,7 +18,7 @@ export default function PrivacyPage() {
         </h2>
         <div className="space-y-2 text-sm">
           <p><strong>ClusterClups SRL</strong></p>
-          <p>Sede Legale: Strada Santa Maria dell'Orto, 14</p>
+          <p>Sede Legale: Strada Santa Maria dell&apos;Orto, 14</p>
           <p>80053 Castellammare di Stabia (NA), Italia</p>
           <p>P.IVA: 10923621212</p>
           <div className="mt-4 pt-4 border-t border-slate-200 space-y-2">
@@ -45,7 +45,7 @@ export default function PrivacyPage() {
         <p>I dati sono trattati per fornire il servizio di comparazione, gestire le richieste di contatto e adempiere agli obblighi legali e fiscali.</p>
         
         <h3>4. Affiliazioni</h3>
-        <p>Questo sito partecipa al Programma Affiliazione Amazon EU e altri programmi partner. I link affiliati non comportano costi aggiuntivi per l'utente ma generano una piccola commissione per sostenere il progetto.</p>
+        <p>Questo sito partecipa al Programma Affiliazione Amazon EU e altri programmi partner. I link affiliati non comportano costi aggiuntivi per l&apos;utente ma generano una piccola commissione per sostenere il progetto.</p>
       </div>
     </div>
   );

@@ -57,7 +57,7 @@ export default function Home() {
           </h1>
           
           <h2 className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto mb-2 leading-relaxed font-normal">
-            Nel 2025, gestire un cantiere con carta e penna è un rischio. In questa guida confrontiamo i migliori software per l'edilizia in base a tre criteri: <strong className="text-slate-800 font-semibold">conformità alla legge italiana</strong>, <strong className="text-slate-800 font-semibold">facilità d'uso in mobilità</strong> e <strong className="text-slate-800 font-semibold">integrazione BIM</strong>.
+            Nel 2025, gestire un cantiere con carta e penna è un rischio. In questa guida confrontiamo i migliori software per l&apos;edilizia in base a tre criteri: <strong className="text-slate-800 font-semibold">conformità alla legge italiana</strong>, <strong className="text-slate-800 font-semibold">facilità d&apos;uso in mobilità</strong> e <strong className="text-slate-800 font-semibold">integrazione BIM</strong>.
           </h2>
         </section>
 
@@ -85,11 +85,11 @@ export default function Home() {
                  <HardHat className="text-orange-500"/> CantiereOnline
                </div>
                <p className="mb-4 leading-relaxed">
-                 Il punto di riferimento per i professionisti dell'edilizia. Confrontiamo in modo indipendente i migliori software per la gestione cantieri.
+                 Il punto di riferimento per i professionisti dell&apos;edilizia. Confrontiamo in modo indipendente i migliori software per la gestione cantieri.
                </p>
                <div className="text-xs text-slate-500 space-y-2">
                  <p><strong>Clusterclups S.R.L.</strong></p>
-                 <p>Strada Santa Maria dell'Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
+                 <p>Strada Santa Maria dell&apos;Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
                  <p>P.IVA: 10923621212</p>
                </div>
             </div>

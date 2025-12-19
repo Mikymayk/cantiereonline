@@ -86,7 +86,7 @@ export default function HomeNO() {
 
             <div className="text-xs text-slate-500 space-y-2 mb-6">
                <p><strong>Clusterclups S.R.L.</strong></p>
-               <p>Strada Santa Maria dell'Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
+               <p>Strada Santa Maria dell&apos;Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
                <p>MVA: 10923621212</p>
             </div>
 

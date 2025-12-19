@@ -18,6 +18,7 @@ export interface Software {
     pos_psc: boolean;
     computo_metrico: boolean;
     free_trial: boolean;
+    special_free: boolean; // Nuova chiave per "Versione Gratuita"
     conformita_ita: boolean;
     fatturazione_elettronica: boolean;
     firma_digitale: boolean;
@@ -55,7 +56,7 @@ export const softwareData: Software[] = [
     pros: ["Interfaccia intuitiva su Tablet", "Report PDF istantanei", "Funziona offline perfettamente"],
     cons: ["Costoso per piccoli team", "Manca la contabilità avanzata"],
     features: {
-      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: true, fatturazione_elettronica: false, firma_digitale: true, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: true, foto_360: true, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -75,7 +76,7 @@ export const softwareData: Software[] = [
     pros: ["Versione gratuita a vita", "Visualizzatore tavole velocissimo", "Gestione task eccellente"],
     cons: ["Normativa italiana assente", "Supporto in inglese prevalente"],
     features: {
-      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true, special_free: true,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: true, foto_360: true, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -95,7 +96,7 @@ export const softwareData: Software[] = [
     pros: ["Facile come usare WhatsApp", "Giornale Lavori Automatico", "Supporto italiano eccezionale"],
     cons: ["Meno adatto per grandi appalti", "Funzioni BIM limitate"],
     features: {
-      giornale_lavori: true, pos_psc: true, computo_metrico: false, free_trial: true,
+      giornale_lavori: true, pos_psc: true, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: true, fatturazione_elettronica: false, firma_digitale: true, integrazione_sdi: false, export_contabilita: true,
       funziona_offline: true, bim_viewer: false, foto_360: false, gps_staff: true, app_ios: true, app_android: true,
       chat_interna: true, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -115,7 +116,7 @@ export const softwareData: Software[] = [
     pros: ["Standard assoluto in Italia", "Banche dati prezziari integrate", "Computo metrico perfetto"],
     cons: ["Interfaccia datata", "Curva di apprendimento ripida"],
     features: {
-      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: false,
+      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: false, special_free: false,
       conformita_ita: true, fatturazione_elettronica: true, firma_digitale: true, integrazione_sdi: true, export_contabilita: true,
       funziona_offline: false, bim_viewer: true, foto_360: false, gps_staff: false, app_ios: false, app_android: false,
       chat_interna: false, notifiche_push: false, utenti_illimitati: false, inviti_esterni: false,
@@ -135,7 +136,7 @@ export const softwareData: Software[] = [
     pros: ["Suite completa Enterprise", "Potentissimo per grandi imprese", "Gestione finanziaria avanzata"],
     cons: ["Prezzi non pubblici", "Complesso da configurare"],
     features: {
-      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: false,
+      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: false, special_free: false,
       conformita_ita: true, fatturazione_elettronica: true, firma_digitale: true, integrazione_sdi: true, export_contabilita: true,
       funziona_offline: false, bim_viewer: true, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -158,7 +159,7 @@ export const softwareData: Software[] = [
     pros: ["Integrazione BIM nativa perfetta", "Ecosistema Autodesk", "Scalabilità infinita"],
     cons: ["Costo elevato", "Richiede formazione specifica"],
     features: {
-      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: true, foto_360: true, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -178,7 +179,7 @@ export const softwareData: Software[] = [
     pros: ["Utenti illimitati inclusi", "App mobile eccellente", "Marketplace con 300+ integrazioni"],
     cons: ["Prezzi entry-level alti", "Adattamento a norme italiane da verificare"],
     features: {
-      giornale_lavori: true, pos_psc: false, computo_metrico: true, free_trial: true,
+      giornale_lavori: true, pos_psc: false, computo_metrico: true, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: true, integrazione_sdi: false, export_contabilita: true,
       funziona_offline: true, bim_viewer: true, foto_360: true, gps_staff: true, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: true, utenti_illimitati: true, inviti_esterni: true,
@@ -198,7 +199,7 @@ export const softwareData: Software[] = [
     pros: ["Conformità normativa totale", "Prezzi una tantum o annuali chiari", "Modulare"],
     cons: ["Interfaccia desktop classica", "Cloud non sempre nativo"],
     features: {
-      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: true,
+      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: true, special_free: false,
       conformita_ita: true, fatturazione_elettronica: true, firma_digitale: true, integrazione_sdi: true, export_contabilita: true,
       funziona_offline: true, bim_viewer: true, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: false, utenti_illimitati: false, inviti_esterni: false,
@@ -218,7 +219,7 @@ export const softwareData: Software[] = [
     pros: ["Estremamente personalizzabile", "Automazioni potenti", "Facile da imparare"],
     cons: ["Manca computo metrico nativo", "Funzioni edili specifiche da creare"],
     features: {
-      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: false, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: true, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -238,7 +239,7 @@ export const softwareData: Software[] = [
     pros: ["Prezzari sempre aggiornati", "Solido e rodato", "Acquisto licenza perpetua"],
     cons: ["Poco orientato al cloud/mobile", "Grafica tradizionale"],
     features: {
-      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: true,
+      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: true, special_free: false,
       conformita_ita: true, fatturazione_elettronica: true, firma_digitale: true, integrazione_sdi: false, export_contabilita: true,
       funziona_offline: true, bim_viewer: false, foto_360: false, gps_staff: false, app_ios: false, app_android: false,
       chat_interna: false, notifiche_push: false, utenti_illimitati: false, inviti_esterni: false,
@@ -258,7 +259,7 @@ export const softwareData: Software[] = [
     pros: ["Automatizza gli acquisti", "Versione base gratuita", "Network fornitori vasto"],
     cons: ["Focalizzato solo sugli acquisti", "Non è un gestionale di cantiere"],
     features: {
-      giornale_lavori: false, pos_psc: false, computo_metrico: true, free_trial: true,
+      giornale_lavori: false, pos_psc: false, computo_metrico: true, free_trial: true, special_free: true,
       conformita_ita: true, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: false, bim_viewer: false, foto_360: false, gps_staff: false, app_ios: false, app_android: false,
       chat_interna: true, notifiche_push: true, utenti_illimitati: true, inviti_esterni: true,
@@ -278,7 +279,7 @@ export const softwareData: Software[] = [
     pros: ["Integrazione firma digitale top", "Prezzi competitivi", "Normativa italiana"],
     cons: ["Interfaccia migliorabile", "App mobile limitata"],
     features: {
-      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: true,
+      giornale_lavori: true, pos_psc: true, computo_metrico: true, free_trial: true, special_free: false,
       conformita_ita: true, fatturazione_elettronica: true, firma_digitale: true, integrazione_sdi: true, export_contabilita: true,
       funziona_offline: true, bim_viewer: true, foto_360: false, gps_staff: false, app_ios: false, app_android: false,
       chat_interna: false, notifiche_push: false, utenti_illimitati: false, inviti_esterni: false,
@@ -298,7 +299,7 @@ export const softwareData: Software[] = [
     pros: ["Piano Free generoso", "Viste Gantt e Mappa", "Moltissimi template"],
     cons: ["Troppe funzioni possono confondere", "Non specifico per edilizia"],
     features: {
-      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true, special_free: true,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: false, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: true, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -318,7 +319,7 @@ export const softwareData: Software[] = [
     pros: ["Visualizzatore BIM gratuito top", "Realtà Aumentata (AR)", "Facile da usare"],
     cons: ["Funzioni gestionali a pagamento", "Supporto base in inglese"],
     features: {
-      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true, special_free: true,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: true, foto_360: true, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: true, utenti_illimitati: true, inviti_esterni: true,
@@ -338,7 +339,7 @@ export const softwareData: Software[] = [
     pros: ["Il re dei PDF per edilizia", "Misurazioni precisissime", "Collaborazione real-time"],
     cons: ["Solo desktop (iPad limitato)", "Non è un gestionale completo"],
     features: {
-      giornale_lavori: false, pos_psc: false, computo_metrico: true, free_trial: true,
+      giornale_lavori: false, pos_psc: false, computo_metrico: true, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: true, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: false, foto_360: false, gps_staff: false, app_ios: true, app_android: false,
       chat_interna: true, notifiche_push: false, utenti_illimitati: false, inviti_esterni: true,
@@ -358,7 +359,7 @@ export const softwareData: Software[] = [
     pros: ["Velocità di documentazione assurda", "AI Vision Comparison", "Facilissimo"],
     cons: ["Richiede hardware 360", "Costoso per piccoli lavori"],
     features: {
-      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: true, foto_360: true, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: false, notifiche_push: true, utenti_illimitati: true, inviti_esterni: true,
@@ -378,7 +379,7 @@ export const softwareData: Software[] = [
     pros: ["Familiare per chi usa Excel", "Automazioni potenti", "Template edili pronti"],
     cons: ["Curva di apprendimento", "Costi scalano con gli utenti"],
     features: {
-      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: false, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: true, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -398,7 +399,7 @@ export const softwareData: Software[] = [
     pros: ["Potenza di calcolo CPM", "Standard per grandi appalti", "Gestione rischi avanzata"],
     cons: ["Interfaccia complessa", "Costo elevato", "Eccessivo per piccoli lavori"],
     features: {
-      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: true, pos_psc: false, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: false, bim_viewer: true, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: true, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -418,7 +419,7 @@ export const softwareData: Software[] = [
     pros: ["User experience fantastica", "Ottimo per l'ufficio", "Piano free utile"],
     cons: ["Nessuna funzione tecnica edile", "Manca Gantt nel piano base"],
     features: {
-      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true, special_free: true,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: false, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: true, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
@@ -438,7 +439,7 @@ export const softwareData: Software[] = [
     pros: ["Clash detection intuitiva", "Navigazione modello fluida", "Issue tracking"],
     cons: ["Non è un gestionale amministrativo", "Prezzo"],
     features: {
-      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true,
+      giornale_lavori: false, pos_psc: false, computo_metrico: false, free_trial: true, special_free: false,
       conformita_ita: false, fatturazione_elettronica: false, firma_digitale: false, integrazione_sdi: false, export_contabilita: false,
       funziona_offline: true, bim_viewer: true, foto_360: false, gps_staff: false, app_ios: true, app_android: true,
       chat_interna: true, notifiche_push: true, utenti_illimitati: false, inviti_esterni: true,
