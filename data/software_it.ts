@@ -41,7 +41,7 @@ export interface Software {
   };
 }
 
-export const softwareData: Software[] = [
+export const softwareList: Software[] = [
   // --- I TOP 5 ORIGINALI (POSIZIONE INVARIATA) ---
   {
     id: 'planradar',

@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { softwareData } from '@/data/software';
+import { softwareList } from '@/data/software_it'; // <--- Modificato per usare il nuovo file IT
 import { softwareDE } from '@/data/software_de';
 import { softwareCH } from '@/data/software_ch';
 import { softwareSE } from '@/data/software_se';
@@ -10,8 +10,8 @@ const URL = 'https://www.cantiereonline.it';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   
-  // 1. URLs per i Software (ITALIA)
-  const softwareUrlsIT = softwareData.map((product) => ({
+  // 1. URLs per i Software (ITALIA) - Aggiornato per usare softwareList
+  const softwareUrlsIT = softwareList.map((product) => ({
     url: `${URL}/software/${product.id}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
