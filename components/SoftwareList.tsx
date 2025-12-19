@@ -103,6 +103,26 @@ export default function SoftwareList({ data, filters, columns, comparisonGroups,
     return passesSearch && passesFilters;
   });
 
+  // Translations
+  const t = {
+    searchPlaceholder: { it: "Cerca software...", de: "Software suchen...", ch: "Software suchen...", se: "Sök programvara...", no: "Søk etter programvare..." },
+    filter: { it: "Filtra Funzionalità", de: "Funktionen filtern", ch: "Funktionen filtern", se: "Filtrera funktioner", no: "Filtrer funksjoner" },
+    reset: { it: "Reset", de: "Zurücksetzen", ch: "Zurücksetzen", se: "Återställ", no: "Nullstill" },
+    results: { it: "Risultati", de: "Ergebnisse", ch: "Ergebnisse", se: "Resultat", no: "Resultater" },
+    selected: { it: "Selezionati", de: "Ausgewählt", ch: "Ausgewählt", se: "Valda", no: "Valgt" },
+    compare: { it: "Confronta Ora", de: "Jetzt vergleichen", ch: "Jetzt vergleichen", se: "Jämför nu", no: "Sammenlign nå" },
+    available: { it: "Software Disponibili", de: "Verfügbare Software", ch: "Verfügbare Software", se: "Tillgänglig programvara", no: "Tilgjengelig programvare" },
+    visit: { it: "Vedi Sito", de: "Zur Webseite", ch: "Zur Webseite", se: "Besök webbplats", no: "Besøk nettside" },
+    mobileHint: { it: "👉 Scorri la tabella a destra per vedere tutti i dati", de: "👉 Tabelle nach rechts scrollen für mehr Details", ch: "👉 Tabelle nach rechts scrollen für mehr Details", se: "👉 Skrolla tabellen till höger för mer info", no: "👉 Bla tabellen til høyre for mer info" },
+    compareTitle: { it: "Confronto Dettagliato", de: "Detaillierter Vergleich", ch: "Detaillierter Vergleich", se: "Detaljerad jämförelse", no: "Detaljert sammenligning" },
+    close: { it: "Chiudi", de: "Schließen", ch: "Schließen", se: "Stäng", no: "Lukk" },
+    feature: { it: "Caratteristica", de: "Funktion", ch: "Funktion", se: "Funktion", no: "Funksjon" },
+    maxSelection: { it: "Puoi confrontare massimo 3 software alla volta.", de: "Sie können maximal 3 Softwareprodukte gleichzeitig vergleichen.", ch: "Sie können maximal 3 Softwareprodukte gleichzeitig vergleichen.", se: "Du kan jämföra max 3 program samtidigt.", no: "Du kan sammenligne maks 3 programmer samtidig." }
+  };
+
+  // @ts-ignore
+  const getTxt = (key: keyof typeof t) => t[key][locale] || t[key]['it'];
+
   const toggleSelection = (id: string) => {
     if (selectedIds.includes(id)) {
       setSelectedIds(selectedIds.filter(i => i !== id));
@@ -110,7 +130,7 @@ export default function SoftwareList({ data, filters, columns, comparisonGroups,
       if (selectedIds.length < 3) {
         setSelectedIds([...selectedIds, id]);
       } else {
-        alert("Max 3 software selection.");
+        alert(getTxt('maxSelection'));
       }
     }
   };
@@ -143,25 +163,6 @@ export default function SoftwareList({ data, filters, columns, comparisonGroups,
       </div>
     </th>
   );
-
-  // Translations
-  const t = {
-    searchPlaceholder: { it: "Cerca software...", de: "Software suchen...", ch: "Software suchen...", se: "Sök programvara...", no: "Søk etter programvare..." },
-    filter: { it: "Filtra Funzionalità", de: "Funktionen filtern", ch: "Funktionen filtern", se: "Filtrera funktioner", no: "Filtrer funksjoner" },
-    reset: { it: "Reset", de: "Zurücksetzen", ch: "Zurücksetzen", se: "Återställ", no: "Nullstill" },
-    results: { it: "Risultati", de: "Ergebnisse", ch: "Ergebnisse", se: "Resultat", no: "Resultater" },
-    selected: { it: "Selezionati", de: "Ausgewählt", ch: "Ausgewählt", se: "Valda", no: "Valgt" },
-    compare: { it: "Confronta Ora", de: "Jetzt vergleichen", ch: "Jetzt vergleichen", se: "Jämför nu", no: "Sammenlign nå" },
-    available: { it: "Software Disponibili", de: "Verfügbare Software", ch: "Verfügbare Software", se: "Tillgänglig programvara", no: "Tilgjengelig programvare" },
-    visit: { it: "Vedi Sito", de: "Zur Webseite", ch: "Zur Webseite", se: "Besök webbplats", no: "Besøk nettside" },
-    mobileHint: { it: "👉 Scorri la tabella a destra per vedere tutti i dati", de: "👉 Tabelle nach rechts scrollen für mehr Details", ch: "👉 Tabelle nach rechts scrollen für mehr Details", se: "👉 Skrolla tabellen till höger för mer info", no: "👉 Bla tabellen til høyre for mer info" },
-    compareTitle: { it: "Confronto Dettagliato", de: "Detaillierter Vergleich", ch: "Detaillierter Vergleich", se: "Detaljerad jämförelse", no: "Detaljert sammenligning" },
-    close: { it: "Chiudi", de: "Schließen", ch: "Schließen", se: "Stäng", no: "Lukk" },
-    feature: { it: "Caratteristica", de: "Funktion", ch: "Funktion", se: "Funktion", no: "Funksjon" }
-  };
-
-  // @ts-ignore
-  const getTxt = (key: keyof typeof t) => t[key][locale] || t[key]['it'];
 
   return (
     <>

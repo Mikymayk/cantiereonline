@@ -1,50 +1,107 @@
 import { MetadataRoute } from 'next';
 import { softwareData } from '@/data/software';
-import { getSortedPostsData } from '@/lib/posts'; // <--- 1. Importiamo la funzione dei post
+import { softwareDE } from '@/data/software_de';
+import { softwareCH } from '@/data/software_ch';
+import { softwareSE } from '@/data/software_se';
+import { softwareNO } from '@/data/software_no';
+import { getSortedPostsData } from '@/lib/posts';
 
-// Definiamo l'URL base del tuo sito
 const URL = 'https://www.cantiereonline.it';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   
-  // A. Generiamo gli URL per i SOFTWARE
-  const softwareUrls = softwareData.map((product) => ({
+  // 1. URLs per i Software (ITALIA)
+  const softwareUrlsIT = softwareData.map((product) => ({
     url: `${URL}/software/${product.id}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.8,
   }));
 
-  // B. Generiamo gli URL per gli ARTICOLI DEL BLOG
+  // 2. URLs per i Software (GERMANIA)
+  const softwareUrlsDE = softwareDE.map((product) => ({
+    url: `${URL}/de/software/${product.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  // 3. URLs per i Software (SVIZZERA)
+  const softwareUrlsCH = softwareCH.map((product) => ({
+    url: `${URL}/ch/software/${product.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  // 4. URLs per i Software (SVEZIA)
+  const softwareUrlsSE = softwareSE.map((product) => ({
+    url: `${URL}/se/software/${product.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  // 5. URLs per i Software (NORVEGIA)
+  const softwareUrlsNO = softwareNO.map((product) => ({
+    url: `${URL}/no/software/${product.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
+  }));
+
+  // 6. URLs per i Post del Blog
   const allPosts = getSortedPostsData();
   const blogUrls = allPosts.map((post) => ({
     url: `${URL}/blog/${post.id}`,
-    lastModified: new Date(post.date), // Usa la data scritta nel file .md
+    lastModified: new Date(post.date),
     changeFrequency: 'monthly' as const,
     priority: 0.7,
   }));
 
-  // C. Restituiamo la lista completa unendo tutto
+  // 7. Lingue supportate e pagine statiche
+  const languages = ['de', 'ch', 'se', 'no'];
+
+  const localizedStaticPages = languages.flatMap(lang => [
+    {
+      url: `${URL}/${lang}`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly' as const,
+      priority: 0.9,
+    },
+    {
+      url: `${URL}/${lang}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'yearly' as const,
+      priority: 0.3,
+    }
+  ]);
+
   return [
     {
-      url: URL, // Home Page
+      url: URL, // Home Page IT
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 1,
     },
     {
-      url: `${URL}/blog`, // Pagina Indice del Blog
+      url: `${URL}/blog`, // Blog Index
       lastModified: new Date(),
       changeFrequency: 'weekly',
       priority: 0.9,
     },
     {
-      url: `${URL}/privacy`, // Privacy Policy
+      url: `${URL}/privacy`, // Privacy IT
       lastModified: new Date(),
       changeFrequency: 'yearly',
       priority: 0.3,
     },
-    ...softwareUrls, // Lista Software
-    ...blogUrls,     // Lista Articoli Blog (AUTOMATICO)
+    ...localizedStaticPages, // Home e Privacy per altre lingue
+    ...softwareUrlsIT,
+    ...softwareUrlsDE,
+    ...softwareUrlsCH,
+    ...softwareUrlsSE,
+    ...softwareUrlsNO,
+    ...blogUrls,
   ];
 }
