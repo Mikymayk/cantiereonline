@@ -3,6 +3,31 @@ import Link from 'next/link';
 import { HardHat, ArrowRight, Calendar, BookOpen } from 'lucide-react';
 import { getSortedPostsData } from '@/lib/posts';
 import SoftwareList from '@/components/SoftwareList';
+import CountrySelector from '@/components/CountrySelector';
+import { softwareData } from '@/data/software';
+
+// Config IT
+const FILTERS_IT = [
+  { id: 'computo_metrico', label: 'Computo Metrico', key: 'computo_metrico' },
+  { id: 'free_trial', label: 'Prova Gratuita', key: 'free_trial' },
+  { id: 'versione_gratuita', label: 'Versione Gratuita', key: 'special_free' },
+  { id: 'interfaccia_italiano', label: 'Piattaforma in Italiano', key: 'interfaccia_italiano' },
+  { id: 'conformita_ita', label: 'Normativa Italia', key: 'conformita_ita' },
+  { id: 'giornale_lavori', label: 'Giornale Lavori', key: 'giornale_lavori' },
+  { id: 'pos_psc', label: 'Gestione POS/PSC', key: 'pos_psc' },
+  { id: 'funziona_offline', label: 'Funziona Offline', key: 'funziona_offline' },
+  { id: 'bim_viewer', label: 'BIM Viewer', key: 'bim_viewer' },
+  { id: 'app_ios', label: 'App iOS', key: 'app_ios' },
+  { id: 'app_android', label: 'App Android', key: 'app_android' },
+];
+
+const COLUMNS_IT = [
+  { key: 'conformita_ita', label: <>NORMATIVA<br/>ITALIA</>, tooltip: 'Rispetta Codice Appalti e D.Lgs 81/08.' },
+  { key: 'giornale_lavori', label: <>GIORNALE<br/>LAVORI</>, tooltip: 'Compilazione digitale del Giornale dei Lavori.' },
+  { key: 'pos_psc', label: <>GESTIONE<br/>POS</>, tooltip: 'Funzioni per redigere o gestire il POS.' },
+  { key: 'computo_metrico', label: <>COMPUTO<br/>METRICO</>, tooltip: 'Include strumenti per il computo metrico e la contabilità.' },
+  { key: 'free_trial', label: <>PROVA<br/>GRATUITA</>, tooltip: 'Disponibile prova gratuita o piano Free.' },
+];
 
 export default function Home() {
   const allPosts = getSortedPostsData();
@@ -34,7 +59,12 @@ export default function Home() {
 
         {/* --- LISTA E COMPARATORE --- */}
         <Suspense fallback={<div>Caricamento...</div>}>
-          <SoftwareList />
+          <SoftwareList
+            data={softwareData}
+            filters={FILTERS_IT}
+            columns={COLUMNS_IT}
+            locale="it"
+          />
         </Suspense>
 
         {/* --- SEZIONE BLOG --- */}
