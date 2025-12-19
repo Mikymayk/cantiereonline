@@ -4,64 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CantiereOnline Admin</title>
+  <link href="/admin/config.yml" type="text/yaml" rel="cms-config-url" />
 </head>
 <body>
-  <!--
-    Clean Admin Setup - JS Only
-    Using Manual Init to guarantee configuration is applied.
-  -->
-  <script>window.CMS_MANUAL_INIT = true;</script>
-
-  <!-- Using jsDelivr for Decap CMS 3.1.2 - Stable version -->
+  <!-- Include the script that builds the page and powers Decap CMS -->
   <script src="https://cdn.jsdelivr.net/npm/decap-cms@3.1.2/dist/decap-cms.js"></script>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Ensure CMS object is loaded
-      if (typeof CMS === 'undefined') {
-        document.body.innerHTML = '<h1>Error: CMS library failed to load.</h1>';
-        return;
-      }
-
-      console.log('Initializing Decap CMS...');
-
-      CMS.init({
-        config: {
-          backend: {
-            name: 'github',
-            repo: 'Mikymayk/cantiereonline',
-            branch: 'main',
-            // Dynamically set base_url to the current origin to avoid mismatches
-            base_url: window.location.origin,
-            auth_endpoint: 'api/auth'
-          },
-          media_folder: 'public/images',
-          public_folder: '/images',
-          editor: {
-            preview: false
-          },
-          collections: [
-            {
-              name: 'blog',
-              label: 'Articoli Blog',
-              folder: 'posts',
-              create: true,
-              slug: '{{year}}-{{month}}-{{day}}-{{slug}}',
-              fields: [
-                { label: 'Titolo', name: 'title', widget: 'string' },
-                { label: 'Data Pubblicazione', name: 'date', widget: 'datetime', date_format: 'YYYY-MM-DD', time_format: false },
-                { label: 'Riassunto (Excerpt)', name: 'excerpt', widget: 'text' },
-                { label: 'Immagine di Copertina', name: 'coverImage', widget: 'image' },
-                { label: 'Autore', name: 'author', widget: 'string' },
-                { label: 'Contenuto Articolo', name: 'body', widget: 'markdown' }
-              ]
-            }
-          ]
-        }
-      });
-
-      console.log('CMS Init called.');
-    });
-  </script>
 </body>
 </html>
