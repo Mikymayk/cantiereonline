@@ -14,13 +14,16 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: 'Missing OAUTH_CLIENT_ID configuration' }, { status: 500 });
   }
 
-  const redirectUri = 'https://github.com/login/oauth/authorize';
+  // We explicitly define the redirect_uri to match exactly what is configured in GitHub App
+  // This helps avoid mismatches if the request comes from different subdomains/protocols
+  const redirectUri = 'https://www.cantiereonline.it/api/callback';
+
+  const target = 'https://github.com/login/oauth/authorize';
   const params = new URLSearchParams({
     client_id: clientId,
-    scope: 'repo,user', // 'repo' grants full access to private and public repositories.
-    // We do not enforce redirect_uri here so GitHub uses the one configured in the OAuth App.
-    // It should be configured to: https://your-domain.com/api/callback
+    scope: 'repo,user',
+    redirect_uri: redirectUri
   });
 
-  return NextResponse.redirect(`${redirectUri}?${params.toString()}`);
+  return NextResponse.redirect(`${target}?${params.toString()}`);
 }

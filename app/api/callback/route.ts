@@ -38,6 +38,7 @@ export async function GET(request: Request) {
     const token = data.access_token;
     const provider = 'github';
 
+    // Construct the standard Decap CMS authorization message
     const message = `authorization:${provider}:success:${JSON.stringify({
       token: token,
       provider: provider,
@@ -49,42 +50,30 @@ export async function GET(request: Request) {
       <head>
         <title>Auth Success</title>
         <style>
-          body { font-family: system-ui, -apple-system, sans-serif; padding: 40px; text-align: center; color: #333; }
-          .success { color: #2e7d32; font-size: 24px; margin-bottom: 20px; }
-          .status { margin-bottom: 30px; color: #666; }
-          button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+          body { font-family: sans-serif; text-align: center; padding: 50px; }
+          .success { color: green; font-weight: bold; font-size: 1.2em; }
         </style>
       </head>
       <body>
-      <div class="success">✅ Authentication Successful!</div>
-      <div id="status" class="status">Initializing handshake...</div>
-
+      <div class="success">✅ Login Successful!</div>
+      <p>Closing window...</p>
       <script>
-        const receiveMessage = () => {
-          const statusDiv = document.getElementById("status");
+        const message = '${message}';
 
-          if (window.opener) {
-            statusDiv.innerText = "Found parent window. Sending credentials...";
-            console.log("Found opener, sending message...");
+        // Aggressive message sender to overcome race conditions
+        const interval = setInterval(() => {
+           if (window.opener) {
+             window.opener.postMessage(message, '*');
+             console.log("Message sent to opener");
+           }
+        }, 500);
 
-            // Sending to * to ensure delivery across protocols/subdomains
-            window.opener.postMessage('${message}', '*');
-
-            statusDiv.innerText = "Credentials sent! Closing window in 3 seconds...";
-
-            // Close the window after a delay to ensure message is sent
-            setTimeout(() => {
-                console.log("Closing window...");
-                window.close();
-            }, 3000);
-          } else {
-             statusDiv.innerHTML = "<span style='color:red'>Error: Could not find the parent window.</span><br>Please ensure you did not block popups or use an incognito window that separates contexts.";
-          }
-        };
-        receiveMessage();
+        // Stop sending and close after 4 seconds
+        setTimeout(() => {
+           clearInterval(interval);
+           window.close();
+        }, 4000);
       </script>
-
-      <button onclick="window.close()">Close this window manually</button>
       </body>
       </html>
     `;
