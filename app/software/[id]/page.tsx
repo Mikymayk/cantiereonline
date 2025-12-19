@@ -2,14 +2,14 @@ import React from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Check, X, Star, ExternalLink, HardHat } from 'lucide-react';
 import { Metadata } from 'next';
-import { softwareData } from '@/data/software'; 
+import { softwareList } from '@/data/software_it';
 import { reviewsData } from '@/data/reviews'; // <--- IMPORTA IL NUOVO FILE
 import { notFound } from 'next/navigation';
 
 // Gestione Metadata Dinamico
 export async function generateMetadata(props: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const params = await props.params;
-  const product = softwareData.find(p => p.id === params.id);
+  const product = softwareList.find(p => p.id === params.id);
   const review = reviewsData[params.id]; // Controlla se c'è la recensione
 
   if (!product) return { title: 'Software non trovato' };
@@ -38,7 +38,7 @@ export default async function SoftwarePage(props: Props) {
   const { id } = params;
 
   // Dati Base (Prezzo, Link, Nome, Rating) - Presi sempre dal DB principale
-  const product = softwareData.find(p => p.id === id);
+  const product = softwareList.find(p => p.id === id);
 
   // Dati Recensione (Testo lungo, Pro/Contro specifici) - Presi dal file recensioni se esiste
   const review = reviewsData[id];
