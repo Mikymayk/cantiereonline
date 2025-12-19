@@ -1,5 +1,6 @@
+import { Suspense } from 'react';
 import Link from 'next/link';
-import { HardHat, Menu, ArrowRight, Calendar, BookOpen } from 'lucide-react';
+import { HardHat, ArrowRight, Calendar, BookOpen } from 'lucide-react';
 import { getSortedPostsData } from '@/lib/posts';
 import SoftwareList from '@/components/SoftwareList';
 
@@ -16,21 +17,12 @@ export default function Home() {
           <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
             <HardHat className="text-orange-500" /> CantiereOnline.it
           </Link>
-          
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
-            <Link href="/blog" className="hover:text-blue-600 transition-colors">Blog & Guide</Link>
-            <Link href="#confronto" className="hover:text-blue-600 transition-colors">Confronto Software</Link>
-          </nav>
-
-          <Link href="/blog" className="md:hidden p-2 text-slate-600">
-             <Menu size={24} />
-          </Link>
         </div>
       </header>
 
       <main>
         {/* --- HERO SECTION --- */}
-        <section className="bg-white pb-10 pt-16 px-4 text-center border-b border-gray-100 w-full mb-6">
+        <section className="bg-white pb-10 pt-16 px-4 text-center w-full mb-6">
           <h1 className="text-3xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight max-w-4xl mx-auto leading-tight">
             Scegli il miglior software gestionale <br className="hidden md:block"/> per edilizia e cantieri
           </h1>
@@ -41,7 +33,9 @@ export default function Home() {
         </section>
 
         {/* --- LISTA E COMPARATORE --- */}
-        <SoftwareList />
+        <Suspense fallback={<div>Caricamento...</div>}>
+          <SoftwareList />
+        </Suspense>
 
         {/* --- SEZIONE BLOG --- */}
         <section className="bg-slate-50 py-16 border-t border-gray-200 mt-12">

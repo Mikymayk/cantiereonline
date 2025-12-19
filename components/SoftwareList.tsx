@@ -1,36 +1,102 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { 
   Search, Check, X, Star, ExternalLink, 
-  Scale, Trash2, Info, LayoutList
+  Scale, Trash2, Info, LayoutList, Filter
 } from 'lucide-react';
 import { softwareData } from '@/data/software';
 
+// --- CONFIGURAZIONE FILTRI ---
+const FILTERS = [
+  { id: 'computo_metrico', label: 'Computo Metrico', key: 'computo_metrico' },
+  { id: 'free_trial', label: 'Prova Gratuita', key: 'free_trial' },
+  { id: 'versione_gratuita', label: 'Versione Gratuita', key: 'special_free' }, // Logica custom
+  { id: 'interfaccia_italiano', label: 'Piattaforma in Italiano', key: 'interfaccia_italiano' },
+  { id: 'conformita_ita', label: 'Normativa Italia', key: 'conformita_ita' },
+  { id: 'giornale_lavori', label: 'Giornale Lavori', key: 'giornale_lavori' },
+  { id: 'pos_psc', label: 'Gestione POS/PSC', key: 'pos_psc' },
+  { id: 'funziona_offline', label: 'Funziona Offline', key: 'funziona_offline' },
+  { id: 'bim_viewer', label: 'BIM Viewer', key: 'bim_viewer' },
+  { id: 'app_ios', label: 'App iOS', key: 'app_ios' },
+  { id: 'app_android', label: 'App Android', key: 'app_android' },
+];
+
 export default function SoftwareList() {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [showCompare, setShowCompare] = useState(false);
 
-  // --- LOGICA FILTRO ---
+  // Stato Filtri (Sync con URL)
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [showMobileFilters, setShowMobileFilters] = useState(false);
+
+  // 1. Inizializzazione da URL
+  useEffect(() => {
+    const filtersFromUrl = searchParams.get('features');
+    if (filtersFromUrl) {
+      setActiveFilters(filtersFromUrl.split(','));
+    } else {
+      setActiveFilters([]);
+    }
+  }, [searchParams]);
+
+  // 2. Funzione per aggiornare Filtri e URL
+  const toggleFilter = (filterId: string) => {
+    const newFilters = activeFilters.includes(filterId)
+      ? activeFilters.filter(id => id !== filterId)
+      : [...activeFilters, filterId];
+
+    // Aggiorna URL
+    const params = new URLSearchParams(searchParams.toString());
+    if (newFilters.length > 0) {
+      params.set('features', newFilters.join(','));
+    } else {
+      params.delete('features');
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+
+    // Lo state locale verrà aggiornato dall'useEffect qui sopra, ma per reattività immediata in UI:
+    setActiveFilters(newFilters);
+  };
+
+  // --- LOGICA FILTRAGGIO ---
   const filteredSoftware = softwareData.filter(software => {
+    // A. Filtro Testuale
     const term = searchTerm.toLowerCase();
-    
-    // 1. Cerca nel testo (Nome e Descrizione)
     const matchesText = 
       software.name.toLowerCase().includes(term) ||
       software.description.toLowerCase().includes(term);
 
-    // 2. Cerca nelle funzionalità attive (es. cerca "ios", "offline", "bim")
-    const matchesFeature = Object.entries(software.features).some(([key, value]) => 
+    const matchesFeatureText = Object.entries(software.features).some(([key, value]) =>
       value === true && key.replace(/_/g, ' ').toLowerCase().includes(term)
     );
 
-    return matchesText || matchesFeature;
+    const passesSearch = term === '' || matchesText || matchesFeatureText;
+
+    // B. Filtro per Caratteristiche (AND logic: deve averle TUTTE quelle selezionate)
+    const passesFilters = activeFilters.every(filterId => {
+      const filterConfig = FILTERS.find(f => f.id === filterId);
+      if (!filterConfig) return true;
+
+      if (filterConfig.key === 'special_free') {
+        return software.paymentType === '(Free)' || software.price === '€0';
+      }
+
+      // @ts-ignore - Accesso dinamico alle features
+      return software.features[filterConfig.key] === true;
+    });
+
+    return passesSearch && passesFilters;
   });
 
-  // Gestione Selezione Checkbox
+  // Gestione Selezione Checkbox per confronto
   const toggleSelection = (id: string) => {
     if (selectedIds.includes(id)) {
       setSelectedIds(selectedIds.filter(i => i !== id));
@@ -52,32 +118,20 @@ export default function SoftwareList() {
     </div>
   );
 
-  // Helper per Intestazione Colonna con Tooltip (AGGIORNATO: GESTIONE BORDO DESTRO)
-  // Aggiunta prop "align" per decidere se centrare il tooltip o allinearlo a destra
+  // Helper per Intestazione Colonna con Tooltip
   const HeaderWithTooltip = ({ label, tooltip, align = "center" }: { label: React.ReactNode, tooltip: string, align?: "center" | "right" }) => (
     <th className="px-2 py-3 text-center w-[12%] leading-tight border-r border-gray-200 relative group align-middle">
-      {/* Testo Centrato */}
       <span className="block mt-1">{label}</span>
-      
-      {/* Icona Info in Alto a Destra */}
       <div className="absolute top-1 right-1 text-gray-300 hover:text-blue-500 cursor-help">
         <Info size={14} />
       </div>
-
-      {/* Tooltip Hover (Posizionato SOTTO) */}
       <div className={`
         absolute top-full mt-2 bg-slate-800 text-white text-xs font-normal p-2 rounded shadow-xl 
         opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50 
         normal-case tracking-normal leading-snug
-        /* QUI LA LOGICA DI POSIZIONAMENTO E LARGHEZZA */
-        ${align === "right" 
-          ? "right-0 w-36 md:w-48"  // Se allineato a destra: agganciato al bordo destro (non esce)
-          : "left-1/2 -translate-x-1/2 w-40 md:w-48" // Se centrato: classico comportamento
-        }
+        ${align === "right" ? "right-0 w-36 md:w-48" : "left-1/2 -translate-x-1/2 w-40 md:w-48"}
       `}>
         {tooltip}
-        
-        {/* Freccina verso l'alto (si sposta in base all'allineamento del box) */}
         <div className={`
           absolute bottom-full border-4 border-transparent border-b-slate-800
           ${align === "right" ? "right-2" : "left-1/2 -translate-x-1/2"}
@@ -88,19 +142,116 @@ export default function SoftwareList() {
 
   return (
     <>
-      {/* --- BARRA DI RICERCA --- */}
+      {/* --- BARRA DI RICERCA & FILTRI --- */}
       <section className="px-4 text-center w-full -mt-6 mb-8 relative z-10">
-         <div className="max-w-lg mx-auto relative">
-            <input 
-              type="text" 
-              placeholder="Cerca software (es. PlanRadar, IOS, Offline...)" 
-              className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg transition-all"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+         <div className="max-w-4xl mx-auto">
+            {/* Input Ricerca */}
+            <div className="relative max-w-lg mx-auto mb-6">
+              <input
+                type="text"
+                placeholder="Cerca software (es. PlanRadar, IOS, Offline...)"
+                className="w-full pl-12 pr-4 py-4 rounded-full border border-gray-200 shadow-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none text-lg transition-all"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+            </div>
+
+            {/* FILTRI DESKTOP (Chips) */}
+            <div className="hidden md:flex flex-wrap justify-center gap-2 animate-in fade-in slide-in-from-top-4">
+              {FILTERS.map(filter => (
+                <button
+                  key={filter.id}
+                  onClick={() => toggleFilter(filter.id)}
+                  className={`
+                    px-4 py-2 rounded-full text-sm font-semibold transition-all border
+                    ${activeFilters.includes(filter.id)
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md transform scale-105'
+                      : 'bg-white text-slate-600 border-gray-200 hover:border-blue-300 hover:bg-blue-50'
+                    }
+                  `}
+                >
+                  {filter.label}
+                  {activeFilters.includes(filter.id) && <Check size={14} className="inline ml-1.5 -mt-0.5" strokeWidth={3}/>}
+                </button>
+              ))}
+            </div>
+
+            {/* FILTRI MOBILE (Bottone + Modale) */}
+            <div className="md:hidden flex justify-center">
+              <button
+                onClick={() => setShowMobileFilters(true)}
+                className={`
+                  flex items-center gap-2 px-6 py-2 rounded-full font-bold shadow-sm transition-all border
+                  ${activeFilters.length > 0
+                    ? 'bg-blue-600 text-white border-blue-600'
+                    : 'bg-white text-slate-700 border-gray-300'
+                  }
+                `}
+              >
+                <Filter size={18} />
+                Filtra Funzionalità
+                {activeFilters.length > 0 && (
+                  <span className="bg-white text-blue-600 text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {activeFilters.length}
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
       </section>
+
+      {/* --- MODALE FILTRI MOBILE --- */}
+      {showMobileFilters && (
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] flex flex-col animate-in slide-in-from-bottom-10">
+
+            <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+              <h3 className="font-bold text-lg text-slate-900">Filtra Software</h3>
+              <button onClick={() => setShowMobileFilters(false)} className="p-2 hover:bg-gray-100 rounded-full">
+                <X size={20} className="text-slate-500"/>
+              </button>
+            </div>
+
+            <div className="p-4 overflow-y-auto">
+              <div className="grid grid-cols-1 gap-3">
+                {FILTERS.map(filter => (
+                  <label key={filter.id} className="flex items-center justify-between p-3 rounded-xl border border-gray-200 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 transition-all cursor-pointer">
+                    <span className="font-medium text-slate-700">{filter.label}</span>
+                    <input
+                      type="checkbox"
+                      checked={activeFilters.includes(filter.id)}
+                      onChange={() => toggleFilter(filter.id)}
+                      className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                    />
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="p-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl flex gap-3">
+              <button
+                onClick={() => {
+                  setActiveFilters([]);
+                  const params = new URLSearchParams(searchParams.toString());
+                  params.delete('features');
+                  router.replace(`${pathname}?${params.toString()}`, { scroll: false });
+                }}
+                className="flex-1 py-3 text-slate-600 font-bold hover:bg-gray-200 rounded-xl transition-colors"
+              >
+                Reset
+              </button>
+              <button
+                onClick={() => setShowMobileFilters(false)}
+                className="flex-[2] py-3 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200"
+              >
+                Vedi {filteredSoftware.length} Risultati
+              </button>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       {/* --- BARRA FLOTTANTE COMPARAZIONE --- */}
       {selectedIds.length > 0 && (
