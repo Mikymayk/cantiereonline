@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { HardHat } from 'lucide-react';
 import SoftwareList from '@/components/SoftwareList';
 import CountrySelector from '@/components/CountrySelector';
-import { softwareData } from '@/data/software';
+import { softwareList } from '@/data/software_it';
 
 // Config IT
 const FILTERS_IT = [
@@ -64,7 +64,7 @@ export default function Home() {
         {/* --- LISTA E COMPARATORE --- */}
         <Suspense fallback={<div>Caricamento...</div>}>
           <SoftwareList
-            data={softwareData}
+            data={softwareList}
             filters={FILTERS_IT}
             columns={COLUMNS_IT}
             comparisonGroups={COMPARISON_GROUPS_IT}

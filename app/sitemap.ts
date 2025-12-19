@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { softwareData } from '@/data/software';
+import { softwareList } from '@/data/software_it';
 import { getSortedPostsData } from '@/lib/posts'; // <--- 1. Importiamo la funzione dei post
 
 // Definiamo l'URL base del tuo sito
@@ -8,7 +8,7 @@ const URL = 'https://www.cantiereonline.it';
 export default function sitemap(): MetadataRoute.Sitemap {
   
   // A. Generiamo gli URL per i SOFTWARE
-  const softwareUrls = softwareData.map((product) => ({
+  const softwareUrls = softwareList.map((product) => ({
     url: `${URL}/software/${product.id}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
