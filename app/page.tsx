@@ -1,7 +1,6 @@
 import { Suspense } from 'react';
 import Link from 'next/link';
-import { HardHat, ArrowRight, Calendar, BookOpen } from 'lucide-react';
-import { getSortedPostsData } from '@/lib/posts';
+import { HardHat } from 'lucide-react';
 import SoftwareList from '@/components/SoftwareList';
 import CountrySelector from '@/components/CountrySelector';
 import { softwareData } from '@/data/software';
@@ -29,10 +28,15 @@ const COLUMNS_IT = [
   { key: 'free_trial', label: <>PROVA<br/>GRATUITA</>, tooltip: 'Disponibile prova gratuita o piano Free.' },
 ];
 
-export default function Home() {
-  const allPosts = getSortedPostsData();
-  const recentPosts = allPosts.slice(0, 2);
+const COMPARISON_GROUPS_IT = [
+  { title: "HIGHLIGHTS", keys: ['giornale_lavori', 'pos_psc', 'computo_metrico', 'free_trial'] },
+  { title: "AMMINISTRAZIONE", keys: ['conformita_ita', 'fatturazione_elettronica', 'firma_digitale', 'integrazione_sdi', 'export_contabilita'] },
+  { title: "TECNICO & CAMPO", keys: ['funziona_offline', 'bim_viewer', 'foto_360', 'gps_staff', 'app_ios', 'app_android'] },
+  { title: "COLLABORAZIONE", keys: ['chat_interna', 'notifiche_push', 'utenti_illimitati', 'inviti_esterni'] },
+  { title: "SUPPORTO", keys: ['interfaccia_italiano', 'supporto_telefono', 'supporto_chat', 'supporto_italiano'] }
+];
 
+export default function Home() {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900">
       
@@ -40,7 +44,7 @@ export default function Home() {
       <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
-            <HardHat className="text-orange-500" /> CantiereOnline.it
+            <HardHat className="text-orange-500" /> CantiereOnline
           </Link>
         </div>
       </header>
@@ -63,94 +67,30 @@ export default function Home() {
             data={softwareData}
             filters={FILTERS_IT}
             columns={COLUMNS_IT}
+            comparisonGroups={COMPARISON_GROUPS_IT}
             locale="it"
           />
         </Suspense>
-
-        {/* --- SEZIONE BLOG --- */}
-        <section className="bg-slate-50 py-16 border-t border-gray-200 mt-12">
-          <div className="max-w-6xl mx-auto px-4">
-            
-            <div className="flex flex-col md:flex-row justify-between items-end mb-10 gap-4">
-              <div>
-                <h2 className="text-3xl font-extrabold text-slate-900 mb-2 tracking-tight">
-                  Guide e Approfondimenti
-                </h2>
-                <p className="text-slate-600 max-w-xl text-lg">
-                  Strategie, normative e consigli pratici per digitalizzare la tua impresa edile senza errori.
-                </p>
-              </div>
-              <Link href="/blog" className="hidden md:flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800 transition-colors bg-white px-4 py-2 rounded-full border border-blue-100 shadow-sm">
-                Vedi tutti gli articoli <ArrowRight size={18} />
-              </Link>
-            </div>
-
-            <div className="grid md:grid-cols-2 gap-8">
-              {recentPosts.map((post) => (
-                <Link key={post.id} href={`/blog/${post.id}`} className="group bg-white rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100 flex flex-col md:flex-row h-full">
-                  <div className="md:w-2/5 h-48 md:h-auto bg-gray-200 relative overflow-hidden">
-                     {post.coverImage && (
-                       <img 
-                         src={post.coverImage} 
-                         alt={post.title} 
-                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                       />
-                     )}
-                  </div>
-                  <div className="p-6 md:w-3/5 flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center gap-2 text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">
-                        <BookOpen size={12} className="text-blue-500"/> Blog
-                        <span>•</span>
-                        <span className="flex items-center gap-1"><Calendar size={12}/> {post.date}</span>
-                      </div>
-                      <h3 className="text-xl font-bold text-slate-900 mb-3 leading-tight group-hover:text-blue-600 transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-slate-500 text-sm line-clamp-2 mb-4">
-                        {post.excerpt}
-                      </p>
-                    </div>
-                    <span className="text-blue-600 text-sm font-bold flex items-center gap-1 group-hover:gap-2 transition-all mt-auto">
-                      Leggi tutto <ArrowRight size={14} />
-                    </span>
-                  </div>
-                </Link>
-              ))}
-              
-              {recentPosts.length === 0 && (
-                 <div className="col-span-2 text-center text-gray-400 py-10 bg-white rounded-2xl border border-dashed">
-                   Presto in arrivo nuove guide...
-                 </div>
-              )}
-            </div>
-
-            <div className="mt-8 text-center md:hidden">
-              <Link href="/blog" className="inline-flex items-center gap-2 text-blue-600 font-bold hover:text-blue-800">
-                Vedi tutti gli articoli <ArrowRight size={18} />
-              </Link>
-            </div>
-
-          </div>
-        </section>
 
       </main>
 
       {/* --- FOOTER AGGIORNATO --- */}
       <footer className="bg-slate-900 text-slate-400 py-12 text-sm">
         <div className="max-w-6xl mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between gap-8">
+          <div className="flex flex-col md:flex-row justify-between gap-8 mb-8">
             
             {/* Colonna Sinistra */}
             <div className="md:w-1/2">
                <div className="text-white font-bold text-xl flex items-center gap-2 mb-4">
-                 <HardHat className="text-orange-500"/> CantiereOnline.it
+                 <HardHat className="text-orange-500"/> CantiereOnline
                </div>
                <p className="mb-4 leading-relaxed">
                  Il punto di riferimento per i professionisti dell'edilizia. Confrontiamo in modo indipendente i migliori software per la gestione cantieri.
                </p>
-               <div className="text-xs text-slate-500">
-                 Un progetto di <a href="https://www.clusterclups.com/" target="_blank" rel="nofollow noreferrer" className="hover:text-slate-300 transition-colors">ClusterClups srl</a> - P.IVA 10923621212
+               <div className="text-xs text-slate-500 space-y-2">
+                 <p><strong>Clusterclups S.R.L.</strong></p>
+                 <p>Strada Santa Maria dell'Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
+                 <p>P.IVA: 10923621212</p>
                </div>
             </div>
 
@@ -163,18 +103,15 @@ export default function Home() {
                
                <div>
                  <p className="text-slate-500 mb-1">Hai bisogno di informazioni?</p>
-                 <div className="font-medium text-slate-300 select-all">
-                   Per info e collaborazioni: contatto@cantiereonline.it
+                 <div className="font-medium text-slate-300">
+                   contatto@cantiereonline.it
                  </div>
                </div>
             </div>
 
           </div>
-          
-          <div className="border-t border-slate-800 mt-10 pt-8 text-xs text-center text-slate-600">
-            © {new Date().getFullYear()} CantiereOnline.it - Tutti i diritti riservati.
-          </div>
         </div>
+        <CountrySelector />
       </footer>
     </div>
   );

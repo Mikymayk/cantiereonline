@@ -27,6 +27,14 @@ const COLUMNS_DE = [
   { key: 'kostenlose_testphase', label: 'GRATIS TEST', tooltip: 'Kostenlos testen' },
 ];
 
+const COMPARISON_GROUPS_DE = [
+  { title: "HIGHLIGHTS", keys: ['vob_konformitaet', 'bautagebuch', 'gaeb_schnittstelle', 'kostenlose_testphase'] },
+  { title: "VERWALTUNG", keys: ['gobd_konform', 'xrechnung_zugferd', 'baulohn_abrechnung', 'freistellungsbescheinigung', 'datev_schnittstelle', 'dsgvo_konformitaet'] },
+  { title: "TECHNISCH", keys: ['reb_23_003', 'digitale_bauakte', 'bauzeitenplan', 'nachtragsmanagement', 'bim_integration', 'sprachsteuerung'] },
+  { title: "BAUSTELLE", keys: ['maengelmanagement', 'maengelanzeige_vob', 'fotodokumentation', 'digitale_abnahme', 'subunternehmer_verwaltung'] },
+  { title: "APP", keys: ['app_ios', 'app_android'] }
+];
+
 export const metadata = {
   title: 'Beste Bausoftware Deutschland 2025 | Vergleich',
   description: 'Vergleich der besten Bausoftware für Deutschland. VOB-Konformität, GAEB-Schnittstelle und Bautagebuch im Test.',
@@ -44,7 +52,7 @@ export default function HomeDE() {
       <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/de" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
-            <HardHat className="text-orange-500" /> BaustelleOnline.de
+            <HardHat className="text-orange-500" /> CantiereOnline
           </Link>
         </div>
       </header>
@@ -65,6 +73,7 @@ export default function HomeDE() {
             data={softwareDE}
             filters={FILTERS_DE}
             columns={COLUMNS_DE}
+            comparisonGroups={COMPARISON_GROUPS_DE}
             locale="de"
           />
         </Suspense>
@@ -73,8 +82,16 @@ export default function HomeDE() {
 
       <footer className="bg-slate-900 text-slate-400 py-12 text-sm">
         <div className="max-w-6xl mx-auto px-4 text-center mb-8">
-            <p>Unabhängiger Vergleich für die deutsche Bauwirtschaft.</p>
-            <div className="mt-4">
+            <p className="mb-4">Unabhängiger Vergleich für die deutsche Bauwirtschaft.</p>
+
+            <div className="text-xs text-slate-500 space-y-2 mb-6">
+               <p><strong>Clusterclups S.R.L.</strong></p>
+               <p>Strada Santa Maria dell'Orto 14, 80053 Castellammare di Stabia (NA), Italien</p>
+               <p>USt-IdNr: 10923621212</p>
+            </div>
+
+            <div className="flex justify-center gap-6">
+              <span className="text-slate-500">contatto@cantiereonline.it</span>
               <Link href="/de/privacy" className="underline hover:text-white">Datenschutz & Impressum</Link>
             </div>
         </div>

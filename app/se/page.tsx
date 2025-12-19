@@ -27,6 +27,14 @@ const COLUMNS_SE = [
   { key: 'gratis_provperiod', label: 'PROV', tooltip: 'Gratis provperiod' },
 ];
 
+const COMPARISON_GROUPS_SE = [
+  { title: "HÖJDPUNKTER", keys: ['id06_integration', 'ata_hantering', 'personalliggare', 'gratis_provperiod'] },
+  { title: "ADMINISTRATION", keys: ['bankid_inloggning', 'rot_avdrag', 'e_faktura', 'integration_fortnox', 'offerthantering', 'resursplanering'] },
+  { title: "PROJEKT", keys: ['dagbok', 'tidrapportering', 'projektuppfoljning', 'klimatdeklaration', 'underentreprenorsportal'] },
+  { title: "KVALITET & MILJÖ", keys: ['egenkontroll', 'kma_parm', 'checklistor', 'avvikelserapport'] },
+  { title: "MOBILITET", keys: ['mobilapp', 'gps_positionering', 'bildhantering', 'app_ios', 'app_android'] }
+];
+
 export const metadata = {
   title: 'Bästa Byggprogram Sverige 2025 | Jämförelse',
   description: 'Jämför de bästa byggprogrammen för Sverige. ID06, ÄTA och Personalliggare.',
@@ -44,7 +52,7 @@ export default function HomeSE() {
       <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/se" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
-            <HardHat className="text-orange-500" /> ByggOnline.se
+            <HardHat className="text-orange-500" /> CantiereOnline
           </Link>
         </div>
       </header>
@@ -65,6 +73,7 @@ export default function HomeSE() {
             data={softwareSE}
             filters={FILTERS_SE}
             columns={COLUMNS_SE}
+            comparisonGroups={COMPARISON_GROUPS_SE}
             locale="se"
           />
         </Suspense>
@@ -73,8 +82,16 @@ export default function HomeSE() {
 
       <footer className="bg-slate-900 text-slate-400 py-12 text-sm">
         <div className="max-w-6xl mx-auto px-4 text-center mb-8">
-            <p>Oberoende jämförelse för den svenska byggbranschen.</p>
-            <div className="mt-4">
+            <p className="mb-4">Oberoende jämförelse för den svenska byggbranschen.</p>
+
+            <div className="text-xs text-slate-500 space-y-2 mb-6">
+               <p><strong>Clusterclups S.R.L.</strong></p>
+               <p>Strada Santa Maria dell'Orto 14, 80053 Castellammare di Stabia (NA), Italien</p>
+               <p>Moms: 10923621212</p>
+            </div>
+
+            <div className="flex justify-center gap-6">
+              <span className="text-slate-500">contatto@cantiereonline.it</span>
               <Link href="/se/privacy" className="underline hover:text-white">Integritetspolicy</Link>
             </div>
         </div>

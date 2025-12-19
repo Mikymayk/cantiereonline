@@ -27,6 +27,14 @@ const COLUMNS_NO = [
   { key: 'gratis_proveperiode', label: 'PRØVE', tooltip: 'Gratis prøveperiode' },
 ];
 
+const COMPARISON_GROUPS_NO = [
+  { title: "HOVEDFUNKSJONER", keys: ['hms_system', 'byggekort_oversikt', 'timeforing', 'sja_analyse', 'gratis_proveperiode'] },
+  { title: "ADMINISTRASJON", keys: ['byggekort_integrasjon', 'ehf_faktura', 'ks_system', 'fdv_dokumentasjon', 'vipps_bankid', 'integrasjon_tripletex', 'boligmappa'] },
+  { title: "UTE PÅ BYGG", keys: ['avvikshandtering', 'masserapport', 'maskintimer', 'vernerunde', 'tegninger_mobil', 'bildedokumentasjon', 'uavhengig_kontroll'] },
+  { title: "PROSJEKT", keys: ['kalkulasjon', 'prosjektstyring', 'norsk_support'] },
+  { title: "APP", keys: ['app_ios', 'app_android'] }
+];
+
 export const metadata = {
   title: 'Beste Byggeprogramvare Norge 2025 | Test',
   description: 'Sammenligning av programvare for bygg og anlegg i Norge. HMS, Byggekort og Timeføring.',
@@ -44,7 +52,7 @@ export default function HomeNO() {
       <header className="border-b border-gray-100 p-4 sticky top-0 bg-white/95 backdrop-blur z-50">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Link href="/no" className="font-bold text-xl tracking-tight text-blue-900 flex items-center gap-2">
-            <HardHat className="text-orange-500" /> ByggOnline.no
+            <HardHat className="text-orange-500" /> CantiereOnline
           </Link>
         </div>
       </header>
@@ -65,6 +73,7 @@ export default function HomeNO() {
             data={softwareNO}
             filters={FILTERS_NO}
             columns={COLUMNS_NO}
+            comparisonGroups={COMPARISON_GROUPS_NO}
             locale="no"
           />
         </Suspense>
@@ -73,8 +82,16 @@ export default function HomeNO() {
 
       <footer className="bg-slate-900 text-slate-400 py-12 text-sm">
         <div className="max-w-6xl mx-auto px-4 text-center mb-8">
-            <p>Uavhengig sammenligning for den norske byggebransjen.</p>
-            <div className="mt-4">
+            <p className="mb-4">Uavhengig sammenligning for den norske byggebransjen.</p>
+
+            <div className="text-xs text-slate-500 space-y-2 mb-6">
+               <p><strong>Clusterclups S.R.L.</strong></p>
+               <p>Strada Santa Maria dell'Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
+               <p>MVA: 10923621212</p>
+            </div>
+
+            <div className="flex justify-center gap-6">
+              <span className="text-slate-500">contatto@cantiereonline.it</span>
               <Link href="/no/privacy" className="underline hover:text-white">Personvern</Link>
             </div>
         </div>

@@ -21,14 +21,20 @@ interface ColumnConfig {
   tooltip: string;
 }
 
+interface FeatureGroup {
+  title: string;
+  keys: string[];
+}
+
 interface SoftwareListProps {
   data: any[];
   filters: FilterConfig[];
   columns: ColumnConfig[];
-  locale?: string; // e.g., 'de', 'ch', 'se', 'no'
+  comparisonGroups: FeatureGroup[]; // New prop for detailed comparison
+  locale?: string;
 }
 
-export default function SoftwareList({ data, filters, columns, locale = 'it' }: SoftwareListProps) {
+export default function SoftwareList({ data, filters, columns, comparisonGroups, locale = 'it' }: SoftwareListProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -138,96 +144,28 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
     </th>
   );
 
-  // Translations for UI elements
+  // Translations
   const t = {
-    searchPlaceholder: {
-      it: "Cerca software...",
-      de: "Software suchen...",
-      ch: "Software suchen...",
-      se: "Sök programvara...",
-      no: "Søk etter programvare..."
-    },
-    filter: {
-      it: "Filtra Funzionalità",
-      de: "Funktionen filtern",
-      ch: "Funktionen filtern",
-      se: "Filtrera funktioner",
-      no: "Filtrer funksjoner"
-    },
-    reset: {
-      it: "Reset",
-      de: "Zurücksetzen",
-      ch: "Zurücksetzen",
-      se: "Återställ",
-      no: "Nullstill"
-    },
-    results: {
-      it: "Risultati",
-      de: "Ergebnisse",
-      ch: "Ergebnisse",
-      se: "Resultat",
-      no: "Resultater"
-    },
-    selected: {
-      it: "Selezionati",
-      de: "Ausgewählt",
-      ch: "Ausgewählt",
-      se: "Valda",
-      no: "Valgt"
-    },
-    compare: {
-      it: "Confronta Ora",
-      de: "Jetzt vergleichen",
-      ch: "Jetzt vergleichen",
-      se: "Jämför nu",
-      no: "Sammenlign nå"
-    },
-    available: {
-      it: "Software Disponibili",
-      de: "Verfügbare Software",
-      ch: "Verfügbare Software",
-      se: "Tillgänglig programvara",
-      no: "Tilgjengelig programvare"
-    },
-    visit: {
-      it: "Vedi Sito",
-      de: "Zur Webseite",
-      ch: "Zur Webseite",
-      se: "Besök webbplats",
-      no: "Besøk nettside"
-    },
-    mobileHint: {
-      it: "👉 Scorri la tabella a destra per vedere tutti i dati",
-      de: "👉 Tabelle nach rechts scrollen für mehr Details",
-      ch: "👉 Tabelle nach rechts scrollen für mehr Details",
-      se: "👉 Skrolla tabellen till höger för mer info",
-      no: "👉 Bla tabellen til høyre for mer info"
-    },
-    compareTitle: {
-      it: "Confronto Dettagliato",
-      de: "Detaillierter Vergleich",
-      ch: "Detaillierter Vergleich",
-      se: "Detaljerad jämförelse",
-      no: "Detaljert sammenligning"
-    },
-    close: {
-      it: "Chiudi",
-      de: "Schließen",
-      ch: "Schließen",
-      se: "Stäng",
-      no: "Lukk"
-    }
+    searchPlaceholder: { it: "Cerca software...", de: "Software suchen...", ch: "Software suchen...", se: "Sök programvara...", no: "Søk etter programvare..." },
+    filter: { it: "Filtra Funzionalità", de: "Funktionen filtern", ch: "Funktionen filtern", se: "Filtrera funktioner", no: "Filtrer funksjoner" },
+    reset: { it: "Reset", de: "Zurücksetzen", ch: "Zurücksetzen", se: "Återställ", no: "Nullstill" },
+    results: { it: "Risultati", de: "Ergebnisse", ch: "Ergebnisse", se: "Resultat", no: "Resultater" },
+    selected: { it: "Selezionati", de: "Ausgewählt", ch: "Ausgewählt", se: "Valda", no: "Valgt" },
+    compare: { it: "Confronta Ora", de: "Jetzt vergleichen", ch: "Jetzt vergleichen", se: "Jämför nu", no: "Sammenlign nå" },
+    available: { it: "Software Disponibili", de: "Verfügbare Software", ch: "Verfügbare Software", se: "Tillgänglig programvara", no: "Tilgjengelig programvare" },
+    visit: { it: "Vedi Sito", de: "Zur Webseite", ch: "Zur Webseite", se: "Besök webbplats", no: "Besøk nettside" },
+    mobileHint: { it: "👉 Scorri la tabella a destra per vedere tutti i dati", de: "👉 Tabelle nach rechts scrollen für mehr Details", ch: "👉 Tabelle nach rechts scrollen für mehr Details", se: "👉 Skrolla tabellen till höger för mer info", no: "👉 Bla tabellen til høyre for mer info" },
+    compareTitle: { it: "Confronto Dettagliato", de: "Detaillierter Vergleich", ch: "Detaillierter Vergleich", se: "Detaljerad jämförelse", no: "Detaljert sammenligning" },
+    close: { it: "Chiudi", de: "Schließen", ch: "Schließen", se: "Stäng", no: "Lukk" },
+    feature: { it: "Caratteristica", de: "Funktion", ch: "Funktion", se: "Funktion", no: "Funksjon" }
   };
 
   // @ts-ignore
-  const txt = t[locale] ? t : t['it']; // Fallback logic handled in access
-  const getTxt = (key: keyof typeof t) => {
-    // @ts-ignore
-    return t[key][locale] || t[key]['it'];
-  }
+  const getTxt = (key: keyof typeof t) => t[key][locale] || t[key]['it'];
 
   return (
     <>
+      {/* Search & Filter Bar */}
       <section className="px-4 text-center w-full -mt-6 mb-8 relative z-10">
          <div className="max-w-4xl mx-auto">
             <div className="relative max-w-lg mx-auto mb-6">
@@ -283,6 +221,7 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
           </div>
       </section>
 
+      {/* Mobile Filter Modal */}
       {showMobileFilters && (
         <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-black/50 backdrop-blur-sm animate-in fade-in">
           <div className="bg-white w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl shadow-2xl max-h-[90vh] flex flex-col animate-in slide-in-from-bottom-10">
@@ -332,6 +271,7 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
         </div>
       )}
 
+      {/* Comparison Floating Action */}
       {selectedIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-6 py-3 rounded-full shadow-2xl z-50 flex items-center gap-4 animate-in slide-in-from-bottom-4">
           <span className="font-bold text-sm">{selectedIds.length} {getTxt('selected')}</span>
@@ -347,6 +287,7 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
         </div>
       )}
 
+      {/* Main Table */}
       <div id="confronto" className="max-w-7xl mx-auto px-4 py-8">
         
         <div className="flex justify-between items-center mb-6">
@@ -394,9 +335,9 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
 
                     <td className="px-6 py-8 align-top border-r border-gray-200">
                       <div className="flex justify-between items-start mb-2">
-                        <span className="text-xl font-bold text-slate-900">
+                        <Link href={`/${locale === 'it' ? '' : locale + '/'}software/${sw.id}`} className="text-xl font-bold text-slate-900 hover:text-blue-600 hover:underline">
                           {sw.name}
-                        </span>
+                        </Link>
                         <div className="text-right">
                           <div className="text-xl font-bold text-slate-900">{sw.price}</div>
                           <div className="text-[10px] text-gray-500 font-bold uppercase tracking-wide">
@@ -446,6 +387,7 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
         </div>
       </div>
 
+      {/* Comparison Modal */}
       {showCompare && (
         <div className="fixed inset-0 bg-white z-[100] overflow-y-auto animate-in fade-in duration-200">
           <div className="max-w-7xl mx-auto px-4 py-8">
@@ -465,7 +407,7 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
             <div className="grid grid-cols-[200px_repeat(3,1fr)] gap-0 border border-gray-200 rounded-xl overflow-hidden shadow-xl">
               
               <div className="bg-slate-50 p-4 border-b border-r border-gray-200 font-bold text-slate-500 flex items-end pb-2">
-                Feature
+                {getTxt('feature')}
               </div>
               
               {comparisonData.map(sw => (
@@ -473,7 +415,12 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
                   <button onClick={() => toggleSelection(sw.id)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500">
                     <Trash2 size={16}/>
                   </button>
-                  <div className="font-extrabold text-lg text-slate-900 mb-1">{sw.name}</div>
+                  <Link href={`/${locale === 'it' ? '' : locale + '/'}software/${sw.id}`} className="font-extrabold text-lg text-slate-900 mb-1 hover:text-blue-600 hover:underline block">
+                    {sw.name}
+                  </Link>
+                  <div className="text-blue-600 font-bold mb-3">
+                    {sw.price} <span className="text-xs text-gray-500 font-normal">{sw.paymentType}</span>
+                  </div>
                   <a 
                     href={sw.website} 
                     target="_blank" 
@@ -488,25 +435,32 @@ export default function SoftwareList({ data, filters, columns, locale = 'it' }: 
                 <div key={i} className="bg-slate-50 border-b border-r border-gray-200 hidden md:block"></div>
               ))}
 
-              {filters.map(filter => (
-                <React.Fragment key={filter.id}>
-                   <div className="p-3 border-b border-r border-gray-100 text-sm font-medium text-slate-700 flex items-center bg-white pl-4">
-                      {filter.label}
-                   </div>
-                   {comparisonData.map(sw => (
-                      <div key={`${sw.id}-${filter.key}`} className="p-3 border-b border-r border-gray-100 text-center flex items-center justify-center bg-white">
-                        {/* @ts-ignore */}
-                        {filter.key === 'special_free'
-                            // @ts-ignore
-                          ? (sw.paymentType?.includes('Free') || sw.price === '€0' ? <Check size={20} className="text-green-500"/> : <X size={20} className="text-red-300 opacity-50"/>)
-                          // @ts-ignore
-                          : (sw.features[filter.key] ? <Check size={20} className="text-green-500" /> : <X size={20} className="text-red-300 opacity-50" />)
-                        }
+              {comparisonGroups.map((category) => (
+                <React.Fragment key={category.title}>
+                  <div className="col-span-4 bg-gray-100 p-2 text-xs font-bold text-gray-500 uppercase tracking-widest pl-4 border-b border-gray-200">
+                    {category.title}
+                  </div>
+
+                  {category.keys.map((key) => (
+                    <React.Fragment key={key}>
+                      <div className="p-3 border-b border-r border-gray-100 text-sm font-medium text-slate-700 flex items-center bg-white pl-4">
+                        {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                       </div>
-                   ))}
-                   {[...Array(3 - comparisonData.length)].map((_, i) => (
-                      <div key={i} className="bg-white border-b border-r border-gray-100 hidden md:block"></div>
-                   ))}
+                      {comparisonData.map(sw => (
+                        <div key={`${sw.id}-${key}`} className="p-3 border-b border-r border-gray-100 text-center flex items-center justify-center bg-white">
+                          {/* @ts-ignore */}
+                          {sw.features[key] ? (
+                            <Check size={20} className="text-green-500" />
+                          ) : (
+                            <X size={20} className="text-red-300 opacity-50" />
+                          )}
+                        </div>
+                      ))}
+                      {[...Array(3 - comparisonData.length)].map((_, i) => (
+                        <div key={i} className="bg-white border-b border-r border-gray-100 hidden md:block"></div>
+                      ))}
+                    </React.Fragment>
+                  ))}
                 </React.Fragment>
               ))}
 
