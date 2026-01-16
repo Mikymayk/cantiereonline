@@ -405,66 +405,68 @@ export default function SoftwareList({ data, filters, columns, comparisonGroups,
               </button>
             </div>
 
-            <div className="grid grid-cols-[200px_repeat(3,1fr)] gap-0 border border-gray-200 rounded-xl overflow-hidden shadow-xl">
+            <div className="border border-gray-200 rounded-xl overflow-hidden shadow-xl overflow-x-auto">
+              <div className="grid grid-cols-[200px_repeat(3,1fr)] gap-0 min-w-[800px]">
               
-              <div className="bg-slate-50 p-4 border-b border-r border-gray-200 font-bold text-slate-500 flex items-end pb-2">
-                {getTxt('feature')}
-              </div>
-              
-              {comparisonData.map(sw => (
-                <div key={sw.id} className="bg-slate-50 p-4 border-b border-r border-gray-200 text-center relative group">
-                  <button onClick={() => toggleSelection(sw.id)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500">
-                    <Trash2 size={16}/>
-                  </button>
-                  <Link href={`/${locale === 'it' ? '' : locale + '/'}software/${sw.id}`} className="font-extrabold text-lg text-slate-900 mb-1 hover:text-blue-600 hover:underline block">
-                    {sw.name}
-                  </Link>
-                  <div className="text-blue-600 font-bold mb-3">
-                    {sw.price} <span className="text-xs text-gray-500 font-normal">{sw.paymentType}</span>
-                  </div>
-                  <a 
-                    href={sw.website} 
-                    target="_blank" 
-                    className="block w-full bg-blue-600 text-white text-xs font-bold py-2 rounded hover:bg-blue-700 transition-colors"
-                  >
-                    {getTxt('visit')}
-                  </a>
+                <div className="bg-slate-50 p-4 border-b border-r border-gray-200 font-bold text-slate-500 flex items-end pb-2">
+                  {getTxt('feature')}
                 </div>
-              ))}
               
-              {[...Array(3 - comparisonData.length)].map((_, i) => (
-                <div key={i} className="bg-slate-50 border-b border-r border-gray-200 hidden md:block"></div>
-              ))}
-
-              {comparisonGroups.map((category) => (
-                <React.Fragment key={category.title}>
-                  <div className="col-span-4 bg-gray-100 p-2 text-xs font-bold text-gray-500 uppercase tracking-widest pl-4 border-b border-gray-200">
-                    {category.title}
+                {comparisonData.map(sw => (
+                  <div key={sw.id} className="bg-slate-50 p-4 border-b border-r border-gray-200 text-center relative group">
+                    <button onClick={() => toggleSelection(sw.id)} className="absolute top-2 right-2 text-gray-300 hover:text-red-500">
+                      <Trash2 size={16}/>
+                    </button>
+                    <Link href={`/${locale === 'it' ? '' : locale + '/'}software/${sw.id}`} className="font-extrabold text-lg text-slate-900 mb-1 hover:text-blue-600 hover:underline block">
+                      {sw.name}
+                    </Link>
+                    <div className="text-blue-600 font-bold mb-3">
+                      {sw.price} <span className="text-xs text-gray-500 font-normal">{sw.paymentType}</span>
+                    </div>
+                    <a
+                      href={sw.website}
+                      target="_blank"
+                      className="block w-full bg-blue-600 text-white text-xs font-bold py-2 rounded hover:bg-blue-700 transition-colors"
+                    >
+                      {getTxt('visit')}
+                    </a>
                   </div>
+                ))}
 
-                  {category.keys.map((key) => (
-                    <React.Fragment key={key}>
-                      <div className="p-3 border-b border-r border-gray-100 text-sm font-medium text-slate-700 flex items-center bg-white pl-4">
-                        {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
-                      </div>
-                      {comparisonData.map(sw => (
-                        <div key={`${sw.id}-${key}`} className="p-3 border-b border-r border-gray-100 text-center flex items-center justify-center bg-white">
-                          {/* @ts-ignore */}
-                          {sw.features[key] ? (
-                            <Check size={20} className="text-green-500" />
-                          ) : (
-                            <X size={20} className="text-red-300 opacity-50" />
-                          )}
+                {[...Array(3 - comparisonData.length)].map((_, i) => (
+                  <div key={i} className="bg-slate-50 border-b border-r border-gray-200 hidden md:block"></div>
+                ))}
+
+                {comparisonGroups.map((category) => (
+                  <React.Fragment key={category.title}>
+                    <div className="col-span-4 bg-gray-100 p-2 text-xs font-bold text-gray-500 uppercase tracking-widest pl-4 border-b border-gray-200">
+                      {category.title}
+                    </div>
+
+                    {category.keys.map((key) => (
+                      <React.Fragment key={key}>
+                        <div className="p-3 border-b border-r border-gray-100 text-sm font-medium text-slate-700 flex items-center bg-white pl-4">
+                          {key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
                         </div>
-                      ))}
-                      {[...Array(3 - comparisonData.length)].map((_, i) => (
-                        <div key={i} className="bg-white border-b border-r border-gray-100 hidden md:block"></div>
-                      ))}
-                    </React.Fragment>
-                  ))}
-                </React.Fragment>
-              ))}
+                        {comparisonData.map(sw => (
+                          <div key={`${sw.id}-${key}`} className="p-3 border-b border-r border-gray-100 text-center flex items-center justify-center bg-white">
+                            {/* @ts-ignore */}
+                            {sw.features[key] ? (
+                              <Check size={20} className="text-green-500" />
+                            ) : (
+                              <X size={20} className="text-red-300 opacity-50" />
+                            )}
+                          </div>
+                        ))}
+                        {[...Array(3 - comparisonData.length)].map((_, i) => (
+                          <div key={i} className="bg-white border-b border-r border-gray-100 hidden md:block"></div>
+                        ))}
+                      </React.Fragment>
+                    ))}
+                  </React.Fragment>
+                ))}
 
+              </div>
             </div>
           </div>
         </div>
