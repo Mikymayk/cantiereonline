@@ -60,6 +60,28 @@ export default function CookieBanner() {
   // @ts-ignore
   const txt = t[currentLang];
 
+  // Helper function per aggiornare il consenso
+  const updateConsent = (state: 'granted' | 'denied') => {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      console.log(`📡 Updating Consent to: ${state}`);
+
+      (window as any).gtag('consent', 'update', {
+        'analytics_storage': state,
+        'ad_storage': state,
+        'ad_user_data': state,
+        'ad_personalization': state
+      });
+
+      // Se il consenso è garantito, inviamo l'evento personalizzato richiesto
+      if (state === 'granted') {
+        (window as any).dataLayer = (window as any).dataLayer || [];
+        (window as any).dataLayer.push({
+          'event': 'cookie_consent_update'
+        });
+      }
+    }
+  };
+
   useEffect(() => {
     // 1. Controlliamo se l'utente ha già scelto in passato
     const consent = localStorage.getItem('cookie_consent');
@@ -68,46 +90,23 @@ export default function CookieBanner() {
       // Se non ha mai scelto, mostriamo il banner
       setShowBanner(true);
     } else if (consent === 'accepted') {
-      // Se aveva già accettato, carichiamo GTM subito (senza mostrare banner)
-      loadGTM();
+      // Se aveva già accettato, aggiorniamo il consenso a 'granted'
+      // GTM è già caricato da GoogleTagManager.tsx con stato 'denied'
+      updateConsent('granted');
     }
+    // Se è 'declined', non facciamo nulla perché il default è già 'denied'
   }, []);
 
   const acceptCookies = () => {
     localStorage.setItem('cookie_consent', 'accepted');
     setShowBanner(false);
-    loadGTM(); // Carica GTM immediatamente al click
+    updateConsent('granted');
   };
 
   const declineCookies = () => {
     localStorage.setItem('cookie_consent', 'declined');
     setShowBanner(false);
-    // Non carichiamo nulla
-  };
-
-  const loadGTM = () => {
-    // Evita di caricarlo due volte se l'utente clicca freneticamente
-    if ((window as any).dataLayer) return;
-
-    console.log('✅ Consenso ottenuto: Caricamento GTM-WHFPC3L4...'); 
-
-    // Inizializza il DataLayer
-    (window as any).dataLayer = (window as any).dataLayer || [];
-    (window as any).dataLayer.push({
-      'gtm.start': new Date().getTime(),
-      event: 'gtm.js',
-    });
-
-    // Crea e inietta lo script di Google
-    const gtmScript = document.createElement('script');
-    gtmScript.async = true;
-    gtmScript.src = 'https://www.googletagmanager.com/gtm.js?id=GTM-WHFPC3L4';
-    
-    // Inseriscilo nell'head della pagina
-    const firstScript = document.getElementsByTagName('script')[0];
-    if (firstScript && firstScript.parentNode) {
-      firstScript.parentNode.insertBefore(gtmScript, firstScript);
-    }
+    updateConsent('denied');
   };
 
   if (!showBanner) return null;
