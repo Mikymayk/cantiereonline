@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import CookieBanner from "@/components/CookieBanner"; 
-import GoogleTagManager from "@/components/GoogleTagManager";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,12 +33,9 @@ export default function RootLayout({
   return (
     <html lang="it">
       <body className={inter.className}>
-        {/* 1. GTM e Consent Mode Default (Caricato subito) */}
-        <GoogleTagManager />
-
         {children}
         
-        {/* 2. Banner per gestione consenso */}
+        {/* 2. INSERIAMO IL BANNER QUI IN FONDO */}
         <CookieBanner />
       </body>
     </html>
