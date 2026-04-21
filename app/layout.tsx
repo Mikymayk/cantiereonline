@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import CookieBanner from "@/components/CookieBanner"; 
-import Script from "next/script";
-
+import CookieBanner from "@/components/CookieBanner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -34,12 +32,12 @@ export default function RootLayout({
   return (
     <html lang="it">
       <head>
-        <Script
+        <meta name="google-adsense-account" content="ca-pub-4707899354356189" />
+        <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4707899354356189"
           crossOrigin="anonymous"
-          strategy="afterInteractive"
-        />
+        ></script>
       </head>
       <body className={inter.className}>
         {children}
