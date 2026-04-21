@@ -130,8 +130,9 @@ export default function CookieBanner() {
     console.log('✅ Consenso ottenuto:', prefs);
 
     (window as any).dataLayer = (window as any).dataLayer || [];
-    function gtag(){(window as any).dataLayer.push(arguments);}
+    function gtag(...args: any[]){(window as any).dataLayer.push(arguments);}
 
+    // @ts-ignore
     gtag('consent', 'update', {
       'analytics_storage': prefs.analytics ? 'granted' : 'denied',
       'ad_storage': prefs.marketing ? 'granted' : 'denied',
