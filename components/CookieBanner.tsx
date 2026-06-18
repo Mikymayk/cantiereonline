@@ -10,7 +10,7 @@ export default function CookieBanner() {
     try {
       // Controlla se l'utente ha già scelto
       const consent = localStorage.getItem('cookie_consent');
-      if (!consent) {
+      if (consent !== 'accepted' && consent !== 'declined') {
         setShowBanner(true);
       } else if (consent === 'accepted') {
         updateConsent(true);
