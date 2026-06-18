@@ -24,8 +24,8 @@ export default function CookieBanner() {
 
   const updateConsent = (granted: boolean) => {
     if (typeof window !== 'undefined') {
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){ window.dataLayer.push(arguments); }
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      function gtag(){ (window as any).dataLayer.push(arguments); }
       // @ts-ignore
       gtag('consent', 'update', {
         'analytics_storage': granted ? 'granted' : 'denied',
