@@ -7,12 +7,18 @@ export default function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
-    // Controlla se l'utente ha già scelto
-    const consent = localStorage.getItem('cookie_consent');
-    if (!consent) {
+    try {
+      // Controlla se l'utente ha già scelto
+      const consent = localStorage.getItem('cookie_consent');
+      if (!consent) {
+        setShowBanner(true);
+      } else if (consent === 'accepted') {
+        updateConsent(true);
+      }
+    } catch (error) {
+      // Se localStorage è bloccato (es. navigazione in incognito molto restrittiva)
+      console.error("localStorage access blocked:", error);
       setShowBanner(true);
-    } else if (consent === 'accepted') {
-      updateConsent(true);
     }
   }, []);
 
@@ -35,13 +41,17 @@ export default function CookieBanner() {
   };
 
   const acceptCookies = () => {
-    localStorage.setItem('cookie_consent', 'accepted');
+    try {
+      localStorage.setItem('cookie_consent', 'accepted');
+    } catch (e) {}
     updateConsent(true);
     setShowBanner(false);
   };
 
   const declineCookies = () => {
-    localStorage.setItem('cookie_consent', 'declined');
+    try {
+      localStorage.setItem('cookie_consent', 'declined');
+    } catch (e) {}
     updateConsent(false);
     setShowBanner(false);
   };
