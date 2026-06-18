@@ -85,7 +85,7 @@ export default function HomeNO() {
             <p className="mb-4">Uavhengig sammenligning for den norske byggebransjen.</p>
 
             <div className="text-xs text-slate-500 space-y-2 mb-6">
-               <p><strong>Clusterclups S.R.L.</strong></p>
+                 <p><strong>Digital Experience by <a href="https://www.clusterclups.com/digital-experience" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300 transition-colors">Clusterclups srl</a></strong></p>
                <p>Strada Santa Maria dell&apos;Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
                <p>MVA: 10923621212</p>
             </div>

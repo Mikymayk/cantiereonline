@@ -88,7 +88,7 @@ export default function Home() {
                  Il punto di riferimento per i professionisti dell&apos;edilizia. Confrontiamo in modo indipendente i migliori software per la gestione cantieri.
                </p>
                <div className="text-xs text-slate-500 space-y-2">
-                 <p><strong>Clusterclups S.R.L.</strong></p>
+                 <p><strong>Digital Experience by <a href="https://www.clusterclups.com/digital-experience" target="_blank" rel="noopener noreferrer" className="hover:text-slate-300 transition-colors">Clusterclups srl</a></strong></p>
                  <p>Strada Santa Maria dell&apos;Orto 14, 80053 Castellammare di Stabia (NA), Italia</p>
                  <p>P.IVA: 10923621212</p>
                </div>
